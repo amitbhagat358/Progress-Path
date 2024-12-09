@@ -1,0 +1,174 @@
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Plus, Trash } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+
+type CodingDataType = {
+  id: number;
+  name: string;
+  type: 'heading' | 'checkbox';
+  childrens: CodingDataType[];
+  checked?: boolean;
+};
+
+type CheckboxType = {
+  id: number;
+  name: string;
+  type: 'checkbox';
+  checked: boolean;
+};
+
+interface codingDataProps {
+  codingData: CodingDataType[];
+  setCodingData: React.Dispatch<React.SetStateAction<CodingDataType[]>>;
+}
+
+const CodingData = ({ codingData, setCodingData }: codingDataProps) => {
+  const toggleCheckbox = (id: number) => {
+    const updateData = (items: CodingDataType[]): CodingDataType[] => {
+      return items.map((item) => {
+        if (item.id === id && item.type === 'checkbox') {
+          return { ...item, checked: !item.checked };
+        }
+        if (item.childrens && item.childrens.length > 0) {
+          return { ...item, childrens: updateData(item.childrens) };
+        }
+        return item;
+      });
+    };
+
+    setCodingData((prevcodingData) => updateData(prevcodingData));
+  };
+
+  const handleCheckboxNameChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    id: number
+  ) => {
+    const updateData = (items: CodingDataType[]): CodingDataType[] => {
+      return items.map((item) => {
+        if (item.id === id && item.type === 'checkbox') {
+          return { ...item, name: e.target.value };
+        }
+        if (item.childrens && item.childrens.length > 0) {
+          return { ...item, childrens: updateData(item.childrens) };
+        }
+        return item;
+      });
+    };
+
+    setCodingData((prevcodingData) => updateData(prevcodingData));
+  };
+
+  const handleAddCheckbox = (id: number) => {
+    setInputOn(true);
+    setCodingData((prevData) => {
+      const updateData = (items: CodingDataType[]): CodingDataType[] =>
+        items.map((item) =>
+          item.id === id
+            ? {
+                ...item,
+                childrens: [
+                  {
+                    id: Date.now(),
+                    name: 'Checkbox',
+                    type: 'checkbox',
+                    checked: true,
+                    childrens: [],
+                  },
+                  ...item.childrens,
+                ],
+              }
+            : { ...item, childrens: updateData(item.childrens) }
+        );
+
+      return updateData(prevData);
+    });
+  };
+
+  const handleCheckboxDelete = (id: number) => {
+    const deleteData = (items: CodingDataType[]): CodingDataType[] =>
+      items
+        .filter((item) => item.id !== id)
+        .map((item) => ({
+          ...item,
+          childrens: deleteData(item.childrens),
+        }));
+
+    setCodingData((prevData) => deleteData(prevData));
+  };
+
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [inputOn, setInputOn] = useState(false);
+
+  useEffect(() => {
+    if (inputRef.current && inputOn) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [inputOn]);
+
+  const renderData = (items: CodingDataType[]) => {
+    return items.map((item, index) => {
+      if (item.type === 'heading') {
+        return (
+          <div key={item.id} className="mb-4">
+            <div className="flex justify-between items-center mb-2">
+              <div className="font-semibold">{item.name}</div>
+              <Button
+                onClick={() => {
+                  handleAddCheckbox(item.id);
+                }}
+                variant="outline"
+                size="sm"
+              >
+                <Plus />
+              </Button>
+            </div>
+            {item.childrens && item.childrens.length > 0 && (
+              <div className="pl-4">{renderData(item.childrens)}</div>
+            )}
+          </div>
+        );
+      }
+
+      if (item.type === 'checkbox') {
+        const checkboxId = `checkbox-${item.id}`;
+
+        return (
+          <div key={item.id} className="flex items-center space-x-2 my-2">
+            <Checkbox
+              id={checkboxId}
+              checked={item.checked}
+              onClick={() => toggleCheckbox(item.id)}
+            />
+            <Input
+              value={item.name}
+              onChange={(e) => handleCheckboxNameChange(e, item.id)}
+              ref={inputOn && index == 0 ? inputRef : undefined}
+              onBlur={() => setInputOn(false)}
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleCheckboxDelete(item.id)}
+            >
+              <Trash />
+            </Button>
+          </div>
+        );
+      }
+
+      return null;
+    });
+  };
+
+  return (
+    <div className="tasks w-[30%] border border-gray-300 shadow-sm rounded-lg p-6">
+      {renderData(codingData)}
+    </div>
+  );
+};
+
+export default CodingData;

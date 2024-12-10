@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import './globals.css';
+import { HighlightsProvider } from './dashboard/add-summary-for-today/context/HighlightsContext';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -13,7 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <HighlightsProvider>
+        <body>{children}</body>
+      </HighlightsProvider>
     </html>
   );
 }

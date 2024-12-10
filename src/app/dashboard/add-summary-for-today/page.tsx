@@ -7,7 +7,8 @@ import { getDate } from '@/lib/utils';
 import AcademicData from './AcademicData';
 import CodingData from './CodingData';
 import PersonalData from './PersonalData';
-import HeadingWithPoints from './HeadingPoints';
+import Hightlights from './Highlights';
+import { useHighlights } from './context/HighlightsContext';
 
 type HeadingCheckboxType = {
   id: number;
@@ -90,17 +91,6 @@ const AddSummaryPage = () => {
   const [personalData, setPersonalData] =
     useState<HeadingCheckboxType[]>(initialPersonalData);
 
-  interface BulletPoint {
-    id: number;
-    text: string;
-  }
-
-  const [highlights, setHighlights] = useState<BulletPoint[]>([]);
-
-  useEffect(() => {
-    console.log(highlights);
-  }, [highlights]);
-
   return (
     <div className="w-full">
       <div className="font-semibold text-xl p-5">{getDate()}</div>
@@ -118,11 +108,7 @@ const AddSummaryPage = () => {
         </div>
         <div className="note w-[60%]">
           <div className="w-full">
-            <HeadingWithPoints
-              heading={'Highlights of the day'}
-              // points={highlights}
-              // setPoints={setHighlights}
-            />
+            <Hightlights heading={'Highlights of the day'} />
           </div>
         </div>
       </div>

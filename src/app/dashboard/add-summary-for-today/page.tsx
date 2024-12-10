@@ -120,8 +120,8 @@ const AddSummaryPage = () => {
           <div className="w-full">
             <HeadingWithPoints
               heading={'Highlights of the day'}
-              points={highlights}
-              setPoints={setHighlights}
+              // points={highlights}
+              // setPoints={setHighlights}
             />
           </div>
         </div>

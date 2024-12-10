@@ -1,4 +1,3 @@
-// components/HeadingWithPoints.tsx
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Plus, Trash } from 'lucide-react';
@@ -11,21 +10,19 @@ interface BulletPoint {
 
 interface HeadingWithPointsProps {
   heading: string;
-  points: BulletPoint[];
-  setPoints: React.Dispatch<React.SetStateAction<BulletPoint[]>>;
 }
 
-const HeadingWithPoints: React.FC<HeadingWithPointsProps> = ({
-  heading,
-  points,
-  setPoints,
-}) => {
+const HeadingWithPoints: React.FC<HeadingWithPointsProps> = ({ heading }) => {
+  const [points, setPoints] = useState<BulletPoint[]>([]);
+  const [editableInputId, setEditableInputId] = useState<number | null>(null);
+  const editableInputRef = useRef<{ [key: number]: HTMLInputElement | null }>(
+    {}
+  );
+
   const addPoint = () => {
-    setFirstInputOn(true);
-    setPoints((prevPoints) => [
-      { id: Date.now(), text: 'Add something' },
-      ...prevPoints,
-    ]);
+    const newPoint = { id: Date.now(), text: '' };
+    setPoints((prevPoints) => [...prevPoints, newPoint]);
+    setEditableInputId(newPoint.id);
   };
 
   const updatePoint = (id: number, text: string) => {
@@ -36,39 +33,27 @@ const HeadingWithPoints: React.FC<HeadingWithPointsProps> = ({
 
   const removePoint = (id: number) => {
     setPoints((prevPoints) => prevPoints.filter((point) => point.id !== id));
+    if (editableInputId === id) {
+      setEditableInputId(null);
+    }
   };
-
-  const saveData = () => {
-    const dataToSave = {
-      heading,
-      points,
-    };
-    console.log('Data to save:', dataToSave);
-  };
-
-  const [editableCheckboxId, setEditableCheckboxId] = useState<number | null>(
-    null
-  );
-  const firstInputRef = useRef<HTMLInputElement>(null);
-  const [firstInputOn, setFirstInputOn] = useState(false);
 
   useEffect(() => {
-    if (firstInputRef.current && firstInputOn) {
-      firstInputRef.current.focus();
-      firstInputRef.current.select();
+    if (editableInputId !== null && editableInputRef.current[editableInputId]) {
+      editableInputRef.current[editableInputId]?.focus();
     }
-  }, [firstInputOn]);
+  }, [editableInputId]);
 
   return (
     <div className="w-[50%] p-6 border border-[#e5e7eb] shadow-sm rounded-lg">
       <div className="flex justify-between items-center mb-4">
         <div className="font-semibold">{heading}</div>
-        <Button onClick={() => addPoint()} variant="outline" size="sm">
+        <Button onClick={addPoint} variant="outline" size="sm">
           <Plus />
         </Button>
       </div>
       <ul className="pl-4">
-        {points.map((point, index) => (
+        {points.map((point) => (
           <li
             key={point.id}
             className="flex items-center space-x-2 my-1 group hover:bg-gray-50 rounded"
@@ -78,25 +63,23 @@ const HeadingWithPoints: React.FC<HeadingWithPointsProps> = ({
             </div>
             <Input
               type="text"
+              id={`${point.id}`}
               onChange={(e) => updatePoint(point.id, e.target.value)}
-              ref={firstInputOn && index === 0 ? firstInputRef : null}
-              value={point.text}
-              onBlur={() => {
-                setEditableCheckboxId(null);
-                setFirstInputOn(false);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  setEditableCheckboxId(null); // Exit edit mode on Enter
-                  setFirstInputOn(false);
-                  firstInputRef.current?.blur();
+              ref={(el) => {
+                if (editableInputRef.current) {
+                  editableInputRef.current[point.id] = el;
                 }
               }}
-              onClick={() => setEditableCheckboxId(point.id)}
-              className={`text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${
-                editableCheckboxId !== point.id
-                  ? 'cursor-pointer bg-transparent border-none focus-visible:ring-0 shadow-none'
-                  : ''
+              value={point.text}
+              onBlur={() => setEditableInputId(null)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  addPoint();
+                }
+              }}
+              onClick={() => setEditableInputId(point.id)}
+              className={`text-sm leading-none border-none focus-visible:ring-0 shadow-none ${
+                editableInputId !== point.id ? 'cursor-pointer' : ''
               }`}
             />
             <Button

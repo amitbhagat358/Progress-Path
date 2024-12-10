@@ -14,11 +14,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className="h-screen">
-          <div className="text-2xl font-bold mb-5 p-5 bg-[#222831] text-white">
+        <div className="w-full h-screen">
+          <div className="text-2xl font-bold  p-5 border border-b-[#e5e7eb]">
             Progress Path
           </div>
-          <div>{children}</div>
+          <div className="w-full ">{children}</div>
         </div>
       </body>
     </html>

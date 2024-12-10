@@ -4,22 +4,24 @@ import { Input } from '@/components/ui/input';
 import { Plus, Trash } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
-type AcademicDataType = {
+type HeadingCheckboxType = {
   id: number;
   name: string;
   type: 'heading' | 'checkbox';
-  childrens: AcademicDataType[];
+  childrens: HeadingCheckboxType[];
   checked?: boolean;
 };
 
 interface AcademicDataProps {
-  academicData: AcademicDataType[];
-  setAcademicData: React.Dispatch<React.SetStateAction<AcademicDataType[]>>;
+  academicData: HeadingCheckboxType[];
+  setAcademicData: React.Dispatch<React.SetStateAction<HeadingCheckboxType[]>>;
 }
 
 const AcademicData = ({ academicData, setAcademicData }: AcademicDataProps) => {
   const toggleCheckbox = (id: number) => {
-    const updateData = (items: AcademicDataType[]): AcademicDataType[] => {
+    const updateData = (
+      items: HeadingCheckboxType[]
+    ): HeadingCheckboxType[] => {
       return items.map((item) => {
         if (item.id === id && item.type === 'checkbox') {
           return { ...item, checked: !item.checked };
@@ -38,7 +40,9 @@ const AcademicData = ({ academicData, setAcademicData }: AcademicDataProps) => {
     e: React.ChangeEvent<HTMLInputElement>,
     id: number
   ) => {
-    const updateData = (items: AcademicDataType[]): AcademicDataType[] => {
+    const updateData = (
+      items: HeadingCheckboxType[]
+    ): HeadingCheckboxType[] => {
       return items.map((item) => {
         if (item.id === id && item.type === 'checkbox') {
           return { ...item, name: e.target.value };
@@ -60,7 +64,9 @@ const AcademicData = ({ academicData, setAcademicData }: AcademicDataProps) => {
   const handleAddCheckbox = (id: number) => {
     setInputOn(true);
     setAcademicData((prevData) => {
-      const updateData = (items: AcademicDataType[]): AcademicDataType[] =>
+      const updateData = (
+        items: HeadingCheckboxType[]
+      ): HeadingCheckboxType[] =>
         items.map((item) =>
           item.id === id
             ? {
@@ -68,7 +74,7 @@ const AcademicData = ({ academicData, setAcademicData }: AcademicDataProps) => {
                 childrens: [
                   {
                     id: Date.now(),
-                    name: 'Checkbox',
+                    name: 'Add something',
                     type: 'checkbox',
                     checked: true,
                     childrens: [],
@@ -84,7 +90,7 @@ const AcademicData = ({ academicData, setAcademicData }: AcademicDataProps) => {
   };
 
   const handleCheckboxDelete = (id: number) => {
-    const deleteData = (items: AcademicDataType[]): AcademicDataType[] =>
+    const deleteData = (items: HeadingCheckboxType[]): HeadingCheckboxType[] =>
       items
         .filter((item) => item.id !== id)
         .map((item) => ({
@@ -105,17 +111,19 @@ const AcademicData = ({ academicData, setAcademicData }: AcademicDataProps) => {
     }
   }, [inputOn]);
 
-  const renderData = (items: AcademicDataType[]) => {
+  const [editableCheckboxId, setEditableCheckboxId] = useState<number | null>(
+    null
+  );
+
+  const renderData = (items: HeadingCheckboxType[]) => {
     return items.map((item, index) => {
       if (item.type === 'heading') {
         return (
-          <div key={item.id} className="mb-4">
-            <div className="flex justify-between items-center mb-2">
+          <div key={item.id} className="">
+            <div className="flex justify-between items-center mb-4">
               <div className="font-semibold">{item.name}</div>
               <Button
-                onClick={() => {
-                  handleAddCheckbox(item.id);
-                }}
+                onClick={() => handleAddCheckbox(item.id)}
                 variant="outline"
                 size="sm"
               >
@@ -140,11 +148,25 @@ const AcademicData = ({ academicData, setAcademicData }: AcademicDataProps) => {
               onClick={() => toggleCheckbox(item.id)}
             />
             <Input
+              ref={inputOn && index === 0 ? inputRef : null}
               value={item.name}
-              ref={inputOn && index == 0 ? inputRef : undefined}
-              onBlur={() => setInputOn(false)}
+              onBlur={() => {
+                setEditableCheckboxId(null);
+                setInputOn(false);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  setEditableCheckboxId(null); // Exit edit mode on Enter
+                  inputRef.current?.blur(); // Remove focus
+                }
+              }}
+              onClick={() => setEditableCheckboxId(item.id)} // Enter edit mode on double-click
               onChange={(e) => handleCheckboxNameChange(e, item.id)}
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              className={`text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${
+                editableCheckboxId !== item.id
+                  ? 'cursor-pointer bg-transparent border-none focus:ring-0 shadow-none'
+                  : ''
+              }`}
             />
             <Button
               variant="outline"
@@ -162,7 +184,7 @@ const AcademicData = ({ academicData, setAcademicData }: AcademicDataProps) => {
   };
 
   return (
-    <div className="tasks w-[30%] border border-gray-300 shadow-sm rounded-lg p-6">
+    <div className="tasks w-full border border-[#e5e7eb] shadow-sm rounded-lg p-6">
       {renderData(academicData)}
     </div>
   );

@@ -2,23 +2,23 @@
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getDate } from '@/lib/utils';
 import AcademicData from './AcademicData';
 import CodingData from './CodingData';
+import PersonalData from './PersonalData';
+import HeadingWithPoints from './HeadingPoints';
 
-type AcademicDataType = {
+type HeadingCheckboxType = {
   id: number;
   name: string;
   type: 'heading' | 'checkbox';
-  childrens: AcademicDataType[];
+  childrens: HeadingCheckboxType[];
   checked?: boolean;
 };
 
-type CodingDataType = AcademicDataType;
-
 const AddSummaryPage = () => {
-  const initialAcademicData: AcademicDataType[] = [
+  const initialAcademicData: HeadingCheckboxType[] = [
     {
       id: 0,
       name: 'Academics',
@@ -35,7 +35,7 @@ const AddSummaryPage = () => {
     },
   ];
 
-  const initialCodingData: CodingDataType[] = [
+  const initialCodingData: HeadingCheckboxType[] = [
     {
       id: 2,
       name: 'Coding',
@@ -43,7 +43,38 @@ const AddSummaryPage = () => {
       childrens: [
         {
           id: 3,
-          name: 'Leetcode questions',
+          name: 'Leetcode',
+          type: 'checkbox',
+          childrens: [],
+          checked: false,
+        },
+        {
+          id: 100,
+          name: 'Codeforces',
+          type: 'checkbox',
+          childrens: [],
+          checked: false,
+        },
+        {
+          id: 101,
+          name: 'Web Development',
+          type: 'checkbox',
+          childrens: [],
+          checked: false,
+        },
+      ],
+    },
+  ];
+
+  const initialPersonalData: HeadingCheckboxType[] = [
+    {
+      id: 4,
+      name: 'Personal',
+      type: 'heading',
+      childrens: [
+        {
+          id: 5,
+          name: 'Book reading',
           type: 'checkbox',
           childrens: [],
           checked: false,
@@ -53,40 +84,50 @@ const AddSummaryPage = () => {
   ];
 
   const [academicDeta, setAcademicData] =
-    useState<AcademicDataType[]>(initialAcademicData);
+    useState<HeadingCheckboxType[]>(initialAcademicData);
   const [codingData, setCodingData] =
-    useState<AcademicDataType[]>(initialCodingData);
-  const [note, setNote] = useState<string>('');
+    useState<HeadingCheckboxType[]>(initialCodingData);
+  const [personalData, setPersonalData] =
+    useState<HeadingCheckboxType[]>(initialPersonalData);
+
+  interface BulletPoint {
+    id: number;
+    text: string;
+  }
+
+  const [highlights, setHighlights] = useState<BulletPoint[]>([]);
+
+  useEffect(() => {
+    console.log(highlights);
+  }, [highlights]);
 
   return (
     <div className="w-full">
-      <div className="w-full p-5 rounded-lg">
-        <div className="font-semibold text-xl mb-5">{getDate()}</div>
-
-        <div className="done flex gap-10 w-full px-2 py-5">
+      <div className="font-semibold text-xl p-5">{getDate()}</div>
+      <div className="w-full flex justify-between p-5 rounded-lg">
+        <div className="done min-h-[300px] flex flex-col gap-5 w-[30%]">
           <AcademicData
             academicData={academicDeta}
             setAcademicData={setAcademicData}
           />
           <CodingData codingData={codingData} setCodingData={setCodingData} />
-          <div className="note w-[30%] border border-gray-300 shadow-sm rounded-lg p-6">
-            <div className="grid w-full gap-1.5">
-              <Label htmlFor="message-2" className="text-lg">
-                Summary
-              </Label>
-              <Textarea
-                id="message-2"
-                value={note}
-                placeholder="How was your day?"
-                onChange={(e) => setNote(e.target.value)}
-                className="h-[150px]"
-              />
-            </div>
+          <PersonalData
+            personalData={personalData}
+            setPersonalData={setPersonalData}
+          />
+        </div>
+        <div className="note w-[60%]">
+          <div className="w-full">
+            <HeadingWithPoints
+              heading={'Highlights of the day'}
+              points={highlights}
+              setPoints={setHighlights}
+            />
           </div>
         </div>
-        <div className="submit mt-4">
-          <Button>Submit</Button>
-        </div>
+      </div>
+      <div className="submit mt-4">
+        <Button>Submit</Button>
       </div>
     </div>
   );

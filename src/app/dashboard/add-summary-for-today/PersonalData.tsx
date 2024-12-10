@@ -12,12 +12,12 @@ type HeadingCheckboxType = {
   checked?: boolean;
 };
 
-interface codingDataProps {
-  codingData: HeadingCheckboxType[];
-  setCodingData: React.Dispatch<React.SetStateAction<HeadingCheckboxType[]>>;
+interface PersonalDataProps {
+  personalData: HeadingCheckboxType[];
+  setPersonalData: React.Dispatch<React.SetStateAction<HeadingCheckboxType[]>>;
 }
 
-const CodingData = ({ codingData, setCodingData }: codingDataProps) => {
+const PersonalData = ({ personalData, setPersonalData }: PersonalDataProps) => {
   const toggleCheckbox = (id: number) => {
     const updateData = (
       items: HeadingCheckboxType[]
@@ -33,7 +33,7 @@ const CodingData = ({ codingData, setCodingData }: codingDataProps) => {
       });
     };
 
-    setCodingData((prevcodingData) => updateData(prevcodingData));
+    setPersonalData((prevData) => updateData(prevData));
   };
 
   const handleCheckboxNameChange = (
@@ -54,12 +54,16 @@ const CodingData = ({ codingData, setCodingData }: codingDataProps) => {
       });
     };
 
-    setCodingData((prevcodingData) => updateData(prevcodingData));
+    setPersonalData((prevData) => {
+      const newData = updateData(prevData);
+      console.log(newData);
+      return newData;
+    });
   };
 
   const handleAddCheckbox = (id: number) => {
     setInputOn(true);
-    setCodingData((prevData) => {
+    setPersonalData((prevData) => {
       const updateData = (
         items: HeadingCheckboxType[]
       ): HeadingCheckboxType[] =>
@@ -94,14 +98,11 @@ const CodingData = ({ codingData, setCodingData }: codingDataProps) => {
           childrens: deleteData(item.childrens),
         }));
 
-    setCodingData((prevData) => deleteData(prevData));
+    setPersonalData((prevData) => deleteData(prevData));
   };
 
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputOn, setInputOn] = useState(false);
-  const [editableCheckboxId, setEditableCheckboxId] = useState<number | null>(
-    null
-  );
 
   useEffect(() => {
     if (inputRef.current && inputOn) {
@@ -109,6 +110,10 @@ const CodingData = ({ codingData, setCodingData }: codingDataProps) => {
       inputRef.current.select();
     }
   }, [inputOn]);
+
+  const [editableCheckboxId, setEditableCheckboxId] = useState<number | null>(
+    null
+  );
 
   const renderData = (items: HeadingCheckboxType[]) => {
     return items.map((item, index) => {
@@ -182,9 +187,9 @@ const CodingData = ({ codingData, setCodingData }: codingDataProps) => {
 
   return (
     <div className="tasks w-full border border-[#e5e7eb] shadow-sm rounded-lg p-6">
-      {renderData(codingData)}
+      {renderData(personalData)}
     </div>
   );
 };
 
-export default CodingData;
+export default PersonalData;

@@ -54,7 +54,7 @@ const Highlights: React.FC<HighlightsProps> = ({ heading }) => {
 
   return (
     <div className="w-[50%] p-6 border border-[#e5e7eb] shadow-sm rounded-lg">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center">
         <div className="font-semibold">{heading}</div>
         <Button
           onClick={() => addHighlight(highlights.length - 1)}

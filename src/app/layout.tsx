@@ -1,6 +1,9 @@
 import { Metadata } from 'next';
 import './globals.css';
 import { HighlightsProvider } from './dashboard/add-summary-for-today/context/HighlightsContext';
+import { AcademicDataProvider } from './dashboard/add-summary-for-today/context/AcademicDataContext';
+import { CodingDataProvider } from './dashboard/add-summary-for-today/context/CodingDataContext';
+import { PersonalDataProvider } from './dashboard/add-summary-for-today/context/PersonalDataContext';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -14,9 +17,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <HighlightsProvider>
-        <body>{children}</body>
-      </HighlightsProvider>
+      <AcademicDataProvider>
+        <CodingDataProvider>
+          <PersonalDataProvider>
+            <HighlightsProvider>
+              <body>{children}</body>
+            </HighlightsProvider>
+          </PersonalDataProvider>
+        </CodingDataProvider>
+      </AcademicDataProvider>
     </html>
   );
 }

@@ -5,25 +5,31 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const getDate = (): string => {
-  const currentDate = new Date();
-  const day = currentDate.getDate();
-  const month = currentDate.toLocaleString('default', { month: 'short' });
-  const year = currentDate.getFullYear();
+export const formatDate = (dateStr: string | null): string => {
+  if (dateStr === null) {
+    return '';
+  }
+  const date = new Date(dateStr);
+  console.log(date.toString());
+  const day = date.getDate();
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const dayOfWeek = dayNames[date.getDay()];
+  const monthNames = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+  const month = monthNames[date.getMonth()];
+  const year = date.getFullYear();
 
-  const getDaySuffix = (day: number): string => {
-    if (day >= 11 && day <= 13) return 'th';
-    switch (day % 10) {
-      case 1:
-        return 'st';
-      case 2:
-        return 'nd';
-      case 3:
-        return 'rd';
-      default:
-        return 'th';
-    }
-  };
-
-  return `${day}${getDaySuffix(day)} ${month}, ${year}`;
+  return `${month} ${day}, ${year} (${dayOfWeek})`;
 };

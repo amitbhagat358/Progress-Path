@@ -1,7 +1,7 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
-import { getDate } from '@/lib/utils';
+import { formatDate } from '@/lib/utils';
 import AcademicData from './AcademicData';
 import CodingData from './CodingData';
 import PersonalData from './PersonalData';
@@ -10,8 +10,12 @@ import { useHighlights } from './context/HighlightsContext';
 import { useAcademicData } from './context/AcademicDataContext';
 import { useCodingData } from './context/CodingDataContext';
 import { usePersonalData } from './context/PersonalDataContext';
+import { useSearchParams } from 'next/navigation';
 
 const AddSummaryPage = () => {
+  const searchParams = useSearchParams();
+  const date: string | null = searchParams.get('date');
+
   const { highlights, setHighlights } = useHighlights();
   const { items: AcademicDataItems, setItems: setAcademicDataItems } =
     useAcademicData();
@@ -23,7 +27,13 @@ const AddSummaryPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch('/api/summary');
+        const res = await fetch(`/api/summary?date=${date}`);
+
+        if (res.redirected) {
+          window.location.href = res.url;
+          return;
+        }
+
         const data = await res.json();
         if (data.length > 0) {
           const latest = data[data.length - 1];
@@ -46,13 +56,12 @@ const AddSummaryPage = () => {
       academicData: AcademicDataItems,
       codingData: CodingDataItems,
       personalData: PersonalDataItems,
-      date: new Date('2024-12-11'),
     };
 
     console.log('data', data);
 
     try {
-      const res = await fetch('/api/summary', {
+      const res = await fetch(`/api/summary?date=${date}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +81,9 @@ const AddSummaryPage = () => {
 
   return (
     <div className="w-full">
-      <div className="font-semibold text-xl p-5">{getDate()}</div>
+      <div className="font-semibold text-xl p-5 text-end">
+        {formatDate(date)}
+      </div>
       <div className="w-full flex justify-between p-5 rounded-lg">
         <div className="done min-h-[300px] flex flex-col gap-5 w-[30%]">
           <AcademicData heading="Academics" />

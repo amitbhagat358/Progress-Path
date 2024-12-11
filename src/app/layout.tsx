@@ -4,6 +4,7 @@ import { HighlightsProvider } from './dashboard/add-summary-for-today/context/Hi
 import { AcademicDataProvider } from './dashboard/add-summary-for-today/context/AcademicDataContext';
 import { CodingDataProvider } from './dashboard/add-summary-for-today/context/CodingDataContext';
 import { PersonalDataProvider } from './dashboard/add-summary-for-today/context/PersonalDataContext';
+import { ThemeProvider } from '@/components/ui/theme-provider';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -21,7 +22,16 @@ export default function RootLayout({
         <CodingDataProvider>
           <PersonalDataProvider>
             <HighlightsProvider>
-              <body>{children}</body>
+              <body>
+                {/* <ThemeProvider
+                  attribute="class"
+                  // defaultTheme="system"
+                  enableSystem
+                  disableTransitionOnChange
+                > */}
+                {children}
+                {/* </ThemeProvider> */}
+              </body>
             </HighlightsProvider>
           </PersonalDataProvider>
         </CodingDataProvider>

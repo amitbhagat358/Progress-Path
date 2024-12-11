@@ -73,7 +73,8 @@ const AddSummaryPage = () => {
         throw new Error('Failed to save data');
       }
 
-      alert('Data saved successfully');
+      const resData = await res.json();
+      alert(resData.message);
     } catch (error) {
       console.error('Failed to save data:', error);
     }

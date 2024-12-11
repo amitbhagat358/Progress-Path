@@ -7,7 +7,11 @@ const SummarySchema = new mongoose.Schema({
   academicData: Array,
   codingData: Array,
   personalData: Array,
-  date: String,
+  date: {
+    type: String,
+    required: true,
+    unique: true,
+  },
 });
 
 const Summary =
@@ -79,11 +83,20 @@ export async function POST(req: NextRequest) {
   }
 
   const date = new Date(dateFromUrl).toISOString();
-  console.log(date, '🤔');
 
   try {
     const body = await req.json();
     const { highlights, academicData, codingData, personalData } = body;
+
+    const summaryExists = await Summary.findOne({ date });
+
+    if (summaryExists) {
+      await Summary.updateOne(
+        { date },
+        { $set: { highlights, academicData, codingData, personalData, date } }
+      );
+      return NextResponse.json({ message: 'Data updated successfully' });
+    }
 
     const newSummary = new Summary({
       highlights,
@@ -93,7 +106,6 @@ export async function POST(req: NextRequest) {
       date,
     });
 
-    console.log('newsummary', newSummary);
     await newSummary.save();
 
     return NextResponse.json({ message: 'Data saved successfully' });

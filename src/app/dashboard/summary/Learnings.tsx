@@ -15,6 +15,11 @@ interface LearningsProps {
   setUnsavedChanges: Dispatch<SetStateAction<boolean>>;
 }
 
+interface BulletPoint {
+  id: number;
+  text: string;
+}
+
 const Learnings: React.FC<LearningsProps> = ({
   heading,
   setUnsavedChanges,
@@ -52,6 +57,33 @@ const Learnings: React.FC<LearningsProps> = ({
     );
     if (editableInputId === id) {
       setEditableInputId(null);
+    }
+  };
+
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    index: number,
+    Highlight: BulletPoint
+  ) => {
+    if (e.key === 'ArrowUp') {
+      if (index > 0) {
+        setEditableInputId(learnings[index - 1].id);
+        editableInputRef.current[learnings[index - 1].id]?.focus();
+      }
+    } else if (e.key === 'ArrowDown') {
+      if (index < learnings.length - 1) {
+        setEditableInputId(learnings[index + 1].id);
+        editableInputRef.current[learnings[index + 1].id]?.focus();
+      }
+    } else if (e.key === 'Enter') {
+      addLearning(index);
+    } else if (Highlight.text === '' && e.key === 'Backspace') {
+      e.preventDefault();
+      removeLearning(Highlight.id);
+      if (index > 0) {
+        setEditableInputId(learnings[index - 1].id);
+        editableInputRef.current[learnings[index - 1].id]?.focus();
+      }
     }
   };
 
@@ -93,19 +125,7 @@ const Learnings: React.FC<LearningsProps> = ({
               }}
               value={learning.text}
               onBlur={() => setEditableInputId(null)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  addLearning(index);
-                }
-                if (learning.text === '' && e.key === 'Backspace') {
-                  e.preventDefault();
-                  removeLearning(learning.id);
-                  if (index > 0) {
-                    setEditableInputId(learnings[index - 1].id);
-                    editableInputRef.current[learnings[index - 1].id]?.focus();
-                  }
-                }
-              }}
+              onKeyDown={(e) => handleKeyDown(e, index, learning)}
               onClick={() => setEditableInputId(learning.id)}
               className={`text-[16px] leading-none border-none focus-visible:ring-0 shadow-none ${
                 editableInputId !== learning.id ? 'cursor-pointer' : ''

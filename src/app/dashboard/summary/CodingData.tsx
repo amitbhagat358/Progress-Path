@@ -11,6 +11,12 @@ interface CodingDataProps {
   setUnsavedChanges: Dispatch<SetStateAction<boolean>>;
 }
 
+interface Checkbox {
+  id: number;
+  name: string;
+  checked: boolean;
+}
+
 const CodingData: React.FC<CodingDataProps> = ({
   heading,
   setUnsavedChanges,
@@ -62,6 +68,33 @@ const CodingData: React.FC<CodingDataProps> = ({
     }
   };
 
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    index: number,
+    item: Checkbox
+  ) => {
+    if (e.key === 'ArrowUp') {
+      if (index > 0) {
+        setEditableInputId(items[index - 1].id);
+        editableInputRef.current[items[index - 1].id]?.focus();
+      }
+    } else if (e.key === 'ArrowDown') {
+      if (index < items.length - 1) {
+        setEditableInputId(items[index + 1].id);
+        editableInputRef.current[items[index + 1].id]?.focus();
+      }
+    } else if (e.key === 'Enter') {
+      addItem(index);
+    } else if (item.name === '' && e.key === 'Backspace') {
+      e.preventDefault();
+      removeItem(item.id);
+      if (index > 0) {
+        setEditableInputId(items[index - 1].id);
+        editableInputRef.current[items[index - 1].id]?.focus();
+      }
+    }
+  };
+
   return (
     <div className="tasks w-full border border-[#e3e3e7] shadow-sm rounded-lg p-6">
       <div className="flex justify-between items-center mb-4">
@@ -99,19 +132,7 @@ const CodingData: React.FC<CodingDataProps> = ({
               onBlur={() => {
                 setEditableInputId(null);
               }}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  addItem(index);
-                }
-                if (item.name === '' && e.key === 'Backspace') {
-                  e.preventDefault();
-                  removeItem(item.id);
-                  if (index > 0) {
-                    setEditableInputId(items[index - 1].id);
-                    editableInputRef.current[items[index - 1].id]?.focus();
-                  }
-                }
-              }}
+              onKeyDown={(e) => handleKeyDown(e, index, item)}
               onClick={() => setEditableInputId(item.id)}
               onChange={(e) => updateItem(item.id, e.target.value)}
               className={`text-sm leading-none border-none focus-visible:ring-0 shadow-none ${

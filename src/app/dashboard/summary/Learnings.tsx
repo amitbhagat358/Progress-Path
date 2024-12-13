@@ -15,15 +15,11 @@ const Learnings: React.FC<LearningsProps> = ({ heading }) => {
     {}
   );
 
-  const addLearning = (index?: number) => {
-    const newLearning = { id: Date.now(), text: '' };
+  const addLearning = (index: number) => {
+    const newLearning = { id: index + 1, text: '' };
     setLearnings((prevLearnings) => {
       const updatedLearnings = [...prevLearnings];
-      if (index !== undefined) {
-        updatedLearnings.splice(index + 1, 0, newLearning);
-      } else {
-        updatedLearnings.push(newLearning);
-      }
+      updatedLearnings.splice(index + 1, 0, newLearning);
       return updatedLearnings;
     });
     setEditableInputId(newLearning.id);
@@ -87,6 +83,11 @@ const Learnings: React.FC<LearningsProps> = ({ heading }) => {
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   addLearning(index);
+                }
+                if (learning.text === '' && e.key === 'Backspace') {
+                  e.preventDefault();
+                  removeLearning(learning.id);
+                  setEditableInputId(learning.id > 0 ? learning.id - 1 : null);
                 }
               }}
               onClick={() => setEditableInputId(learning.id)}

@@ -10,7 +10,6 @@ export const formatDate = (dateStr: string | null): string => {
     return '';
   }
   const date = new Date(dateStr);
-  console.log(date.toString());
   const day = date.getDate();
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const dayOfWeek = dayNames[date.getDay()];

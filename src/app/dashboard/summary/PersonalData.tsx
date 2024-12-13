@@ -36,19 +36,11 @@ const PersonalData: React.FC<PersonalDataProps> = ({ heading }) => {
     );
   };
 
-  const addItem = (index?: number) => {
-    const newDataItem = {
-      id: Date.now(),
-      name: '',
-      checked: false,
-    };
+  const addItem = (index: number) => {
+    const newDataItem = { id: index + 1, name: '', checked: false };
     setItems((prevItems) => {
       const updatedItems = [...prevItems];
-      if (index !== undefined) {
-        updatedItems.splice(index + 1, 0, newDataItem);
-      } else {
-        updatedItems.push(newDataItem);
-      }
+      updatedItems.splice(index + 1, 0, newDataItem);
       return updatedItems;
     });
     setEditableInputId(newDataItem.id);
@@ -101,6 +93,11 @@ const PersonalData: React.FC<PersonalDataProps> = ({ heading }) => {
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   addItem(index);
+                }
+                if (item.name === '' && e.key === 'Backspace') {
+                  e.preventDefault();
+                  removeItem(item.id);
+                  setEditableInputId(item.id > 0 ? item.id - 1 : null);
                 }
               }}
               onClick={() => setEditableInputId(item.id)}

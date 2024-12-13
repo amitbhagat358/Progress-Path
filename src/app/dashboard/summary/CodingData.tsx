@@ -1,3 +1,4 @@
+'use client';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
@@ -36,15 +37,11 @@ const CodingData: React.FC<CodingDataProps> = ({ heading }) => {
     );
   };
 
-  const addItem = (index?: number) => {
-    const newDataItem = { id: Date.now(), name: '', checked: false };
+  const addItem = (index: number) => {
+    const newDataItem = { id: index + 1, name: '', checked: false };
     setItems((prevItems) => {
       const updatedData = [...prevItems];
-      if (index !== undefined) {
-        updatedData.splice(index + 1, 0, newDataItem);
-      } else {
-        updatedData.push(newDataItem);
-      }
+      updatedData.splice(index + 1, 0, newDataItem);
       return updatedData;
     });
     setEditableInputId(newDataItem.id);
@@ -97,6 +94,12 @@ const CodingData: React.FC<CodingDataProps> = ({ heading }) => {
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   addItem(index);
+                }
+
+                if (item.name === '' && e.key === 'Backspace') {
+                  e.preventDefault();
+                  removeItem(item.id);
+                  setEditableInputId(item.id > 0 ? item.id - 1 : null);
                 }
               }}
               onClick={() => setEditableInputId(item.id)}

@@ -15,15 +15,11 @@ const Highlights: React.FC<HighlightsProps> = ({ heading }) => {
     {}
   );
 
-  const addHighlight = (index?: number) => {
-    const newHighlight = { id: Date.now(), text: '' };
+  const addHighlight = (index: number) => {
+    const newHighlight = { id: index + 1, text: '' };
     setHighlights((prevhighlights) => {
       const updatedhighlights = [...prevhighlights];
-      if (index !== undefined) {
-        updatedhighlights.splice(index + 1, 0, newHighlight);
-      } else {
-        updatedhighlights.push(newHighlight);
-      }
+      updatedhighlights.splice(index + 1, 0, newHighlight);
       return updatedhighlights;
     });
     setEditableInputId(newHighlight.id);
@@ -87,6 +83,13 @@ const Highlights: React.FC<HighlightsProps> = ({ heading }) => {
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   addHighlight(index);
+                }
+                if (Highlight.text === '' && e.key === 'Backspace') {
+                  e.preventDefault();
+                  removeHighlight(Highlight.id);
+                  setEditableInputId(
+                    Highlight.id > 0 ? Highlight.id - 1 : null
+                  );
                 }
               }}
               onClick={() => setEditableInputId(Highlight.id)}

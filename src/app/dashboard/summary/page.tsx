@@ -16,6 +16,7 @@ import { useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import Diary from './Diary';
 import { useDiary } from './context/DiaryContext';
+import Loading from './loading';
 
 const AddSummaryPage = () => {
   const searchParams = useSearchParams();
@@ -32,6 +33,7 @@ const AddSummaryPage = () => {
     usePersonalData();
 
   const [unsavedChanges, setUnsavedChanges] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,6 +55,7 @@ const AddSummaryPage = () => {
           setCodingDataItems(latest.codingData);
           setPersonalDataItems(latest.personalData);
         }
+        setLoading(false);
       } catch (error) {
         toast.error(`Error fetching the data for ${formatDate(date)}.`, {
           description: 'Please try again later.',
@@ -129,6 +132,10 @@ const AddSummaryPage = () => {
     }
   };
 
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <div>
       <div className="w-full flex justify-center items-center p-5 border bg-white border-b-[#e3e3e7] sticky top-0">
@@ -160,7 +167,7 @@ const AddSummaryPage = () => {
             />
           </div>
           <div className="w-[40%] p-5">
-            <div className="w-full h-full flex flex-col justify-between gap-5">
+            <div className="w-full h-full flex flex-col justify-start gap-5">
               <Hightlights
                 heading={'Highlights of the day'}
                 setUnsavedChanges={setUnsavedChanges}

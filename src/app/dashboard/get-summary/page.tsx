@@ -32,9 +32,7 @@ const GetSummary = () => {
         className="rounded-md border"
       />
       <Link
-        href={`/dashboard/add-summary-for-today?date=${formatDateToYYYYMMDD(
-          date
-        )}`}
+        href={`/dashboard/summary?date=${formatDateToYYYYMMDD(date)}`}
         prefetch={true}
       >
         <Button>Click me</Button>

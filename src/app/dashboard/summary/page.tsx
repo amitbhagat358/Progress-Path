@@ -6,17 +6,25 @@ import AcademicData from './AcademicData';
 import CodingData from './CodingData';
 import PersonalData from './PersonalData';
 import Hightlights from './Highlights';
+import Learnings from './Learnings';
 import { useHighlights } from './context/HighlightsContext';
 import { useAcademicData } from './context/AcademicDataContext';
 import { useCodingData } from './context/CodingDataContext';
 import { usePersonalData } from './context/PersonalDataContext';
+import { useLearnings } from './context/LearningsContext';
+
 import { useSearchParams } from 'next/navigation';
+import { toast } from 'sonner';
+import Diary from './Diary';
+import { useDiary } from './context/DiaryContext';
 
 const AddSummaryPage = () => {
   const searchParams = useSearchParams();
   const date: string | null = searchParams.get('date');
 
   const { highlights, setHighlights } = useHighlights();
+  const { learnings, setLearnings } = useLearnings();
+  const { diaryContent, setDiaryContent } = useDiary();
   const { items: AcademicDataItems, setItems: setAcademicDataItems } =
     useAcademicData();
   const { items: CodingDataItems, setItems: setCodingDataItems } =
@@ -35,30 +43,53 @@ const AddSummaryPage = () => {
         }
 
         const data = await res.json();
+        console.log(data);
         if (data.length > 0) {
           const latest = data[data.length - 1];
           setHighlights(latest.highlights);
+          setLearnings(latest.learnings);
+          setDiaryContent(latest.diaryContent);
           setAcademicDataItems(latest.academicData);
           setCodingDataItems(latest.codingData);
           setPersonalDataItems(latest.personalData);
         }
       } catch (error) {
-        console.error('Failed to fetch data:', error);
+        toast.error(`Error fetching the data for ${formatDate(date)}.`, {
+          description: 'Please try again later.',
+          duration: 3000,
+        });
       }
     };
 
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        handleSubmit();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  });
+
   const handleSubmit = async () => {
     const data = {
       highlights,
+      learnings,
+      diaryContent,
       academicData: AcademicDataItems,
       codingData: CodingDataItems,
       personalData: PersonalDataItems,
     };
 
-    console.log('data', data);
+    console.log('🙏', data);
 
     try {
       const res = await fetch(`/api/summary?date=${date}`, {
@@ -74,30 +105,45 @@ const AddSummaryPage = () => {
       }
 
       const resData = await res.json();
-      alert(resData.message);
+      toast.success(`${resData.message} for ${formatDate(date)}`, {
+        duration: 3000,
+      });
     } catch (error) {
-      console.error('Failed to save data:', error);
+      toast.error(`Error Saving the data for ${formatDate(date)}.`, {
+        description: `Please try again later.`,
+        duration: 3000,
+      });
     }
   };
 
   return (
-    <div className="w-full">
-      <div className="font-semibold text-xl p-5 text-end">
-        {formatDate(date)}
-      </div>
-      <div className="w-full flex justify-between p-5 rounded-lg">
-        <div className="done min-h-[300px] flex flex-col gap-5 w-[30%]">
-          <AcademicData heading="Academics" />
-          <CodingData heading="Coding" />
-          <PersonalData heading="Personal" />
+    <div>
+      <div className="w-full flex justify-center items-center p-5 border bg-white border-b-[#e3e3e7] sticky top-0">
+        <div className="text-2xl font-bold w-1/4">Progress Path</div>
+        <div className="w-1/2 flex justify-center items-center">
+          {formatDate(date)}
         </div>
-        <div className="note w-[60%]">
-          <div className="w-full">
-            <Hightlights heading={'Highlights of the day'} />
+        <div className="w-1/4 flex justify-end ">profile</div>
+      </div>
+      <div className="w-full border-b border-b-[#e3e3e7]">
+        <div className="w-full flex rounded-lg">
+          <div className="done w-[25%] min-h-[300px] flex flex-col justify-between gap-5 p-5 border-r border-r-[#e3e3e7]">
+            <AcademicData heading="Academics" />
+            <CodingData heading="Coding" />
+            <PersonalData heading="Personal" />
+          </div>
+          <div className="w-[40%] p-5">
+            <div className="w-full h-full flex flex-col justify-between gap-5">
+              <Hightlights heading={'Highlights of the day'} />
+              <Learnings heading={'Learnings of the day'} />
+            </div>
+          </div>
+          <div className="w-[35%] p-5">
+            <Diary />
           </div>
         </div>
       </div>
-      <div className="submit mt-4">
+      <div className="submit mt-4 flex justify-center items-center">
         <Button onClick={handleSubmit}>Submit</Button>
       </div>
     </div>

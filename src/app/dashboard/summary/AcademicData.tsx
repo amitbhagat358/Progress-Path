@@ -37,7 +37,7 @@ const AcademicData: React.FC<AcademicDataProps> = ({ heading }) => {
   };
 
   const addItem = (index?: number) => {
-    const newDataItem = { id: Date.now(), name: '', checked: true };
+    const newDataItem = { id: Date.now(), name: '', checked: false };
     setItems((prevItems) => {
       const updatedData = [...prevItems];
       if (index !== undefined) {
@@ -58,7 +58,7 @@ const AcademicData: React.FC<AcademicDataProps> = ({ heading }) => {
   };
 
   return (
-    <div className="tasks w-full border border-[#e5e7eb] shadow-sm rounded-lg p-6">
+    <div className="tasks w-full border border-[#e3e3e7] shadow-sm rounded-lg p-6">
       <div className="flex justify-between items-center mb-4">
         <div className="font-semibold">{heading}</div>
         <Button
@@ -69,49 +69,51 @@ const AcademicData: React.FC<AcademicDataProps> = ({ heading }) => {
           <Plus />
         </Button>
       </div>
-      {items.map((item, index) => {
-        return (
-          <div
-            key={item.id}
-            className="flex items-center my-1 group hover:bg-gray-50 rounded pl-4"
+      {items.map((item, index) => (
+        <div
+          key={item.id}
+          className="flex items-center my-1 group hover:bg-gray-50 rounded pl-4"
+          onContextMenu={(e) => {
+            e.preventDefault();
+            toggleCheckbox(item.id);
+          }}
+        >
+          <Checkbox
+            id={`${item.id}`}
+            checked={item.checked}
+            onClick={() => toggleCheckbox(item.id)}
+          />
+          <Input
+            ref={(el) => {
+              if (editableInputRef.current) {
+                editableInputRef.current[item.id] = el;
+              }
+            }}
+            value={item.name}
+            onBlur={() => {
+              setEditableInputId(null);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                addItem(index);
+              }
+            }}
+            onClick={() => setEditableInputId(item.id)}
+            onChange={(e) => updateItem(item.id, e.target.value)}
+            className={`text-sm leading-none border-none focus-visible:ring-0 shadow-none ${
+              editableInputId !== item.id ? 'cursor-pointer' : ''
+            }`}
+          />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => removeItem(item.id)}
+            className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
           >
-            <Checkbox
-              id={`${item.id}`}
-              checked={item.checked}
-              onClick={() => toggleCheckbox(item.id)}
-            />
-            <Input
-              ref={(el) => {
-                if (editableInputRef.current) {
-                  editableInputRef.current[item.id] = el;
-                }
-              }}
-              value={item.name}
-              onBlur={() => {
-                setEditableInputId(null);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  addItem(index);
-                }
-              }}
-              onClick={() => setEditableInputId(item.id)}
-              onChange={(e) => updateItem(item.id, e.target.value)}
-              className={`text-sm leading-none border-none focus-visible:ring-0 shadow-none ${
-                editableInputId !== item.id ? 'cursor-pointer' : ''
-              }`}
-            />
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => removeItem(item.id)}
-              className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-            >
-              <Trash />
-            </Button>
-          </div>
-        );
-      })}
+            <Trash />
+          </Button>
+        </div>
+      ))}
     </div>
   );
 };

@@ -53,7 +53,7 @@ const Highlights: React.FC<HighlightsProps> = ({ heading }) => {
   }, [editableInputId]);
 
   return (
-    <div className="w-[50%] p-6 border border-[#e5e7eb] shadow-sm rounded-lg">
+    <div className="w-full p-6 border border-[#e3e3e7] shadow-sm rounded-lg">
       <div className="flex justify-between items-center">
         <div className="font-semibold">{heading}</div>
         <Button

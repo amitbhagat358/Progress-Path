@@ -4,6 +4,8 @@ import mongoose from 'mongoose';
 
 const SummarySchema = new mongoose.Schema({
   highlights: Array,
+  learnings: Array,
+  diaryContent: String,
   academicData: Array,
   codingData: Array,
   personalData: Array,
@@ -53,7 +55,7 @@ export async function GET(req: NextRequest) {
     date = formatDateToYYYYMMDD(new Date());
     return NextResponse.redirect(
       new URL(
-        `/dashboard/add-summary-for-today?date=${date}`,
+        `/dashboard/summary?date=${date}`,
         process.env.NEXT_PUBLIC_BASE_URL
       )
     );
@@ -86,28 +88,30 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { highlights, academicData, codingData, personalData } = body;
+
+    console.log(body, '🥳🥳');
 
     const summaryExists = await Summary.findOne({ date });
 
     if (summaryExists) {
       await Summary.updateOne(
         { date },
-        { $set: { highlights, academicData, codingData, personalData, date } }
+        {
+          $set: {
+            ...body,
+            date,
+          },
+        }
       );
       return NextResponse.json({ message: 'Data updated successfully' });
     }
 
     const newSummary = new Summary({
-      highlights,
-      academicData,
-      codingData,
-      personalData,
+      ...body,
       date,
     });
 
     await newSummary.save();
-
     return NextResponse.json({ message: 'Data saved successfully' });
   } catch (error) {
     console.error('Error saving data:', error);

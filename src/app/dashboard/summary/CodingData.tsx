@@ -37,7 +37,7 @@ const CodingData: React.FC<CodingDataProps> = ({ heading }) => {
   };
 
   const addItem = (index?: number) => {
-    const newDataItem = { id: Date.now(), name: '', checked: true };
+    const newDataItem = { id: Date.now(), name: '', checked: false };
     setItems((prevItems) => {
       const updatedData = [...prevItems];
       if (index !== undefined) {
@@ -58,7 +58,7 @@ const CodingData: React.FC<CodingDataProps> = ({ heading }) => {
   };
 
   return (
-    <div className="tasks w-full border border-[#e5e7eb] shadow-sm rounded-lg p-6">
+    <div className="tasks w-full border border-[#e3e3e7] shadow-sm rounded-lg p-6">
       <div className="flex justify-between items-center mb-4">
         <div className="font-semibold">{heading}</div>
         <Button
@@ -74,6 +74,10 @@ const CodingData: React.FC<CodingDataProps> = ({ heading }) => {
           <div
             key={item.id}
             className="flex items-center my-1 group hover:bg-gray-50 rounded pl-4"
+            onContextMenu={(e) => {
+              e.preventDefault();
+              toggleCheckbox(item.id);
+            }}
           >
             <Checkbox
               id={`${item.id}`}

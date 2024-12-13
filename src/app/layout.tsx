@@ -1,10 +1,12 @@
 import { Metadata } from 'next';
 import './globals.css';
-import { HighlightsProvider } from './dashboard/add-summary-for-today/context/HighlightsContext';
-import { AcademicDataProvider } from './dashboard/add-summary-for-today/context/AcademicDataContext';
-import { CodingDataProvider } from './dashboard/add-summary-for-today/context/CodingDataContext';
-import { PersonalDataProvider } from './dashboard/add-summary-for-today/context/PersonalDataContext';
+import { HighlightsProvider } from './dashboard/summary/context/HighlightsContext';
+import { AcademicDataProvider } from './dashboard/summary/context/AcademicDataContext';
+import { CodingDataProvider } from './dashboard/summary/context/CodingDataContext';
+import { PersonalDataProvider } from './dashboard/summary/context/PersonalDataContext';
 import { ThemeProvider } from '@/components/ui/theme-provider';
+import { LearningsProvider } from './dashboard/summary/context/LearningsContext';
+import { DiaryContextProvider } from './dashboard/summary/context/DiaryContext';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -22,16 +24,20 @@ export default function RootLayout({
         <CodingDataProvider>
           <PersonalDataProvider>
             <HighlightsProvider>
-              <body>
-                {/* <ThemeProvider
+              <LearningsProvider>
+                <DiaryContextProvider>
+                  <body>
+                    {/* <ThemeProvider
                   attribute="class"
                   // defaultTheme="system"
                   enableSystem
                   disableTransitionOnChange
                 > */}
-                {children}
-                {/* </ThemeProvider> */}
-              </body>
+                    {children}
+                    {/* </ThemeProvider> */}
+                  </body>
+                </DiaryContextProvider>
+              </LearningsProvider>
             </HighlightsProvider>
           </PersonalDataProvider>
         </CodingDataProvider>

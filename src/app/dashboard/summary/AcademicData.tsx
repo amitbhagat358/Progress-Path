@@ -44,7 +44,7 @@ const AcademicData: React.FC<AcademicDataProps> = ({
 
   const addItem = (index: number) => {
     setUnsavedChanges(true);
-    const newDataItem = { id: index + 1, name: '', checked: false };
+    const newDataItem = { id: Date.now(), name: '', checked: false };
     setItems((prevItems) => {
       const updatedData = [...prevItems];
       updatedData.splice(index + 1, 0, newDataItem);
@@ -104,7 +104,10 @@ const AcademicData: React.FC<AcademicDataProps> = ({
               if (item.name === '' && e.key === 'Backspace') {
                 e.preventDefault();
                 removeItem(item.id);
-                setEditableInputId(item.id > 0 ? item.id - 1 : null);
+                if (index > 0) {
+                  setEditableInputId(items[index - 1].id);
+                  editableInputRef.current[items[index - 1].id]?.focus();
+                }
               }
             }}
             onClick={() => setEditableInputId(item.id)}

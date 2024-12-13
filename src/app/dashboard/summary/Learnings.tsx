@@ -27,7 +27,7 @@ const Learnings: React.FC<LearningsProps> = ({
 
   const addLearning = (index: number) => {
     setUnsavedChanges(true);
-    const newLearning = { id: index + 1, text: '' };
+    const newLearning = { id: Date.now(), text: '' };
     setLearnings((prevLearnings) => {
       const updatedLearnings = [...prevLearnings];
       updatedLearnings.splice(index + 1, 0, newLearning);
@@ -100,7 +100,10 @@ const Learnings: React.FC<LearningsProps> = ({
                 if (learning.text === '' && e.key === 'Backspace') {
                   e.preventDefault();
                   removeLearning(learning.id);
-                  setEditableInputId(learning.id > 0 ? learning.id - 1 : null);
+                  if (index > 0) {
+                    setEditableInputId(learnings[index - 1].id);
+                    editableInputRef.current[learnings[index - 1].id]?.focus();
+                  }
                 }
               }}
               onClick={() => setEditableInputId(learning.id)}

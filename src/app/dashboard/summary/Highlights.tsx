@@ -27,7 +27,7 @@ const Highlights: React.FC<HighlightsProps> = ({
 
   const addHighlight = (index: number) => {
     setUnsavedChanges(true);
-    const newHighlight = { id: index + 1, text: '' };
+    const newHighlight = { id: Date.now(), text: '' };
     setHighlights((prevhighlights) => {
       const updatedhighlights = [...prevhighlights];
       updatedhighlights.splice(index + 1, 0, newHighlight);
@@ -100,9 +100,10 @@ const Highlights: React.FC<HighlightsProps> = ({
                 if (Highlight.text === '' && e.key === 'Backspace') {
                   e.preventDefault();
                   removeHighlight(Highlight.id);
-                  setEditableInputId(
-                    Highlight.id > 0 ? Highlight.id - 1 : null
-                  );
+                  if (index > 0) {
+                    setEditableInputId(highlights[index - 1].id);
+                    editableInputRef.current[highlights[index - 1].id]?.focus();
+                  }
                 }
               }}
               onClick={() => setEditableInputId(Highlight.id)}

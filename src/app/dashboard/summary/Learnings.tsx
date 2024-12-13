@@ -1,14 +1,24 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Plus, Trash } from 'lucide-react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useLearnings } from './context/LearningsContext';
 
 interface LearningsProps {
   heading: string;
+  setUnsavedChanges: Dispatch<SetStateAction<boolean>>;
 }
 
-const Learnings: React.FC<LearningsProps> = ({ heading }) => {
+const Learnings: React.FC<LearningsProps> = ({
+  heading,
+  setUnsavedChanges,
+}) => {
   const { learnings, setLearnings } = useLearnings();
   const [editableInputId, setEditableInputId] = useState<number | null>(null);
   const editableInputRef = useRef<{ [key: number]: HTMLInputElement | null }>(
@@ -16,6 +26,7 @@ const Learnings: React.FC<LearningsProps> = ({ heading }) => {
   );
 
   const addLearning = (index: number) => {
+    setUnsavedChanges(true);
     const newLearning = { id: index + 1, text: '' };
     setLearnings((prevLearnings) => {
       const updatedLearnings = [...prevLearnings];
@@ -26,6 +37,7 @@ const Learnings: React.FC<LearningsProps> = ({ heading }) => {
   };
 
   const updateLearning = (id: number, text: string) => {
+    setUnsavedChanges(true);
     setLearnings((prevLearnings) =>
       prevLearnings.map((learning) =>
         learning.id === id ? { ...learning, text } : learning
@@ -34,6 +46,7 @@ const Learnings: React.FC<LearningsProps> = ({ heading }) => {
   };
 
   const removeLearning = (id: number) => {
+    setUnsavedChanges(true);
     setLearnings((prevLearnings) =>
       prevLearnings.filter((learning) => learning.id !== id)
     );

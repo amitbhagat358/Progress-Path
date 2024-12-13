@@ -2,14 +2,18 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Plus, Trash } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { useAcademicData } from './context/AcademicDataContext';
 
 interface AcademicDataProps {
   heading: string;
+  setUnsavedChanges: Dispatch<SetStateAction<boolean>>;
 }
 
-const AcademicData: React.FC<AcademicDataProps> = ({ heading }) => {
+const AcademicData: React.FC<AcademicDataProps> = ({
+  heading,
+  setUnsavedChanges,
+}) => {
   const { items, setItems } = useAcademicData();
   const [editableInputId, setEditableInputId] = useState<number | null>(null);
   const editableInputRef = useRef<{ [key: number]: HTMLInputElement | null }>(
@@ -23,6 +27,7 @@ const AcademicData: React.FC<AcademicDataProps> = ({ heading }) => {
   }, [editableInputId]);
 
   const toggleCheckbox = (id: number) => {
+    setUnsavedChanges(true);
     setItems((prevData) =>
       prevData.map((item) =>
         item.id === id ? { ...item, checked: !item.checked } : item
@@ -31,12 +36,14 @@ const AcademicData: React.FC<AcademicDataProps> = ({ heading }) => {
   };
 
   const updateItem = (id: number, name: string) => {
+    setUnsavedChanges(true);
     setItems((prevItems) =>
       prevItems.map((item) => (item.id === id ? { ...item, name } : item))
     );
   };
 
   const addItem = (index: number) => {
+    setUnsavedChanges(true);
     const newDataItem = { id: index + 1, name: '', checked: false };
     setItems((prevItems) => {
       const updatedData = [...prevItems];
@@ -47,6 +54,7 @@ const AcademicData: React.FC<AcademicDataProps> = ({ heading }) => {
   };
 
   const removeItem = (id: number) => {
+    setUnsavedChanges(true);
     setItems((prevItems) => prevItems.filter((item) => item.id !== id));
     if (editableInputId === id) {
       setEditableInputId(null);

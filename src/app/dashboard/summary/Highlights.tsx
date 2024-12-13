@@ -1,14 +1,24 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Plus, Trash } from 'lucide-react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useHighlights } from './context/HighlightsContext';
 
 interface HighlightsProps {
   heading: string;
+  setUnsavedChanges: Dispatch<SetStateAction<boolean>>;
 }
 
-const Highlights: React.FC<HighlightsProps> = ({ heading }) => {
+const Highlights: React.FC<HighlightsProps> = ({
+  heading,
+  setUnsavedChanges,
+}) => {
   const { highlights, setHighlights } = useHighlights();
   const [editableInputId, setEditableInputId] = useState<number | null>(null);
   const editableInputRef = useRef<{ [key: number]: HTMLInputElement | null }>(
@@ -16,6 +26,7 @@ const Highlights: React.FC<HighlightsProps> = ({ heading }) => {
   );
 
   const addHighlight = (index: number) => {
+    setUnsavedChanges(true);
     const newHighlight = { id: index + 1, text: '' };
     setHighlights((prevhighlights) => {
       const updatedhighlights = [...prevhighlights];
@@ -26,6 +37,7 @@ const Highlights: React.FC<HighlightsProps> = ({ heading }) => {
   };
 
   const updateHighlight = (id: number, text: string) => {
+    setUnsavedChanges(true);
     setHighlights((prevhighlights) =>
       prevhighlights.map((Highlight) =>
         Highlight.id === id ? { ...Highlight, text } : Highlight
@@ -34,6 +46,7 @@ const Highlights: React.FC<HighlightsProps> = ({ heading }) => {
   };
 
   const removeHighlight = (id: number) => {
+    setUnsavedChanges(true);
     setHighlights((prevhighlights) =>
       prevhighlights.filter((Highlight) => Highlight.id !== id)
     );

@@ -1,6 +1,6 @@
 'use client';
-import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
 import { formatDate } from '@/lib/utils';
 import AcademicData from './AcademicData';
 import CodingData from './CodingData';
@@ -12,7 +12,6 @@ import { useAcademicData } from './context/AcademicDataContext';
 import { useCodingData } from './context/CodingDataContext';
 import { usePersonalData } from './context/PersonalDataContext';
 import { useLearnings } from './context/LearningsContext';
-
 import { useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import Diary from './Diary';
@@ -32,6 +31,8 @@ const AddSummaryPage = () => {
   const { items: PersonalDataItems, setItems: setPersonalDataItems } =
     usePersonalData();
 
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -43,7 +44,6 @@ const AddSummaryPage = () => {
         }
 
         const data = await res.json();
-        console.log(data);
         if (data.length > 0) {
           const latest = data[data.length - 1];
           setHighlights(latest.highlights);
@@ -79,6 +79,20 @@ const AddSummaryPage = () => {
     };
   });
 
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (unsavedChanges) {
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [unsavedChanges]);
+
   const handleSubmit = async () => {
     const data = {
       highlights,
@@ -88,8 +102,6 @@ const AddSummaryPage = () => {
       codingData: CodingDataItems,
       personalData: PersonalDataItems,
     };
-
-    console.log('🙏', data);
 
     try {
       const res = await fetch(`/api/summary?date=${date}`, {
@@ -108,6 +120,7 @@ const AddSummaryPage = () => {
       toast.success(`${resData.message} for ${formatDate(date)}`, {
         duration: 3000,
       });
+      setUnsavedChanges(false);
     } catch (error) {
       toast.error(`Error Saving the data for ${formatDate(date)}.`, {
         description: `Please try again later.`,
@@ -123,23 +136,43 @@ const AddSummaryPage = () => {
         <div className="w-1/2 flex justify-center items-center">
           {formatDate(date)}
         </div>
-        <div className="w-1/4 flex justify-end ">profile</div>
+        <div className="w-1/4 flex justify-end items-center gap-10">
+          {unsavedChanges && (
+            <span className="text-red-500 font-semibold">Unsaved Changes</span>
+          )}
+          <div>profile</div>
+        </div>
       </div>
       <div className="w-full border-b border-b-[#e3e3e7]">
         <div className="w-full flex rounded-lg">
           <div className="done w-[25%] min-h-[300px] flex flex-col justify-between gap-5 p-5 border-r border-r-[#e3e3e7]">
-            <AcademicData heading="Academics" />
-            <CodingData heading="Coding" />
-            <PersonalData heading="Personal" />
+            <AcademicData
+              heading="Academics"
+              setUnsavedChanges={setUnsavedChanges}
+            />
+            <CodingData
+              heading="Coding"
+              setUnsavedChanges={setUnsavedChanges}
+            />
+            <PersonalData
+              heading="Personal"
+              setUnsavedChanges={setUnsavedChanges}
+            />
           </div>
           <div className="w-[40%] p-5">
             <div className="w-full h-full flex flex-col justify-between gap-5">
-              <Hightlights heading={'Highlights of the day'} />
-              <Learnings heading={'Learnings of the day'} />
+              <Hightlights
+                heading={'Highlights of the day'}
+                setUnsavedChanges={setUnsavedChanges}
+              />
+              <Learnings
+                heading={'Learnings of the day'}
+                setUnsavedChanges={setUnsavedChanges}
+              />
             </div>
           </div>
           <div className="w-[35%] p-5">
-            <Diary />
+            <Diary setUnsavedChanges={setUnsavedChanges} />
           </div>
         </div>
       </div>

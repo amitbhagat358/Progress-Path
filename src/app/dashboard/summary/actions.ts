@@ -1,19 +1,16 @@
 'use server';
 
+import { redirect } from 'next/navigation';
 import { SummaryDataFromServer } from './interfaces';
+import { formatDateToYYYYMMDD, isValidDateFormat } from '@/lib/utils';
 
 export const fetchSummaryData = async (date: string) => {
+  if (!isValidDateFormat(date)) {
+    redirect(`/dashboard/summary/?date=${formatDateToYYYYMMDD(new Date())}`);
+  }
+
   try {
     const res = await fetch(`http://localhost:3000/api/summary?date=${date}`);
-
-    if (res.redirected) {
-      return { redirected: res.redirected, url: res.url };
-    }
-
-    if (!res.ok) {
-      throw new Error(`HTTP Error: ${res.status}`);
-    }
-
     const data = await res.json();
     return data;
   } catch (error) {

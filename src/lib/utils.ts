@@ -32,3 +32,29 @@ export const formatDate = (dateStr: string | null): string => {
 
   return `${day} ${month} ${year} (${dayOfWeek})`;
 };
+
+export const formatDateToYYYYMMDD = (date: Date | undefined) => {
+  if (!date) return '';
+  const d = date;
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+export const isValidDateFormat = (dateStr: string | null): boolean => {
+  if (!dateStr) {
+    return false;
+  }
+  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+  if (!dateRegex.test(dateStr)) {
+    return false;
+  }
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+  return (
+    date.getFullYear() === year &&
+    date.getMonth() === month - 1 &&
+    date.getDate() === day
+  );
+};

@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { formatDate } from '@/lib/utils';
+import { formatDate, isValidDateFormat } from '@/lib/utils';
 
 import AcademicData from './AcademicData';
 import CodingData from './CodingData';
@@ -38,7 +38,7 @@ const AddSummaryPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   const searchParams = useSearchParams();
-  const date: string | null = searchParams.get('date');
+  const date = searchParams.get('date');
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -76,36 +76,42 @@ const AddSummaryPage = () => {
     setPersonalDataItems(latest.personalData || []);
   };
 
+  const isDateCorrect = () => {
+    if (!isValidDateFormat(date)) {
+      toast.error('Please enter a valid date in YYYY-MM-DD format', {
+        duration: 3000,
+      });
+      return false;
+    }
+    return true;
+  };
+
   // get handler
   useEffect(() => {
-    if (!date) return;
     const fetchData = async () => {
       try {
         const res = await fetchSummaryData(date);
-
-        if (res.redirected) {
-          window.location.href = res.url;
-          return;
-        }
-
         if (res?.length > 0) {
           const latest: SummaryDataFromServer = res[res.length - 1];
           updateContextData(latest);
         }
-        setLoading(false);
       } catch (error) {
-        setLoading(false);
-        toast.error(`Error fetching the data for ${formatDate(date)}.`, {
-          description: 'Please try again later.',
+        toast.error(`Error fetching summary for ${date}.`, {
+          description: "Redirecting to today's summary",
           duration: 3000,
         });
       }
+      setLoading(false);
     };
     fetchData();
   }, [date]);
 
   //post handler
   const handleSubmit = async () => {
+    if (!isDateCorrect()) {
+      return;
+    }
+
     const data: SummaryDataFromServer = {
       highlights,
       learnings,
@@ -116,12 +122,13 @@ const AddSummaryPage = () => {
     };
 
     try {
-      const res = await postSummaryData(date, data);
-      toast.success(`${res.message} for ${formatDate(date)}`, {
+      await postSummaryData(date, data);
+      toast.success(`Summary data saved for ${formatDate(date)}`, {
         duration: 3000,
       });
       setUnsavedChanges(false);
     } catch (error) {
+      console.error('Error saving data:', error);
       toast.error(`Error Saving the data for ${formatDate(date)}.`, {
         description: `Please try again later.`,
         duration: 3000,

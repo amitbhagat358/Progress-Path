@@ -9,15 +9,11 @@ import React, {
   useState,
 } from 'react';
 import { useLearnings } from './context/LearningsContext';
+import { BulletPointType } from './interfaces';
 
 interface LearningsProps {
   heading: string;
   setUnsavedChanges: Dispatch<SetStateAction<boolean>>;
-}
-
-interface BulletPoint {
-  id: number;
-  text: string;
 }
 
 const Learnings: React.FC<LearningsProps> = ({
@@ -63,7 +59,7 @@ const Learnings: React.FC<LearningsProps> = ({
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
     index: number,
-    Highlight: BulletPoint
+    Highlight: BulletPointType
   ) => {
     if (e.key === 'ArrowUp') {
       if (index > 0) {

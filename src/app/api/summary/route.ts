@@ -54,10 +54,7 @@ export async function GET(req: NextRequest) {
   } else {
     date = formatDateToYYYYMMDD(new Date());
     return NextResponse.redirect(
-      new URL(
-        `/dashboard/summary?date=${date}`,
-        process.env.NEXT_PUBLIC_BASE_URL
-      )
+      new URL(`/dashboard/summary?date=${date}`, req.nextUrl)
     );
   }
 
@@ -88,8 +85,6 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-
-    console.log(body, '🥳🥳');
 
     const summaryExists = await Summary.findOne({ date });
 

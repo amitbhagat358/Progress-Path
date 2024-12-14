@@ -9,14 +9,11 @@ import React, {
   useState,
 } from 'react';
 import { useHighlights } from './context/HighlightsContext';
+import { BulletPointType } from './interfaces';
 
 interface HighlightsProps {
   heading: string;
   setUnsavedChanges: Dispatch<SetStateAction<boolean>>;
-}
-interface BulletPoint {
-  id: number;
-  text: string;
 }
 
 const Highlights: React.FC<HighlightsProps> = ({
@@ -68,7 +65,7 @@ const Highlights: React.FC<HighlightsProps> = ({
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
     index: number,
-    Highlight: BulletPoint
+    Highlight: BulletPointType
   ) => {
     if (e.key === 'ArrowUp') {
       if (index > 0) {

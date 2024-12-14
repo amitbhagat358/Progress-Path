@@ -4,16 +4,11 @@ import { Input } from '@/components/ui/input';
 import { Plus, Trash } from 'lucide-react';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { useAcademicData } from './context/AcademicDataContext';
+import { CheckboxType } from './interfaces';
 
 interface AcademicDataProps {
   heading: string;
   setUnsavedChanges: Dispatch<SetStateAction<boolean>>;
-}
-
-interface Checkbox {
-  id: number;
-  name: string;
-  checked: boolean;
 }
 
 const AcademicData: React.FC<AcademicDataProps> = ({
@@ -70,7 +65,7 @@ const AcademicData: React.FC<AcademicDataProps> = ({
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
     index: number,
-    item: Checkbox
+    item: CheckboxType
   ) => {
     if (e.key === 'ArrowUp') {
       if (index > 0) {

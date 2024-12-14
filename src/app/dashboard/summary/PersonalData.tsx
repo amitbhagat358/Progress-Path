@@ -3,17 +3,12 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Plus, Trash } from 'lucide-react';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
-import { usePersonalData } from './context/PersonalDataContext'; // Assuming this context exists
+import { usePersonalData } from './context/PersonalDataContext';
+import { CheckboxType } from './interfaces';
 
 interface PersonalDataProps {
   heading: string;
   setUnsavedChanges: Dispatch<SetStateAction<boolean>>;
-}
-
-interface Checkbox {
-  id: number;
-  name: string;
-  checked: boolean;
 }
 
 const PersonalData: React.FC<PersonalDataProps> = ({
@@ -70,7 +65,7 @@ const PersonalData: React.FC<PersonalDataProps> = ({
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
     index: number,
-    item: Checkbox
+    item: CheckboxType
   ) => {
     if (e.key === 'ArrowUp') {
       if (index > 0) {

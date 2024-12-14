@@ -6,15 +6,11 @@ import { Plus, Trash } from 'lucide-react';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { useCodingData } from './context/CodingDataContext';
 
+import { CheckboxType } from './interfaces';
+
 interface CodingDataProps {
   heading: string;
   setUnsavedChanges: Dispatch<SetStateAction<boolean>>;
-}
-
-interface Checkbox {
-  id: number;
-  name: string;
-  checked: boolean;
 }
 
 const CodingData: React.FC<CodingDataProps> = ({
@@ -71,7 +67,7 @@ const CodingData: React.FC<CodingDataProps> = ({
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
     index: number,
-    item: Checkbox
+    item: CheckboxType
   ) => {
     if (e.key === 'ArrowUp') {
       if (index > 0) {

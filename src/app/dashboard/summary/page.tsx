@@ -2,26 +2,29 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { formatDate } from '@/lib/utils';
+
 import AcademicData from './AcademicData';
 import CodingData from './CodingData';
 import PersonalData from './PersonalData';
 import Hightlights from './Highlights';
 import Learnings from './Learnings';
+import Diary from './Diary';
+
 import { useHighlights } from './context/HighlightsContext';
 import { useAcademicData } from './context/AcademicDataContext';
 import { useCodingData } from './context/CodingDataContext';
 import { usePersonalData } from './context/PersonalDataContext';
 import { useLearnings } from './context/LearningsContext';
 import { useSearchParams } from 'next/navigation';
-import { toast } from 'sonner';
-import Diary from './Diary';
 import { useDiary } from './context/DiaryContext';
+
+import { toast } from 'sonner';
 import Loading from './loading';
 
-const AddSummaryPage = () => {
-  const searchParams = useSearchParams();
-  const date: string | null = searchParams.get('date');
+import { fetchSummaryData, postSummaryData } from './actions';
+import { SummaryDataFromServer } from './interfaces';
 
+const AddSummaryPage = () => {
   const { highlights, setHighlights } = useHighlights();
   const { learnings, setLearnings } = useLearnings();
   const { diaryContent, setDiaryContent } = useDiary();
@@ -31,41 +34,11 @@ const AddSummaryPage = () => {
     useCodingData();
   const { items: PersonalDataItems, setItems: setPersonalDataItems } =
     usePersonalData();
-
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch(`/api/summary?date=${date}`);
-
-        if (res.redirected) {
-          window.location.href = res.url;
-          return;
-        }
-
-        const data = await res.json();
-        if (data.length > 0) {
-          const latest = data[data.length - 1];
-          setHighlights(latest.highlights);
-          setLearnings(latest.learnings);
-          setDiaryContent(latest.diaryContent);
-          setAcademicDataItems(latest.academicData);
-          setCodingDataItems(latest.codingData);
-          setPersonalDataItems(latest.personalData);
-        }
-        setLoading(false);
-      } catch (error) {
-        toast.error(`Error fetching the data for ${formatDate(date)}.`, {
-          description: 'Please try again later.',
-          duration: 3000,
-        });
-      }
-    };
-
-    fetchData();
-  }, []);
+  const searchParams = useSearchParams();
+  const date: string | null = searchParams.get('date');
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -88,16 +61,52 @@ const AddSummaryPage = () => {
         e.preventDefault();
       }
     };
-
     window.addEventListener('beforeunload', handleBeforeUnload);
-
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [unsavedChanges]);
 
+  const updateContextData = (latest: SummaryDataFromServer) => {
+    setHighlights(latest.highlights);
+    setLearnings(latest.learnings);
+    setDiaryContent(latest.diaryContent);
+    setAcademicDataItems(latest.academicData || []);
+    setCodingDataItems(latest.codingData || []);
+    setPersonalDataItems(latest.personalData || []);
+  };
+
+  // get handler
+  useEffect(() => {
+    if (!date) return;
+    const fetchData = async () => {
+      try {
+        const res = await fetchSummaryData(date);
+
+        if (res.redirected) {
+          window.location.href = res.url;
+          return;
+        }
+
+        if (res?.length > 0) {
+          const latest: SummaryDataFromServer = res[res.length - 1];
+          updateContextData(latest);
+        }
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        toast.error(`Error fetching the data for ${formatDate(date)}.`, {
+          description: 'Please try again later.',
+          duration: 3000,
+        });
+      }
+    };
+    fetchData();
+  }, [date]);
+
+  //post handler
   const handleSubmit = async () => {
-    const data = {
+    const data: SummaryDataFromServer = {
       highlights,
       learnings,
       diaryContent,
@@ -107,20 +116,8 @@ const AddSummaryPage = () => {
     };
 
     try {
-      const res = await fetch(`/api/summary?date=${date}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!res.ok) {
-        throw new Error('Failed to save data');
-      }
-
-      const resData = await res.json();
-      toast.success(`${resData.message} for ${formatDate(date)}`, {
+      const res = await postSummaryData(date, data);
+      toast.success(`${res.message} for ${formatDate(date)}`, {
         duration: 3000,
       });
       setUnsavedChanges(false);
@@ -152,7 +149,8 @@ const AddSummaryPage = () => {
       </div>
       <div className="w-full border-b border-b-[#e3e3e7]">
         <div className="w-full flex rounded-lg">
-          <div className="done w-[25%] min-h-[300px] flex flex-col justify-between gap-5 p-5 border-r border-r-[#e3e3e7]">
+          <div className="done w-[25%] min-h-[300px] flex flex-col justify-start gap-5 p-5">
+            <div className="font-semibold text-xl text-center">Checklist</div>
             <AcademicData
               heading="Academics"
               setUnsavedChanges={setUnsavedChanges}
@@ -168,17 +166,21 @@ const AddSummaryPage = () => {
           </div>
           <div className="w-[40%] p-5">
             <div className="w-full h-full flex flex-col justify-start gap-5">
+              <div className="font-semibold text-xl text-center">
+                Daily Reflection
+              </div>
               <Hightlights
-                heading={'Highlights of the day'}
+                heading={'What did I achieve today?'}
                 setUnsavedChanges={setUnsavedChanges}
               />
               <Learnings
-                heading={'Learnings of the day'}
+                heading={'What did I learn today?'}
                 setUnsavedChanges={setUnsavedChanges}
               />
             </div>
           </div>
           <div className="w-[35%] p-5">
+            <div className="font-semibold text-xl text-center">Diary</div>
             <Diary setUnsavedChanges={setUnsavedChanges} />
           </div>
         </div>

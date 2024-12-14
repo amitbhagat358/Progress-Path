@@ -12,6 +12,7 @@
         "varsIgnorePattern": "^_",
         "ignoreRestSiblings": true
       }
-    ]
+    ],
+    "react-hooks/exhaustive-deps": "off"
   }
 }

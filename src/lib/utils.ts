@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const formatDate = (dateStr: string | null): string => {
+export const formatDateToStandard = (dateStr: string | null): string => {
   if (dateStr === null) {
     return '';
   }

@@ -31,6 +31,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid date' }, { status: 400 });
   }
 
+  //@ts-expect-error handled in isValidDateFormat
   const date = new Date(dateFromUrl).toISOString();
   try {
     const summaries = await Summary.find({ date });
@@ -55,6 +56,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid date' }, { status: 400 });
   }
 
+  //@ts-expect-error handled in isValidDateFormat
   const date = new Date(dateFromUrl).toISOString();
   try {
     const body = await req.json();

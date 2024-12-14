@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { formatDate, isValidDateFormat } from '@/lib/utils';
+import { formatDateToStandard, isValidDateFormat } from '@/lib/utils';
 
 import AcademicData from './AcademicData';
 import CodingData from './CodingData';
@@ -15,7 +15,6 @@ import { useAcademicData } from './context/AcademicDataContext';
 import { useCodingData } from './context/CodingDataContext';
 import { usePersonalData } from './context/PersonalDataContext';
 import { useLearnings } from './context/LearningsContext';
-import { useSearchParams } from 'next/navigation';
 import { useDiary } from './context/DiaryContext';
 
 import { toast } from 'sonner';
@@ -24,7 +23,7 @@ import Loading from './loading';
 import { fetchSummaryData, postSummaryData } from './actions';
 import { SummaryDataFromServer } from './interfaces';
 
-const AddSummaryPage = () => {
+const SummaryPage = ({ date }: { date: string }) => {
   const { highlights, setHighlights } = useHighlights();
   const { learnings, setLearnings } = useLearnings();
   const { diaryContent, setDiaryContent } = useDiary();
@@ -37,9 +36,6 @@ const AddSummaryPage = () => {
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const searchParams = useSearchParams();
-  const date = searchParams.get('date');
-
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.key === 's') {
@@ -47,9 +43,7 @@ const AddSummaryPage = () => {
         handleSubmit();
       }
     };
-
     window.addEventListener('keydown', handleKeyDown);
-
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
@@ -79,7 +73,7 @@ const AddSummaryPage = () => {
   const isDateCorrect = () => {
     if (!isValidDateFormat(date)) {
       toast.error('Please enter a valid date in YYYY-MM-DD format', {
-        duration: 3000,
+        duration: 4000,
       });
       return false;
     }
@@ -91,14 +85,11 @@ const AddSummaryPage = () => {
     const fetchData = async () => {
       try {
         const res = await fetchSummaryData(date);
-        if (res?.length > 0) {
-          const latest: SummaryDataFromServer = res[res.length - 1];
-          updateContextData(latest);
-        }
+        res && res.length > 0 ? updateContextData(res[0]) : null;
       } catch (error) {
         toast.error(`Error fetching summary for ${date}.`, {
           description: "Redirecting to today's summary",
-          duration: 3000,
+          duration: 4000,
         });
       }
       setLoading(false);
@@ -111,7 +102,6 @@ const AddSummaryPage = () => {
     if (!isDateCorrect()) {
       return;
     }
-
     const data: SummaryDataFromServer = {
       highlights,
       learnings,
@@ -122,15 +112,12 @@ const AddSummaryPage = () => {
     };
 
     try {
-      await postSummaryData(date, data);
-      toast.success(`Summary data saved for ${formatDate(date)}`, {
-        duration: 3000,
-      });
+      const res = await postSummaryData(date, data);
+      toast.success(`${res.message}`, { duration: 3000 });
       setUnsavedChanges(false);
     } catch (error) {
-      console.error('Error saving data:', error);
-      toast.error(`Error Saving the data for ${formatDate(date)}.`, {
-        description: `Please try again later.`,
+      toast.error('An unexpected error occurred.', {
+        description: 'Please try again later.',
         duration: 3000,
       });
     }
@@ -145,7 +132,7 @@ const AddSummaryPage = () => {
       <div className="w-full flex justify-center items-center p-5 border bg-white border-b-[#e3e3e7] sticky top-0">
         <div className="text-2xl font-bold w-1/4">Progress Path</div>
         <div className="w-1/2 flex justify-center items-center">
-          {formatDate(date)}
+          {formatDateToStandard(date)}
         </div>
         <div className="w-1/4 flex justify-end items-center gap-10">
           {unsavedChanges && (
@@ -199,4 +186,4 @@ const AddSummaryPage = () => {
   );
 };
 
-export default AddSummaryPage;
+export default SummaryPage;

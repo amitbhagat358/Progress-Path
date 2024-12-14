@@ -1,12 +1,12 @@
 import { Metadata } from 'next';
 import './globals.css';
-import { HighlightsProvider } from './dashboard/summary/context/HighlightsContext';
-import { AcademicDataProvider } from './dashboard/summary/context/AcademicDataContext';
-import { CodingDataProvider } from './dashboard/summary/context/CodingDataContext';
-import { PersonalDataProvider } from './dashboard/summary/context/PersonalDataContext';
+import { HighlightsProvider } from '@/app/dashboard/summary/[date]/context/HighlightsContext';
+import { AcademicDataProvider } from './dashboard/summary/[date]/context/AcademicDataContext';
+import { CodingDataProvider } from './dashboard/summary/[date]/context/CodingDataContext';
+import { PersonalDataProvider } from './dashboard/summary/[date]/context/PersonalDataContext';
 import { ThemeProvider } from '@/components/ui/theme-provider';
-import { LearningsProvider } from './dashboard/summary/context/LearningsContext';
-import { DiaryContextProvider } from './dashboard/summary/context/DiaryContext';
+import { LearningsProvider } from './dashboard/summary/[date]/context/LearningsContext';
+import { DiaryContextProvider } from './dashboard/summary/[date]/context/DiaryContext';
 
 export const metadata: Metadata = {
   title: 'Create Next App',

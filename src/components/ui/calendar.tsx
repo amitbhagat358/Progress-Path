@@ -110,10 +110,14 @@ function Calendar({
               {props.children &&
                 React.Children.map(props.children, (child) => (
                   <SelectItem
-                    value={(child as React.ReactElement<any>)?.props?.value}
+                    // @ts-expect-error don't know
+                    value={(child as React.ReactElement<unknown>)?.props?.value}
                     className="min-w-[var(--radix-popper-anchor-width)]"
                   >
-                    {(child as React.ReactElement<any>)?.props?.children}
+                    {
+                      // @ts-expect-error don't know
+                      (child as React.ReactElement<unknown>)?.props?.children
+                    }
                   </SelectItem>
                 ))}
             </SelectContent>

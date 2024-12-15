@@ -1,7 +1,11 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { formatDateToStandard, isValidDateFormat } from '@/lib/utils';
+import {
+  formatDateToStandard,
+  formatDateToYYYYMMDD,
+  isValidDateFormat,
+} from '@/lib/utils';
 
 import AcademicData from './AcademicData';
 import CodingData from './CodingData';
@@ -71,10 +75,13 @@ const SummaryPage = ({ date }: { date: string }) => {
   };
 
   const isDateCorrect = () => {
-    if (!isValidDateFormat(date)) {
-      toast.error('Please enter a valid date in YYYY-MM-DD format', {
-        duration: 4000,
-      });
+    if (date !== 'today' && !isValidDateFormat(date)) {
+      toast.error(
+        'Please enter a valid date in YYYY-MM-DD format or enter today',
+        {
+          duration: 4000,
+        }
+      );
       return false;
     }
     return true;
@@ -85,7 +92,10 @@ const SummaryPage = ({ date }: { date: string }) => {
     const fetchData = async () => {
       try {
         const res = await fetchSummaryData(date);
-        res && res.length > 0 ? updateContextData(res[0]) : null;
+        if (res && res.length > 0) {
+          updateContextData(res[0]);
+        }
+        // res && res.length > 0 ? updateContextData(res[0]) : null;
       } catch (error) {
         toast.error(`Error fetching summary for ${date}.`, {
           description: "Redirecting to today's summary",
@@ -132,7 +142,11 @@ const SummaryPage = ({ date }: { date: string }) => {
       <div className="w-full flex justify-center items-center p-5 border bg-white border-b-[#e3e3e7] sticky top-0">
         <div className="text-2xl font-bold w-1/4">Progress Path</div>
         <div className="w-1/2 flex justify-center items-center">
-          {formatDateToStandard(date)}
+          {formatDateToStandard(
+            date === 'today'
+              ? formatDateToYYYYMMDD(new Date())
+              : formatDateToYYYYMMDD(new Date(date))
+          )}
         </div>
         <div className="w-1/4 flex justify-end items-center gap-10">
           {unsavedChanges && (

@@ -26,13 +26,13 @@ const GetSummary = () => {
         toYear={2026}
         selected={date}
         onSelect={(selectedDate) => {
-          console.log('Selected Date:', selectedDate); // Debugging log
-          setDate(selectedDate || undefined); // Ensure `undefined` is handled
+          console.log('Selected Date:', selectedDate);
+          setDate(selectedDate || undefined);
         }}
         className="rounded-md border"
       />
       <Link
-        href={`/dashboard/summary?date=${formatDateToYYYYMMDD(date)}`}
+        href={`/dashboard/summary/${formatDateToYYYYMMDD(date)}`}
         prefetch={true}
       >
         <Button>Click me</Button>

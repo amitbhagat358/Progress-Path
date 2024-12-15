@@ -15,6 +15,10 @@ const AcademicData: React.FC<AcademicDataProps> = ({
   heading,
   setUnsavedChanges,
 }) => {
+  setTimeout(() => {
+    console.log('hi there');
+  }, 5000);
+
   const { items, setItems } = useAcademicData();
   const [editableInputId, setEditableInputId] = useState<number | null>(null);
   const editableInputRef = useRef<{ [key: number]: HTMLInputElement | null }>(

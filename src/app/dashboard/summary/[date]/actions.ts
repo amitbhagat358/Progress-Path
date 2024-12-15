@@ -31,12 +31,15 @@ const Summary =
 export const fetchSummaryData = async (
   dateFromUrl: string
 ): Promise<SummaryDataFromServer[] | null> => {
-  if (!isValidDateFormat(dateFromUrl)) {
+  if (dateFromUrl !== 'today' && !isValidDateFormat(dateFromUrl)) {
     redirect(`/dashboard/summary/${formatDateToYYYYMMDD(new Date())}`);
   }
 
   try {
     await connectToDatabase();
+    if (dateFromUrl === 'today') {
+      dateFromUrl = formatDateToYYYYMMDD(new Date());
+    }
     const date = new Date(dateFromUrl).toISOString();
     const summaries = await Summary.find({ date })
       .lean()
@@ -56,6 +59,10 @@ export const postSummaryData = async (
 ) => {
   try {
     await connectToDatabase();
+
+    if (dateFromUrl === 'today') {
+      dateFromUrl = formatDateToYYYYMMDD(new Date());
+    }
 
     if (!isValidDateFormat(dateFromUrl)) {
       throw new Error('Invalid date format');

@@ -1,10 +1,9 @@
 import { Metadata } from 'next';
 import '../globals.css';
-import { Toaster } from 'sonner';
 
 export const metadata: Metadata = {
-  title: 'Dashboard',
-  description: 'Dashboard for the application',
+  title: 'Login | Progress Path',
+  description: 'Login page for Progress Path',
 };
 
 export default async function RootLayout({

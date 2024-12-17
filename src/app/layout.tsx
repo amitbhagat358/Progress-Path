@@ -7,6 +7,7 @@ import { PersonalDataProvider } from './dashboard/summary/[date]/context/Persona
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import { LearningsProvider } from './dashboard/summary/[date]/context/LearningsContext';
 import { DiaryContextProvider } from './dashboard/summary/[date]/context/DiaryContext';
+import { Toaster } from 'sonner';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -34,6 +35,7 @@ export default function RootLayout({
                   disableTransitionOnChange
                 > */}
                     {children}
+                    <Toaster position="top-center" />
                     {/* </ThemeProvider> */}
                   </body>
                 </DiaryContextProvider>

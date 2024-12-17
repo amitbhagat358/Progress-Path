@@ -1,5 +1,5 @@
 import { Input } from '@/components/ui/input';
-import { fetchTasks, addProduct } from './taskActions';
+import { fetchTasks, addTask } from './taskActions';
 import { Button } from '@/components/ui/button';
 
 interface TaskType {
@@ -17,13 +17,13 @@ const Tasks = async () => {
       <div className="w-full flex justify-center text-2xl font-semibold ">
         Tasks
       </div>
-      <form action={addProduct}>
-        <Input name="name" type="text"></Input>
+      <form action={addTask}>
+        <Input name="task" type="text" autoComplete="off"></Input>
         <Button type="submit">Add task</Button>
       </form>
 
       {tasks?.map((task) => {
-        return <div key={task.id}>{task.name}</div>;
+        return <div key={task.id}>{task.task}</div>;
       })}
     </div>
   );

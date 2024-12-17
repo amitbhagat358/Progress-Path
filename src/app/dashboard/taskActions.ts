@@ -2,6 +2,7 @@
 
 import { connectToDatabase } from '@/lib/mongodb';
 import mongoose from 'mongoose';
+import { revalidatePath } from 'next/cache';
 
 const TasksSchema = new mongoose.Schema({
   id: {
@@ -9,7 +10,7 @@ const TasksSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  name: {
+  task: {
     type: String,
     required: true,
   },
@@ -36,17 +37,17 @@ export const fetchTasks = async () => {
   }
 };
 
-export const addProduct = async (formData: FormData) => {
+export const addTask = async (formData: FormData) => {
   try {
     await connectToDatabase();
-    console.log(formData.get('name'), '⭐⭐⭐');
     const newTask = new Tasks({
       id: Date.now(),
-      name: formData.get('name') as string,
+      task: formData.get('task') as string,
       completed: false,
       deadline: new Date(),
     });
     await newTask.save();
+    revalidatePath('/dashboard');
     return;
   } catch (error) {
     console.error('Error adding product:', error);

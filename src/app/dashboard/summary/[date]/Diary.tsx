@@ -37,7 +37,7 @@ const Diary: React.FC<DiaryProps> = ({ setUnsavedChanges }) => {
       <div>
         {editable && <div>Preview</div>}
         <div
-          className="prose border border-[#e3e3e7] p-3 rounded-lg min-h-[100px]"
+          className="prose border border-[#e3e3e7] p-3 rounded-lg min-h-[100px] overflow-auto"
           dangerouslySetInnerHTML={{ __html: convertToHtml(diaryContent) }}
         ></div>
         <div className="flex justify-end">

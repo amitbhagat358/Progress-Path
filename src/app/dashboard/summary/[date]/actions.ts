@@ -10,8 +10,14 @@ import {
 
 import { connectToDatabase } from '@/lib/mongodb';
 import mongoose from 'mongoose';
+import { cookies } from 'next/headers';
 
 const SummarySchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
   highlights: Array,
   learnings: Array,
   diaryContent: String,
@@ -21,7 +27,6 @@ const SummarySchema = new mongoose.Schema({
   date: {
     type: String,
     required: true,
-    unique: true,
   },
 });
 
@@ -36,15 +41,21 @@ export const fetchSummaryData = async (
   }
 
   try {
-    await connectToDatabase();
     if (dateFromUrl === 'today') {
       dateFromUrl = formatDateToYYYYMMDD(new Date());
     }
+
     const date = new Date(dateFromUrl).toISOString();
-    const summaries = await Summary.find({ date })
+    await connectToDatabase();
+
+    const cookieStore = await cookies();
+    const userId = cookieStore.get('userId')?.value;
+
+    const summaries = await Summary.find({ userId, date })
       .lean()
-      .select('-_id -__v -date')
+      .select('-_id -__v -date -userId')
       .exec();
+
     //@ts-expect-error handled type correctly
     return summaries;
   } catch (error) {
@@ -58,8 +69,6 @@ export const postSummaryData = async (
   data: SummaryDataFromServer
 ) => {
   try {
-    await connectToDatabase();
-
     if (dateFromUrl === 'today') {
       dateFromUrl = formatDateToYYYYMMDD(new Date());
     }
@@ -69,15 +78,21 @@ export const postSummaryData = async (
     }
 
     const date = new Date(dateFromUrl).toISOString();
-    const summaryExists = await Summary.findOne({ date });
+
+    const cookieStore = await cookies();
+    const userId = cookieStore.get('userId')?.value;
+
+    await connectToDatabase();
+    const summaryExists = await Summary.findOne({ userId, date });
 
     if (summaryExists) {
       await Summary.updateOne(
-        { date },
+        { date, userId },
         {
           $set: {
             ...data,
             date,
+            userId,
           },
         }
       );
@@ -88,6 +103,7 @@ export const postSummaryData = async (
     const newSummary = new Summary({
       ...data,
       date,
+      userId,
     });
     await newSummary.save();
     return {

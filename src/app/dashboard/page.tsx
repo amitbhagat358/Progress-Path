@@ -1,7 +1,7 @@
 import CalendarForSummary from './CalendarForSummary';
 import Tasks from './Tasks';
 
-const AddSummaryButton = () => {
+const TasksPage = () => {
   return (
     <div className="w-full">
       <div className="w-full flex justify-center items-center p-5 border bg-white border-b-[#e3e3e7] sticky top-0">
@@ -18,4 +18,4 @@ const AddSummaryButton = () => {
   );
 };
 
-export default AddSummaryButton;
+export default TasksPage;

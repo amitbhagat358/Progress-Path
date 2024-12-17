@@ -112,6 +112,12 @@ const SummaryPage = ({ date }: { date: string }) => {
     if (!isDateCorrect()) {
       return;
     }
+
+    if (!unsavedChanges) {
+      toast.success('Already saved the data', { duration: 3000 });
+      return;
+    }
+
     const data: SummaryDataFromServer = {
       highlights,
       learnings,

@@ -7,6 +7,7 @@ import { PersonalDataProvider } from './dashboard/summary/[date]/context/Persona
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import { LearningsProvider } from './dashboard/summary/[date]/context/LearningsContext';
 import { DiaryContextProvider } from './dashboard/summary/[date]/context/DiaryContext';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Toaster } from 'sonner';
 
 export const metadata: Metadata = {
@@ -36,6 +37,7 @@ export default function RootLayout({
                 > */}
                     {children}
                     <Toaster position="top-center" />
+                    <SpeedInsights />
                     {/* </ThemeProvider> */}
                   </body>
                 </DiaryContextProvider>

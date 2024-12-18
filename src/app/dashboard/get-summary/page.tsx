@@ -18,7 +18,6 @@ const GetSummary = () => {
         toYear={2026}
         selected={date}
         onSelect={(selectedDate) => {
-          console.log('Selected Date:', selectedDate);
           setDate(selectedDate || undefined);
         }}
         className="rounded-md border"

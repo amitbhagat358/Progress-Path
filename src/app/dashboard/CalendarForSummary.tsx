@@ -19,7 +19,6 @@ const CalendarForSummary = () => {
           toYear={2026}
           selected={date}
           onSelect={(selectedDate) => {
-            console.log('Selected Date:', selectedDate);
             setDate(selectedDate || undefined);
           }}
           className="border border-[#e3e3e7] rounded-lg"

@@ -11,6 +11,7 @@ import {
 import { connectToDatabase } from '@/lib/mongodb';
 import mongoose from 'mongoose';
 import { cookies } from 'next/headers';
+import { decrypt } from '@/lib/sessions';
 
 const SummarySchema = new mongoose.Schema({
   userId: {
@@ -46,11 +47,13 @@ export const fetchSummaryData = async (
     }
 
     const date = new Date(dateFromUrl).toISOString();
-    await connectToDatabase();
 
     const cookieStore = await cookies();
-    const userId = cookieStore.get('userId')?.value;
+    const session = cookieStore.get('session')?.value;
+    const sessionData = session ? await decrypt(session) : null;
+    const userId = sessionData?.userId;
 
+    await connectToDatabase();
     const summaries = await Summary.find({ userId, date })
       .lean()
       .select('-_id -__v -date -userId')
@@ -80,7 +83,9 @@ export const postSummaryData = async (
     const date = new Date(dateFromUrl).toISOString();
 
     const cookieStore = await cookies();
-    const userId = cookieStore.get('userId')?.value;
+    const session = cookieStore.get('session')?.value;
+    const sessionData = session ? await decrypt(session) : null;
+    const userId = sessionData?.userId;
 
     await connectToDatabase();
     const summaryExists = await Summary.findOne({ userId, date });

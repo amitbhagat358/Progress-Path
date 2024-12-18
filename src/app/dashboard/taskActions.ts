@@ -1,6 +1,7 @@
 'use server';
 
 import { connectToDatabase } from '@/lib/mongodb';
+import { decrypt } from '@/lib/sessions';
 import mongoose from 'mongoose';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
@@ -34,7 +35,9 @@ const Tasks = mongoose.models.Tasks || mongoose.model('Tasks', TasksSchema);
 export const fetchTasks = async () => {
   try {
     const cookieStore = await cookies();
-    const userId = cookieStore.get('userId')?.value;
+    const session = cookieStore.get('session')?.value;
+    const sessionData = session ? await decrypt(session) : null;
+    const userId = sessionData?.userId;
 
     await connectToDatabase();
     const tasks = await Tasks.find({ userId })
@@ -51,9 +54,9 @@ export const fetchTasks = async () => {
 export const addTask = async (formData: FormData) => {
   try {
     const cookieStore = await cookies();
-    const userId = cookieStore.get('userId')?.value;
-
-    console.log(userId, 'userId');
+    const session = cookieStore.get('session')?.value;
+    const sessionData = session ? await decrypt(session) : null;
+    const userId = sessionData?.userId;
 
     await connectToDatabase();
     const newTask = new Tasks({
@@ -63,7 +66,6 @@ export const addTask = async (formData: FormData) => {
       completed: false,
       deadline: new Date(),
     });
-    console.log(newTask);
 
     await newTask.save();
     revalidatePath('/dashboard');

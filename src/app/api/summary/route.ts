@@ -22,7 +22,6 @@ const Summary =
 
 export async function GET(req: NextRequest) {
   await connectToDatabase();
-  console.log('Database connected.');
 
   const searchParams = req.nextUrl.searchParams;
   const dateFromUrl = searchParams.get('date');
@@ -47,7 +46,6 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   await connectToDatabase();
-  console.log('Database connected.');
 
   const searchParams = req.nextUrl.searchParams;
   const dateFromUrl = searchParams.get('date');

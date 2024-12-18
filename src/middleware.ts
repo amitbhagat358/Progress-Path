@@ -13,16 +13,10 @@ export default async function middleware(req: NextRequest) {
   const isPublicRoute = publicRoutes.includes(path);
 
   const cookie = (await cookies()).get('session')?.value;
-
-  console.log('Middleware Cookie:', cookie);
-
   const session = await decrypt(cookie);
-
-  console.log('session ❤️', session);
 
   // Redirect to /login if the user is not authenticated
   if (isProtectedRoute && !session?.userId) {
-    console.log('redirecting to login ❤️❤️');
     return NextResponse.redirect(new URL('/login', req.nextUrl));
   }
 
@@ -32,7 +26,6 @@ export default async function middleware(req: NextRequest) {
     session?.userId &&
     !req.nextUrl.pathname.startsWith('/dashboard')
   ) {
-    console.log('redirecting to dashboard ❤️❤️❤️');
     return NextResponse.redirect(new URL('/dashboard', req.nextUrl));
   }
 

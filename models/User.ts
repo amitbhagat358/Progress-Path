@@ -12,7 +12,6 @@ interface IUser extends Document {
 // Create the User model with a function that checks if it already exists to prevent re-compiling in development
 const createUserModel = async (): Promise<Model<IUser>> => {
   await connectToDatabase();
-  console.log('models', mongoose.models);
 
   if (mongoose.models.User) {
     // Return existing model if it already exists

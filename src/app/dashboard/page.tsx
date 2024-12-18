@@ -19,3 +19,5 @@ const TasksPage = () => {
 };
 
 export default TasksPage;
+
+export const dynamic = 'force-dynamic';

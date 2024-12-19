@@ -6,15 +6,27 @@ import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import { useActionState, useEffect } from 'react';
 import { toast } from 'sonner';
+import { useUserContext } from '../context/userContext';
+import { useRouter } from 'next/navigation';
 
 export default function LoginForm() {
+  const router = useRouter();
+  const { loginUser } = useUserContext();
   const [state, action, pending] = useActionState(login, undefined);
 
   useEffect(() => {
-    if (!pending && state?.message) {
-      toast.error(state.message, {
-        description: state.description,
-      });
+    if (!pending) {
+      if (state?.userId) {
+        loginUser(state.userId);
+        toast.success('Login Successful', {
+          description: 'Welcome back!',
+        });
+        router.push('/dashboard');
+      } else if (state?.message) {
+        toast.error(state.message, {
+          description: state.description,
+        });
+      }
     }
   }, [state, pending]);
 

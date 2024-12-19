@@ -4,10 +4,32 @@ import { signup } from '@/app/actions/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
+import { useUserContext } from '../context/userContext';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 export default function SignupForm() {
   const [state, action, pending] = useActionState(signup, undefined);
+  const { loginUser } = useUserContext();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!pending) {
+      if (state?.userId) {
+        loginUser(state.userId);
+        toast.success('Sign Up Successful', {
+          description: 'Welcome !',
+        });
+        router.push('/dashboard');
+      } else if (state?.message) {
+        toast.error(state.message, {
+          description: state.description,
+        });
+      }
+    }
+  }, [state, pending]);
 
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center gap-10">

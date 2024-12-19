@@ -44,6 +44,7 @@ export const fetchTasks = async () => {
       .lean()
       .select('-_id -__v -userId')
       .exec();
+
     return tasks;
   } catch (error) {
     console.error('Error fetching data:', error);

@@ -9,6 +9,7 @@ import { LearningsProvider } from './dashboard/summary/[date]/context/LearningsC
 import { DiaryContextProvider } from './dashboard/summary/[date]/context/DiaryContext';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Toaster } from 'sonner';
+import { UserContextProvider } from './context/userContext';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -22,30 +23,32 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <AcademicDataProvider>
-        <CodingDataProvider>
-          <PersonalDataProvider>
-            <HighlightsProvider>
-              <LearningsProvider>
-                <DiaryContextProvider>
-                  <body>
-                    {/* <ThemeProvider
+      <UserContextProvider>
+        <AcademicDataProvider>
+          <CodingDataProvider>
+            <PersonalDataProvider>
+              <HighlightsProvider>
+                <LearningsProvider>
+                  <DiaryContextProvider>
+                    <body>
+                      {/* <ThemeProvider
                   attribute="class"
                   // defaultTheme="system"
                   enableSystem
                   disableTransitionOnChange
                 > */}
-                    {children}
-                    <Toaster position="top-center" />
-                    <SpeedInsights />
-                    {/* </ThemeProvider> */}
-                  </body>
-                </DiaryContextProvider>
-              </LearningsProvider>
-            </HighlightsProvider>
-          </PersonalDataProvider>
-        </CodingDataProvider>
-      </AcademicDataProvider>
+                      {children}
+                      <Toaster position="top-center" />
+                      <SpeedInsights />
+                      {/* </ThemeProvider> */}
+                    </body>
+                  </DiaryContextProvider>
+                </LearningsProvider>
+              </HighlightsProvider>
+            </PersonalDataProvider>
+          </CodingDataProvider>
+        </AcademicDataProvider>
+      </UserContextProvider>
     </html>
   );
 }

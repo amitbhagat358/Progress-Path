@@ -8,7 +8,7 @@ import {
 import { connectToDatabase } from '@/lib/mongodb';
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
-import { createSession } from '@/lib/sessions';
+import { createSession, deleteSession } from '@/lib/sessions';
 import { redirect } from 'next/navigation';
 
 const UserSchema = new mongoose.Schema({
@@ -58,10 +58,11 @@ export async function signup(state: FormState, formData: FormData) {
   if (!userId) {
     return {
       message: 'An error occurred while creating your account.',
+      description: 'Please try again',
     };
   }
   await createSession(userId);
-  redirect('/dashboard');
+  return { userId: newUser._id.toString() };
 }
 
 export async function login(state: LoginFormState, formData: FormData) {
@@ -98,5 +99,12 @@ export async function login(state: LoginFormState, formData: FormData) {
     };
   }
   await createSession(user._id.toString());
-  redirect('/dashboard');
+  console.log('user Id ❤️❤️❤️', user._id.toString());
+  return { userId: user._id.toString() };
+}
+
+export async function logout() {
+  await deleteSession();
+  console.log('in logout function ');
+  redirect('/login');
 }

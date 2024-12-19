@@ -26,6 +26,7 @@ import Loading from './loading';
 
 import { fetchSummaryData, postSummaryData } from './actions';
 import { SummaryDataFromServer } from './interfaces';
+import ProfileIcon from '@/components/ProfileIcon';
 
 const SummaryPage = ({ date }: { date: string }) => {
   const { highlights, setHighlights } = useHighlights();
@@ -154,11 +155,11 @@ const SummaryPage = ({ date }: { date: string }) => {
               : formatDateToYYYYMMDD(new Date(date))
           )}
         </div>
-        <div className="w-1/4 flex justify-end items-center gap-10">
+        <div className="w-1/4 flex justify-end items-center gap-10 mr-10">
           {unsavedChanges && (
             <span className="text-red-500 font-semibold">Unsaved Changes</span>
           )}
-          <div>profile</div>
+          <ProfileIcon />
         </div>
       </div>
       <div className="w-full border-b border-b-[#e3e3e7]">

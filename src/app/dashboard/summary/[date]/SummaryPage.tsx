@@ -96,7 +96,6 @@ const SummaryPage = ({ date }: { date: string }) => {
         if (res && res.length > 0) {
           updateContextData(res[0]);
         }
-        // res && res.length > 0 ? updateContextData(res[0]) : null;
       } catch (error) {
         toast.error(`Error fetching summary for ${date}.`, {
           description: "Redirecting to today's summary",
@@ -146,7 +145,7 @@ const SummaryPage = ({ date }: { date: string }) => {
 
   return (
     <div>
-      <div className="w-full flex justify-center items-center p-5 border bg-white border-b-[#e3e3e7] sticky top-0">
+      <div className="w-full flex justify-center items-center p-5 border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b-[#e3e3e7] sticky top-0">
         <div className="text-2xl font-bold w-1/4">Progress Path</div>
         <div className="w-1/2 flex justify-center items-center">
           {formatDateToStandard(

@@ -99,12 +99,10 @@ export async function login(state: LoginFormState, formData: FormData) {
     };
   }
   await createSession(user._id.toString());
-  console.log('user Id ❤️❤️❤️', user._id.toString());
   return { userId: user._id.toString() };
 }
 
 export async function logout() {
   await deleteSession();
-  console.log('in logout function ');
   redirect('/login');
 }

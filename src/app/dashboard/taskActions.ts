@@ -1,10 +1,9 @@
 'use server';
 
 import { connectToDatabase } from '@/lib/mongodb';
-import { decrypt } from '@/lib/sessions';
+import { getUserIdFromCookies } from '@/lib/serverUtils';
 import mongoose from 'mongoose';
 import { revalidatePath } from 'next/cache';
-import { cookies } from 'next/headers';
 
 const TasksSchema = new mongoose.Schema({
   userId: {
@@ -26,7 +25,7 @@ const TasksSchema = new mongoose.Schema({
   },
   deadline: {
     type: Date,
-    required: true,
+    required: false,
   },
 });
 
@@ -34,11 +33,7 @@ const Tasks = mongoose.models.Tasks || mongoose.model('Tasks', TasksSchema);
 
 export const fetchTasks = async () => {
   try {
-    const cookieStore = await cookies();
-    const session = cookieStore.get('session')?.value;
-    const sessionData = session ? await decrypt(session) : null;
-    const userId = sessionData?.userId;
-
+    const userId = await getUserIdFromCookies();
     await connectToDatabase();
     const tasks = await Tasks.find({ userId })
       .lean()
@@ -54,18 +49,16 @@ export const fetchTasks = async () => {
 
 export const addTask = async (formData: FormData) => {
   try {
-    const cookieStore = await cookies();
-    const session = cookieStore.get('session')?.value;
-    const sessionData = session ? await decrypt(session) : null;
-    const userId = sessionData?.userId;
+    const userId = await getUserIdFromCookies();
 
     await connectToDatabase();
+
     const newTask = new Tasks({
       userId,
       id: Date.now(),
       task: formData.get('task') as string,
       completed: false,
-      deadline: new Date(),
+      deadline: formData.get('deadline'),
     });
 
     await newTask.save();
@@ -73,6 +66,42 @@ export const addTask = async (formData: FormData) => {
     return;
   } catch (error) {
     console.error('Error adding product:', error);
+    return;
+  }
+};
+
+export const deleteTask = async (id: number) => {
+  try {
+    const userId = await getUserIdFromCookies();
+    await connectToDatabase();
+
+    await Tasks.deleteOne({ userId, id });
+    revalidatePath('/dashboard');
+  } catch (err) {
+    console.error('Error deleting task: ', err);
+    return;
+  }
+};
+
+export const editTask = async (id: number, task: string, deadline?: string) => {
+  try {
+    const userId = await getUserIdFromCookies();
+    await connectToDatabase();
+
+    await Tasks.updateOne(
+      { userId, id },
+      {
+        $set: {
+          id,
+          userId,
+          task,
+          deadline,
+        },
+      }
+    );
+    revalidatePath('/dashboard');
+  } catch (err) {
+    console.error('Error editing task: ', err);
     return;
   }
 };

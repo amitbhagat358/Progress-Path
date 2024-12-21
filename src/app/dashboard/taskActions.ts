@@ -4,6 +4,7 @@ import { connectToDatabase } from '@/lib/mongodb';
 import { getUserIdFromCookies } from '@/lib/serverUtils';
 import mongoose from 'mongoose';
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 const TasksSchema = new mongoose.Schema({
   userId: {
@@ -47,7 +48,7 @@ export const fetchTasks = async () => {
   }
 };
 
-export const addTask = async (formData: FormData) => {
+export const addTask = async (formData) => {
   try {
     const userId = await getUserIdFromCookies();
 
@@ -74,12 +75,11 @@ export const deleteTask = async (id: number) => {
   try {
     const userId = await getUserIdFromCookies();
     await connectToDatabase();
-
     await Tasks.deleteOne({ userId, id });
-    revalidatePath('/dashboard');
+    // revalidatePath('/dashboard');
   } catch (err) {
     console.error('Error deleting task: ', err);
-    return;
+    throw new Error('Error deleting task: ');
   }
 };
 
@@ -92,8 +92,6 @@ export const editTask = async (id: number, task: string, deadline?: string) => {
       { userId, id },
       {
         $set: {
-          id,
-          userId,
           task,
           deadline,
         },
@@ -102,6 +100,23 @@ export const editTask = async (id: number, task: string, deadline?: string) => {
     revalidatePath('/dashboard');
   } catch (err) {
     console.error('Error editing task: ', err);
+    return;
+  }
+};
+
+export const toggleTask = async (id: number) => {
+  try {
+    const userId = await getUserIdFromCookies();
+    await connectToDatabase();
+
+    const task = await Tasks.findOne({ userId, id });
+    await Tasks.updateOne(
+      { userId, id },
+      { $set: { completed: !task.completed } }
+    );
+    revalidatePath('/dashboard');
+  } catch (err) {
+    console.error('Error toggling task: ', err);
     return;
   }
 };

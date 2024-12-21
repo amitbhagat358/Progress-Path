@@ -1,4 +1,4 @@
-import SummaryPage from './SummaryPage';
+import SummaryPageWrapper from './SummaryPageWrapper';
 
 const GetSummary = async ({
   params,
@@ -8,7 +8,7 @@ const GetSummary = async ({
   const date: string = (await params).date;
   return (
     <div>
-      <SummaryPage date={date} />
+      <SummaryPageWrapper date={date} />
     </div>
   );
 };

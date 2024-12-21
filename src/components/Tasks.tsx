@@ -3,19 +3,61 @@
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { addTask, deleteTask } from '@/app/dashboard/taskActions';
+import { addTask, deleteTask, toggleTask } from '@/app/dashboard/taskActions';
 import { format } from 'date-fns';
 import { DialogForEditing } from './DialogForEditing';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 // Task type definition
 type TasksType = {
   id: number;
   task: string;
   completed: boolean;
-  deadline: Date;
+  deadline: Date | null;
 };
 
 const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
+  const [tasks, setTasks] = useState(initialTasks);
+
+  const handleToggle = async (taskId: number) => {
+    setTasks((tasks) =>
+      tasks.map((task) =>
+        task.id === taskId ? { ...task, completed: !task.completed } : task
+      )
+    );
+    await toggleTask(taskId);
+  };
+
+  const handleAddTask = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const task = formData.get('task') as string;
+    const deadline = formData.get('deadline') as string;
+    const newTask = {
+      id: Date.now(),
+      task,
+      completed: false,
+      deadline: deadline ? new Date(deadline) : null,
+    };
+    setTasks((tasks) => [...tasks, newTask]);
+    await addTask(formData);
+  };
+
+  const handleDeleteTask = async (taskId: number) => {
+    const tasksBeforeDelte = [...tasks];
+    setTasks((tasks) => tasks.filter((task) => task.id !== taskId));
+    try {
+      await deleteTask(taskId);
+    } catch (error) {
+      setTasks(tasksBeforeDelte);
+      toast.error('Error deleting task', {
+        description: 'Please try again later',
+        duration: 3000,
+      });
+    }
+  };
+
   return (
     <div className="w-[50%] m-5 p-5 shadow-sm rounded-lg border border-[#e3e3e7]">
       <div className="w-full flex justify-center text-2xl font-semibold mb-4">
@@ -23,7 +65,7 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
       </div>
 
       {/* Task Addition Form */}
-      <form action={addTask} className="flex gap-2 mb-5">
+      <form onSubmit={handleAddTask} className="flex gap-2 mb-5">
         <Input
           name="task"
           type="text"
@@ -37,13 +79,18 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
 
       {/* Task List */}
       <div className="space-y-4">
-        {initialTasks?.map((task) => (
+        {tasks.map((task) => (
           <div
             key={task.id}
             className="flex justify-between items-center p-3 border rounded-lg hover:shadow-md"
           >
             <div className="flex items-center gap-3">
-              <Checkbox checked={task.completed} />
+              <Checkbox
+                checked={task.completed}
+                onCheckedChange={async () => {
+                  handleToggle(task.id);
+                }}
+              />
               <div>
                 <p
                   className={`font-medium ${
@@ -68,7 +115,7 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
               <Button
                 size="sm"
                 variant="destructive"
-                onClick={() => deleteTask(task.id)}
+                onClick={() => handleDeleteTask(task.id)}
               >
                 Delete
               </Button>

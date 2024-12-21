@@ -24,11 +24,17 @@ import { useDiary } from './context/DiaryContext';
 import { toast } from 'sonner';
 import Loading from './loading';
 
-import { fetchSummaryData, postSummaryData } from './actions';
+import { postSummaryData } from './actions';
 import { SummaryDataFromServer } from './interfaces';
 import ProfileIcon from '@/components/ProfileIcon';
 
-const SummaryPage = ({ date }: { date: string }) => {
+const SummaryPage = ({
+  date,
+  initialData,
+}: {
+  date: string;
+  initialData: SummaryDataFromServer | null;
+}) => {
   const { highlights, setHighlights } = useHighlights();
   const { learnings, setLearnings } = useLearnings();
   const { diaryContent, setDiaryContent } = useDiary();
@@ -39,41 +45,17 @@ const SummaryPage = ({ date }: { date: string }) => {
   const { items: PersonalDataItems, setItems: setPersonalDataItems } =
     usePersonalData();
   const [unsavedChanges, setUnsavedChanges] = useState(false);
-  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.key === 's') {
-        e.preventDefault();
-        handleSubmit();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  });
-
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (unsavedChanges) {
-        e.preventDefault();
-      }
-    };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, [unsavedChanges]);
-
-  const updateContextData = (latest: SummaryDataFromServer) => {
-    setHighlights(latest.highlights);
-    setLearnings(latest.learnings);
-    setDiaryContent(latest.diaryContent);
-    setAcademicDataItems(latest.academicData || []);
-    setCodingDataItems(latest.codingData || []);
-    setPersonalDataItems(latest.personalData || []);
-  };
+    if (initialData) {
+      setHighlights(initialData.highlights);
+      setLearnings(initialData.learnings);
+      setDiaryContent(initialData.diaryContent);
+      setAcademicDataItems(initialData.academicData || []);
+      setCodingDataItems(initialData.codingData || []);
+      setPersonalDataItems(initialData.personalData || []);
+    }
+  }, [initialData]);
 
   const isDateCorrect = () => {
     if (date !== 'today' && !isValidDateFormat(date)) {
@@ -88,26 +70,6 @@ const SummaryPage = ({ date }: { date: string }) => {
     return true;
   };
 
-  // get handler
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetchSummaryData(date);
-        if (res && res.length > 0) {
-          updateContextData(res[0]);
-        }
-      } catch (error) {
-        toast.error(`Error fetching summary for ${date}.`, {
-          description: "Redirecting to today's summary",
-          duration: 4000,
-        });
-      }
-      setLoading(false);
-    };
-    fetchData();
-  }, [date]);
-
-  //post handler
   const handleSubmit = async () => {
     if (!isDateCorrect()) {
       return;
@@ -139,9 +101,28 @@ const SummaryPage = ({ date }: { date: string }) => {
     }
   };
 
-  if (loading) {
-    return <Loading />;
-  }
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.key === 's') {
+        event.preventDefault();
+        handleSubmit();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [
+    unsavedChanges,
+    highlights,
+    learnings,
+    diaryContent,
+    AcademicDataItems,
+    CodingDataItems,
+    PersonalDataItems,
+  ]);
 
   return (
     <div>

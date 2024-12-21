@@ -19,7 +19,7 @@ type TasksType = {
   id: number;
   task: string;
   completed: boolean;
-  deadline: Date;
+  deadline: Date | null;
 };
 
 export function DialogForEditing({ task }: { task: TasksType }) {

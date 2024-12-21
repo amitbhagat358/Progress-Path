@@ -48,7 +48,7 @@ export const fetchTasks = async () => {
   }
 };
 
-export const addTask = async (formData) => {
+export const addTask = async (formData: FormData) => {
   try {
     const userId = await getUserIdFromCookies();
 

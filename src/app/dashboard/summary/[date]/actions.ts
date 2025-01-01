@@ -9,30 +9,9 @@ import {
 } from '@/lib/utils';
 
 import { connectToDatabase } from '@/lib/mongodb';
-import mongoose from 'mongoose';
-import { cookies } from 'next/headers';
-import { decrypt } from '@/lib/sessions';
-
-const SummarySchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
-  highlights: Array,
-  learnings: Array,
-  diaryContent: String,
-  academicData: Array,
-  codingData: Array,
-  personalData: Array,
-  date: {
-    type: String,
-    required: true,
-  },
-});
-
-const Summary =
-  mongoose.models.Summary || mongoose.model('Summary', SummarySchema);
+import Summary from '@/schemas/SummarySchema';
+import { getUserIdFromCookies } from '@/lib/serverUtils';
+import { revalidatePath } from 'next/cache';
 
 export const fetchSummaryData = async (
   dateFromUrl: string
@@ -48,10 +27,7 @@ export const fetchSummaryData = async (
 
     const date = new Date(dateFromUrl).toISOString();
 
-    const cookieStore = await cookies();
-    const session = cookieStore.get('session')?.value;
-    const sessionData = session ? await decrypt(session) : null;
-    const userId = sessionData?.userId;
+    const userId = await getUserIdFromCookies();
 
     await connectToDatabase();
     const summaries = await Summary.find({ userId, date })
@@ -59,7 +35,7 @@ export const fetchSummaryData = async (
       .select('-_id -__v -date -userId')
       .exec();
 
-    //@ts-expect-error handled type correctly
+    // @ts-expect-error handled type correctly
     return summaries;
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -81,11 +57,7 @@ export const postSummaryData = async (
     }
 
     const date = new Date(dateFromUrl).toISOString();
-
-    const cookieStore = await cookies();
-    const session = cookieStore.get('session')?.value;
-    const sessionData = session ? await decrypt(session) : null;
-    const userId = sessionData?.userId;
+    const userId = await getUserIdFromCookies();
 
     await connectToDatabase();
     const summaryExists = await Summary.findOne({ userId, date });
@@ -101,6 +73,7 @@ export const postSummaryData = async (
           },
         }
       );
+      revalidatePath('/dashboard');
       return {
         message: `Summary updated for ${formatDateToStandard(dateFromUrl)}.`,
       };
@@ -111,6 +84,7 @@ export const postSummaryData = async (
       userId,
     });
     await newSummary.save();
+    revalidatePath('/dashboard');
     return {
       message: `Summary saved for ${formatDateToStandard(dateFromUrl)}.`,
     };

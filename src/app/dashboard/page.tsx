@@ -1,6 +1,7 @@
 import ProfileIcon from '@/components/ProfileIcon';
 import CalendarForSummary from './CalendarForSummary';
 import TasksPage from './TasksPage';
+import DailyCheckListWrapper from './DailyCheckListWrapper';
 
 const Dashbaord = () => {
   return (
@@ -11,9 +12,14 @@ const Dashbaord = () => {
           <ProfileIcon />
         </div>
       </div>
-      <div className="flex">
-        <TasksPage />
-        <CalendarForSummary />
+      <div className="w-full flex gap-20">
+        <div className="w-[30%]">
+          <DailyCheckListWrapper />
+        </div>
+        <div className="w-[50%] flex flex-col">
+          <TasksPage />
+          <CalendarForSummary />
+        </div>
       </div>
     </div>
   );

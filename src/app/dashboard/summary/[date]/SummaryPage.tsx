@@ -35,6 +35,7 @@ const SummaryPage = ({
   date: string;
   initialData: SummaryDataFromServer | null;
 }) => {
+  console.log(initialData, 'initialData');
   const { highlights, setHighlights } = useHighlights();
   const { learnings, setLearnings } = useLearnings();
   const { diaryContent, setDiaryContent } = useDiary();

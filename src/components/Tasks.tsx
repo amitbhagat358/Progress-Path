@@ -75,8 +75,8 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
   };
 
   return (
-    <div className="w-[50%] m-5 p-5 shadow-sm rounded-lg border border-[#e3e3e7]">
-      <div className="w-full flex justify-center text-2xl font-semibold mb-4">
+    <div className="m-5 p-5 rounded-xl">
+      <div className="w-full flex justify-center text-xl font-semibold mb-4">
         Tasks
       </div>
 
@@ -98,7 +98,7 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
         {tasks.map((task) => (
           <div
             key={task.id}
-            className="flex justify-between items-center p-3 border rounded-lg hover:shadow-md"
+            className="flex justify-between items-center p-3 border rounded-lg hover:bg-gray-50"
           >
             <div className="flex items-center gap-3">
               <Checkbox

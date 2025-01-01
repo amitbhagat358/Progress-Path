@@ -124,6 +124,21 @@ const SummaryPage = ({
     PersonalDataItems,
   ]);
 
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      console.log('in the handleBeforeUnload function');
+      if (unsavedChanges) {
+        e.preventDefault();
+        console.log('Unsaved changes detected, prompting user.');
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [unsavedChanges]);
+
   return (
     <div>
       <div className="w-full flex justify-center items-center p-5 border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b-[#e3e3e7] sticky top-0">

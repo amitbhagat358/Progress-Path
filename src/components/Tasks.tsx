@@ -26,27 +26,43 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
         task.id === taskId ? { ...task, completed: !task.completed } : task
       )
     );
-    await toggleTask(taskId);
+
+    try {
+      await toggleTask(taskId);
+    } catch (error) {
+      setTasks((tasks) =>
+        tasks.map((task) =>
+          task.id === taskId ? { ...task, completed: !task.completed } : task
+        )
+      );
+      console.error('Failed to update task', error);
+    }
   };
 
   const handleAddTask = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const form = e.currentTarget;
     const formData = new FormData(e.currentTarget);
     const task = formData.get('task') as string;
     const deadline = formData.get('deadline') as string;
+
     const newTask = {
       id: Date.now(),
       task,
       completed: false,
       deadline: deadline ? new Date(deadline) : null,
     };
-    setTasks((tasks) => [...tasks, newTask]);
+
+    setTasks((tasks) => [newTask, ...tasks]);
     await addTask(formData);
+    form.reset();
   };
 
   const handleDeleteTask = async (taskId: number) => {
     const tasksBeforeDelte = [...tasks];
     setTasks((tasks) => tasks.filter((task) => task.id !== taskId));
+
     try {
       await deleteTask(taskId);
     } catch (error) {
@@ -88,7 +104,7 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
               <Checkbox
                 checked={task.completed}
                 onCheckedChange={async () => {
-                  handleToggle(task.id);
+                  await handleToggle(task.id);
                 }}
               />
               <div>

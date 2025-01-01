@@ -39,6 +39,7 @@ export const fetchTasks = async () => {
     const tasks = await Tasks.find({ userId })
       .lean()
       .select('-_id -__v -userId')
+      .sort({ _id: -1 })
       .exec();
 
     return tasks;

@@ -78,17 +78,22 @@ export const postSummaryData = async (
         message: `Summary updated for ${formatDateToStandard(dateFromUrl)}.`,
       };
     }
+
     const newSummary = new Summary({
       ...data,
       date,
       userId,
     });
+
     await newSummary.save();
     revalidatePath('/dashboard');
     return {
       message: `Summary saved for ${formatDateToStandard(dateFromUrl)}.`,
     };
   } catch (error) {
-    throw new Error('Server Error');
+    console.log(error);
+    return {
+      message: 'An unexpected error occurred.',
+    };
   }
 };

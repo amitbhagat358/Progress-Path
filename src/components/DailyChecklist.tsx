@@ -37,7 +37,6 @@ const DialyChecklist = ({ initialData }: DialyChecklistProps) => {
         codingData: CodingDataItems,
         personalData: PersonalDataItems,
       };
-      console.log(data);
       const res = await postDailyChecklist(data);
       toast.success(`${res.message}`, { duration: 3000 });
       setUnsavedChanges(false);
@@ -51,7 +50,6 @@ const DialyChecklist = ({ initialData }: DialyChecklistProps) => {
   };
 
   useEffect(() => {
-    console.log(initialData);
     if (initialData) {
       setAcademicDataItems(initialData.academicData || []);
       setCodingDataItems(initialData.codingData || []);

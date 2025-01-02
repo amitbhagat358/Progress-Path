@@ -35,7 +35,6 @@ const SummaryPage = ({
   date: string;
   initialData: SummaryDataFromServer | null;
 }) => {
-  console.log(initialData, 'initialData');
   const { highlights, setHighlights } = useHighlights();
   const { learnings, setLearnings } = useLearnings();
   const { diaryContent, setDiaryContent } = useDiary();
@@ -127,10 +126,8 @@ const SummaryPage = ({
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      console.log('in the handleBeforeUnload function');
       if (unsavedChanges) {
         e.preventDefault();
-        console.log('Unsaved changes detected, prompting user.');
       }
     };
 

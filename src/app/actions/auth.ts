@@ -6,28 +6,10 @@ import {
   LoginFormSchema,
 } from '@/lib/definitions';
 import { connectToDatabase } from '@/lib/mongodb';
-import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import { createSession, deleteSession } from '@/lib/sessions';
 import { redirect } from 'next/navigation';
-
-const UserSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-});
-
-const Users = mongoose.models.Users || mongoose.model('Users', UserSchema);
+import Users from '@/schemas/UserSchema';
 
 export async function signup(state: FormState, formData: FormData) {
   const validatedFields = SignupFormSchema.safeParse({
@@ -43,6 +25,7 @@ export async function signup(state: FormState, formData: FormData) {
   }
 
   const { username, email, password } = validatedFields.data;
+  await connectToDatabase();
 
   const user = await Users.findOne({ email });
   if (user) {
@@ -53,8 +36,6 @@ export async function signup(state: FormState, formData: FormData) {
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-
-  await connectToDatabase();
   const newUser = new Users({
     username,
     email,
@@ -63,7 +44,6 @@ export async function signup(state: FormState, formData: FormData) {
   await newUser.save();
 
   const userId = newUser._id.toString();
-
   if (!userId) {
     return {
       message: 'An error occurred while creating your account.',
@@ -71,6 +51,7 @@ export async function signup(state: FormState, formData: FormData) {
     };
   }
   await createSession(userId);
+
   return { userId: newUser._id.toString() };
 }
 
@@ -90,7 +71,6 @@ export async function login(state: LoginFormState, formData: FormData) {
 
   await connectToDatabase();
   const user = await Users.findOne({ email });
-
   if (!user) {
     return {
       message: 'User Not Found',

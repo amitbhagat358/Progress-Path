@@ -1,10 +1,10 @@
-import { fetchTasks } from '@/app/dashboard/taskActions';
+import { fetchTasks } from '@/app/actions/taskActions';
 import Tasks from '@/components/Tasks';
 
-const TasksPage = async () => {
+const TaskPageWrapper = async () => {
   const tasks = await fetchTasks();
   // @ts-expect-error handled
   return <Tasks initialTasks={tasks} />;
 };
 
-export default TasksPage;
+export default TaskPageWrapper;

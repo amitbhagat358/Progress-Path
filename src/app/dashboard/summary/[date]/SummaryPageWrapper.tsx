@@ -1,6 +1,6 @@
-import SummaryPage from './SummaryPage';
-import { fetchSummaryData } from './actions';
-import { SummaryDataFromServer } from './interfaces';
+import SummaryPage from '../../../../components/SummaryPage';
+import { fetchSummaryData } from '@/app/actions/summary';
+import { SummaryDataFromServer } from '@/interfaces/summary';
 
 const SummaryPageWrapper = async ({ date }: { date: string }) => {
   const data: SummaryDataFromServer[] | null = await fetchSummaryData(date);

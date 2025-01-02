@@ -1,4 +1,4 @@
-import { editTask } from '@/app/dashboard/taskActions';
+import { editTask } from '@/app/actions/taskActions';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -12,8 +12,9 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { format } from 'date-fns';
+import { Pencil } from 'lucide-react';
 
 type TasksType = {
   id: number;
@@ -22,16 +23,45 @@ type TasksType = {
   deadline: Date | null;
 };
 
-export function DialogForEditing({ task }: { task: TasksType }) {
+export function DialogForEditing({
+  setTasks,
+  task,
+}: {
+  setTasks: Dispatch<SetStateAction<TasksType[]>>;
+  task: TasksType;
+}) {
   const [taskName, setTaskName] = useState(task.task);
   const [deadline, setDeadline] = useState(
     task.deadline ? format(new Date(task?.deadline), 'dd/MM/yyyy') : ''
   );
 
+  const handleEditTask = async () => {
+    try {
+      await editTask(task.id, taskName, deadline);
+      const parsedDeadline = deadline ? new Date(deadline) : null;
+
+      setTasks((tasks) =>
+        tasks.map((t) =>
+          t.id === task.id
+            ? { ...t, task: taskName, deadline: parsedDeadline }
+            : t
+        )
+      );
+    } catch (error) {
+      console.error('Failed to edit task', error);
+    }
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Edit</Button>
+        <Button
+          variant="ghost"
+          className="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-400"
+        >
+          <Pencil />
+          Edit
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -64,10 +94,7 @@ export function DialogForEditing({ task }: { task: TasksType }) {
         </div>
         <DialogFooter>
           <DialogClose asChild>
-            <Button
-              type="submit"
-              onClick={() => editTask(task.id, taskName, deadline)}
-            >
+            <Button type="submit" onClick={handleEditTask}>
               Save changes
             </Button>
           </DialogClose>

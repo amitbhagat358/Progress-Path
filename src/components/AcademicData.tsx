@@ -3,8 +3,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Plus, Trash } from 'lucide-react';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
-import { useAcademicData } from './context/AcademicDataContext';
-import { CheckboxType } from './interfaces';
+import { useAcademicData } from '@/app/context/AcademicDataContext';
+import { CheckboxType } from '@/interfaces/summary';
 
 interface AcademicDataProps {
   heading: string;
@@ -90,7 +90,7 @@ const AcademicData: React.FC<AcademicDataProps> = ({
   };
 
   return (
-    <div className="tasks w-full border border-[#e3e3e7] shadow-sm rounded-lg p-6">
+    <div className="tasks w-full border shadow-sm rounded-lg p-6">
       <div className="flex justify-between items-center mb-4">
         <div className="font-semibold">{heading}</div>
         <Button
@@ -104,7 +104,7 @@ const AcademicData: React.FC<AcademicDataProps> = ({
       {items.map((item, index) => (
         <div
           key={item.id}
-          className="flex items-center my-1 group hover:bg-gray-50 rounded pl-4"
+          className="flex items-center my-1 group rounded-lg pl-4"
           onContextMenu={(e) => {
             e.preventDefault();
             toggleCheckbox(item.id);
@@ -133,10 +133,10 @@ const AcademicData: React.FC<AcademicDataProps> = ({
             }`}
           />
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             onClick={() => removeItem(item.id)}
-            className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+            className="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-200"
           >
             <Trash />
           </Button>

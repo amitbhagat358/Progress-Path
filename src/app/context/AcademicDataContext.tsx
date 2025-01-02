@@ -1,6 +1,6 @@
 'use client';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { initial_academic_data } from '../InitialData';
+import { initial_academic_data } from '@/lib/initialData';
 
 interface Checkbox {
   id: number;

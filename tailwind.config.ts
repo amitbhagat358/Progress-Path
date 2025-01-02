@@ -58,6 +58,21 @@ const config: Config = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      typography: () => ({
+        custom: {
+          css: {
+            '--tw-prose-body': 'hsl(var(--foreground))',
+            '--tw-prose-headings': 'hsl(var(--primary))',
+            '--tw-prose-links': 'hsl(var(--primary))',
+            '--tw-prose-bold': 'hsl(var(--primary))',
+            '--tw-prose-hr': 'hsl(var(--border))',
+            '--tw-prose-quotes': 'hsl(var(--muted-foreground))',
+            '--tw-prose-code': 'hsl(var(--foreground))',
+            '--tw-prose-pre-bg': 'hsl(var(--card))',
+            '--tw-prose-pre-border': 'hsl(var(--border))',
+          },
+        },
+      }),
     },
   },
   plugins: [typography],

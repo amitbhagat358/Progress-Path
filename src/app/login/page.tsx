@@ -32,10 +32,7 @@ export default function LoginForm() {
 
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center gap-10">
-      <form
-        action={action}
-        className="w-[448px] shadow-lg rounded-lg p-10 border border-[#e3e3e7]"
-      >
+      <form action={action} className="w-[448px] shadow-lg rounded-lg p-10 ">
         <h1 className="text-2xl font-semibold mb-6 text-center">Login</h1>
 
         {/* Email Field */}

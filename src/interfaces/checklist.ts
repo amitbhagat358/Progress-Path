@@ -1,9 +1,7 @@
-import { CheckboxType } from '@/app/dashboard/summary/[date]/interfaces';
+import { CheckboxType } from '@/interfaces/summary';
 
-interface DailyChecklistType {
+export interface DailyChecklistType {
   academicData: Array<CheckboxType>;
   codingData: Array<CheckboxType>;
   personalData: Array<CheckboxType>;
 }
-
-export type { DailyChecklistType };

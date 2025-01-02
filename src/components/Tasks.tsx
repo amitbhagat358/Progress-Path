@@ -3,11 +3,17 @@
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { addTask, deleteTask, toggleTask } from '@/app/dashboard/taskActions';
+import {
+  addTask,
+  deleteTask,
+  editTask,
+  toggleTask,
+} from '@/app/actions/taskActions';
 import { format } from 'date-fns';
 import { DialogForEditing } from './DialogForEditing';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { Plus, Trash } from 'lucide-react';
 
 // Task type definition
 type TasksType = {
@@ -76,8 +82,8 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
 
   return (
     <div className="m-5 p-5 rounded-xl">
-      <div className="w-full flex justify-center text-xl font-semibold mb-4">
-        Tasks
+      <div className="w-full flex text-3xl font-semibold mb-10">
+        What I have to do?
       </div>
 
       {/* Task Addition Form */}
@@ -87,10 +93,12 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
           type="text"
           autoComplete="off"
           placeholder="Enter new task"
-          className="flex-1"
+          className="flex-2"
         />
         <Input name="deadline" type="date" className="flex-1" />
-        <Button type="submit">Add Task</Button>
+        <Button type="submit" variant="outline">
+          <Plus />
+        </Button>
       </form>
 
       {/* Task List */}
@@ -98,7 +106,7 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
         {tasks.map((task) => (
           <div
             key={task.id}
-            className="flex justify-between items-center p-3 border rounded-lg hover:bg-gray-50"
+            className="group flex justify-between items-center p-3 border rounded-lg"
           >
             <div className="flex items-center gap-3">
               <Checkbox
@@ -109,8 +117,10 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
               />
               <div>
                 <p
-                  className={`font-medium ${
-                    task.completed ? 'line-through text-gray-500' : ''
+                  className={`${
+                    task.completed
+                      ? 'line-through dark:text-gray-200 light:text-gray-500'
+                      : ''
                   }`}
                 >
                   {task.task}
@@ -127,12 +137,13 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
 
             {/* Actions */}
             <div className="flex items-center gap-2">
-              <DialogForEditing task={task} />
+              <DialogForEditing setTasks={setTasks} task={task} />
               <Button
-                size="sm"
-                variant="destructive"
+                variant="ghost"
+                className="opacity-0 group-focus-within:opacity-100 group-hover:opacity-100 transition-opacity duration-400"
                 onClick={() => handleDeleteTask(task.id)}
               >
+                <Trash />
                 Delete
               </Button>
             </div>

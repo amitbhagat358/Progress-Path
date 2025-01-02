@@ -21,7 +21,7 @@ const CalendarForSummary = () => {
           onSelect={(selectedDate) => {
             setDate(selectedDate || undefined);
           }}
-          className="border border-[#e3e3e7] rounded-lg"
+          className="border rounded-lg"
         />
       </div>
       <Link

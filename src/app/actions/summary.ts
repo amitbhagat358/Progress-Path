@@ -1,7 +1,7 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { SummaryDataFromServer } from './interfaces';
+import { SummaryDataFromServer } from '../../interfaces/summary';
 import {
   formatDateToStandard,
   formatDateToYYYYMMDD,

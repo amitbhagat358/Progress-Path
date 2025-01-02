@@ -1,12 +1,12 @@
 import { Metadata } from 'next';
 import './globals.css';
-import { HighlightsProvider } from '@/app/dashboard/summary/[date]/context/HighlightsContext';
-import { AcademicDataProvider } from './dashboard/summary/[date]/context/AcademicDataContext';
-import { CodingDataProvider } from './dashboard/summary/[date]/context/CodingDataContext';
-import { PersonalDataProvider } from './dashboard/summary/[date]/context/PersonalDataContext';
+import { HighlightsProvider } from '@/app/context/HighlightsContext';
+import { AcademicDataProvider } from '@/app/context/AcademicDataContext';
+import { CodingDataProvider } from './context/CodingDataContext';
+import { PersonalDataProvider } from './context/PersonalDataContext';
 import { ThemeProvider } from '@/components/ui/theme-provider';
-import { LearningsProvider } from './dashboard/summary/[date]/context/LearningsContext';
-import { DiaryContextProvider } from './dashboard/summary/[date]/context/DiaryContext';
+import { LearningsProvider } from './context/LearningsContext';
+import { DiaryContextProvider } from './context/DiaryContext';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Toaster } from 'sonner';
 import { UserContextProvider } from './context/userContext';
@@ -22,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <UserContextProvider>
         <AcademicDataProvider>
           <CodingDataProvider>
@@ -31,16 +31,16 @@ export default function RootLayout({
                 <LearningsProvider>
                   <DiaryContextProvider>
                     <body>
-                      {/* <ThemeProvider
-                  attribute="class"
-                  // defaultTheme="system"
-                  enableSystem
-                  disableTransitionOnChange
-                > */}
-                      {children}
-                      <Toaster position="top-center" />
-                      <SpeedInsights />
-                      {/* </ThemeProvider> */}
+                      <ThemeProvider
+                        attribute="class"
+                        defaultTheme="system"
+                        enableSystem
+                        disableTransitionOnChange
+                      >
+                        {children}
+                        <Toaster position="top-center" />
+                        <SpeedInsights />
+                      </ThemeProvider>
                     </body>
                   </DiaryContextProvider>
                 </LearningsProvider>

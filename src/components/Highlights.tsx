@@ -8,8 +8,8 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useHighlights } from './context/HighlightsContext';
-import { BulletPointType } from './interfaces';
+import { useHighlights } from '@/app/context/HighlightsContext';
+import { BulletPointType } from '@/interfaces/summary';
 
 interface HighlightsProps {
   heading: string;
@@ -90,7 +90,7 @@ const Highlights: React.FC<HighlightsProps> = ({
   };
 
   return (
-    <div className="w-full p-6 border border-[#e3e3e7] shadow-sm rounded-lg">
+    <div className="w-full p-6 border shadow-sm rounded-lg">
       <div className="flex justify-between items-center">
         <div className="font-semibold">{heading}</div>
         <Button
@@ -105,7 +105,7 @@ const Highlights: React.FC<HighlightsProps> = ({
         {highlights.map((Highlight, index) => (
           <li
             key={Highlight.id}
-            className="flex items-center my-1 group hover:bg-gray-50 rounded"
+            className="flex items-center my-1 group rounded"
           >
             <div className="w-[36px] h-[36px] flex justify-center items-center">
               <span className="text-xl font-bold">•</span>
@@ -128,10 +128,10 @@ const Highlights: React.FC<HighlightsProps> = ({
               }`}
             />
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={() => removeHighlight(Highlight.id)}
-              className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+              className="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-200"
             >
               <Trash />
             </Button>

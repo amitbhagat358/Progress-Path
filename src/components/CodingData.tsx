@@ -1,21 +1,23 @@
+'use client';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Plus, Trash } from 'lucide-react';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
-import { usePersonalData } from './context/PersonalDataContext';
-import { CheckboxType } from './interfaces';
+import { useCodingData } from '@/app/context/CodingDataContext';
 
-interface PersonalDataProps {
+import { CheckboxType } from '@/interfaces/summary';
+
+interface CodingDataProps {
   heading: string;
   setUnsavedChanges: Dispatch<SetStateAction<boolean>>;
 }
 
-const PersonalData: React.FC<PersonalDataProps> = ({
+const CodingData: React.FC<CodingDataProps> = ({
   heading,
   setUnsavedChanges,
 }) => {
-  const { items, setItems } = usePersonalData();
+  const { items, setItems } = useCodingData();
   const [editableInputId, setEditableInputId] = useState<number | null>(null);
   const editableInputRef = useRef<{ [key: number]: HTMLInputElement | null }>(
     {}
@@ -29,8 +31,8 @@ const PersonalData: React.FC<PersonalDataProps> = ({
 
   const toggleCheckbox = (id: number) => {
     setUnsavedChanges(true);
-    setItems((prevItems) =>
-      prevItems.map((item) =>
+    setItems((prevData) =>
+      prevData.map((item) =>
         item.id === id ? { ...item, checked: !item.checked } : item
       )
     );
@@ -47,9 +49,9 @@ const PersonalData: React.FC<PersonalDataProps> = ({
     setUnsavedChanges(true);
     const newDataItem = { id: Date.now(), name: '', checked: false };
     setItems((prevItems) => {
-      const updatedItems = [...prevItems];
-      updatedItems.splice(index + 1, 0, newDataItem);
-      return updatedItems;
+      const updatedData = [...prevItems];
+      updatedData.splice(index + 1, 0, newDataItem);
+      return updatedData;
     });
     setEditableInputId(newDataItem.id);
   };
@@ -90,7 +92,7 @@ const PersonalData: React.FC<PersonalDataProps> = ({
   };
 
   return (
-    <div className="tasks w-full border border-[#e3e3e7] shadow-sm rounded-lg p-6">
+    <div className="tasks w-full border shadow-sm rounded-lg p-6">
       <div className="flex justify-between items-center mb-4">
         <div className="font-semibold">{heading}</div>
         <Button
@@ -105,7 +107,7 @@ const PersonalData: React.FC<PersonalDataProps> = ({
         return (
           <div
             key={item.id}
-            className="flex items-center my-1 group hover:bg-gray-50 rounded pl-4"
+            className="flex items-center my-1 group rounded pl-4"
             onContextMenu={(e) => {
               e.preventDefault();
               toggleCheckbox(item.id);
@@ -134,10 +136,10 @@ const PersonalData: React.FC<PersonalDataProps> = ({
               }`}
             />
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={() => removeItem(item.id)}
-              className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+              className="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-200"
             >
               <Trash />
             </Button>
@@ -148,4 +150,4 @@ const PersonalData: React.FC<PersonalDataProps> = ({
   );
 };
 
-export default PersonalData;
+export default CodingData;

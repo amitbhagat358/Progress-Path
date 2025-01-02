@@ -1,6 +1,6 @@
 .container {
   --uib-size: 35px;
-  --uib-color: black;
+  --uib-color: hsl(var(--primary));
   --uib-speed: 1s;
   --uib-stroke: 3.5px;
   display: flex;

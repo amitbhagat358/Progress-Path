@@ -8,8 +8,8 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useLearnings } from './context/LearningsContext';
-import { BulletPointType } from './interfaces';
+import { useLearnings } from '@/app/context/LearningsContext';
+import { BulletPointType } from '@/interfaces/summary';
 
 interface LearningsProps {
   heading: string;
@@ -90,7 +90,7 @@ const Learnings: React.FC<LearningsProps> = ({
   }, [editableInputId]);
 
   return (
-    <div className="w-full p-6 border border-[#e3e3e7] shadow-sm rounded-lg">
+    <div className="w-full p-6 border shadow-sm rounded-lg">
       <div className="flex justify-between items-center">
         <div className="font-semibold">{heading}</div>
         <Button
@@ -105,7 +105,7 @@ const Learnings: React.FC<LearningsProps> = ({
         {learnings.map((learning, index) => (
           <li
             key={learning.id}
-            className="flex items-center my-1 group hover:bg-gray-50 rounded"
+            className="flex items-center my-1 group rounded"
           >
             <div className="w-[36px] h-[36px] flex justify-center items-center">
               <span className="text-xl font-bold">•</span>
@@ -128,10 +128,10 @@ const Learnings: React.FC<LearningsProps> = ({
               }`}
             />
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={() => removeLearning(learning.id)}
-              className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+              className="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-200"
             >
               <Trash />
             </Button>

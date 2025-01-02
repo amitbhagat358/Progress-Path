@@ -14,19 +14,19 @@ import Hightlights from './Highlights';
 import Learnings from './Learnings';
 import Diary from './Diary';
 
-import { useHighlights } from './context/HighlightsContext';
-import { useAcademicData } from './context/AcademicDataContext';
-import { useCodingData } from './context/CodingDataContext';
-import { usePersonalData } from './context/PersonalDataContext';
-import { useLearnings } from './context/LearningsContext';
-import { useDiary } from './context/DiaryContext';
+import { useHighlights } from '@/app/context/HighlightsContext';
+import { useAcademicData } from '@/app/context/AcademicDataContext';
+import { useCodingData } from '@/app/context/CodingDataContext';
+import { usePersonalData } from '@/app/context/PersonalDataContext';
+import { useLearnings } from '@/app/context/LearningsContext';
+import { useDiary } from '@/app//context/DiaryContext';
 
 import { toast } from 'sonner';
-import Loading from './loading';
 
-import { postSummaryData } from './actions';
-import { SummaryDataFromServer } from './interfaces';
+import { postSummaryData } from '@/app/actions/summary';
+import { SummaryDataFromServer } from '@/interfaces/summary';
 import ProfileIcon from '@/components/ProfileIcon';
+import { ModeToggle } from './ui/mode-toggle';
 
 const SummaryPage = ({
   date,
@@ -142,7 +142,7 @@ const SummaryPage = ({
 
   return (
     <div>
-      <div className="w-full flex justify-center items-center p-5 border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b-[#e3e3e7] sticky top-0">
+      <div className="w-full flex justify-center items-center p-3 border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b sticky top-0">
         <div className="text-2xl font-bold w-1/4">Progress Path</div>
         <div className="w-1/2 flex justify-center items-center">
           {formatDateToStandard(
@@ -155,10 +155,11 @@ const SummaryPage = ({
           {unsavedChanges && (
             <span className="text-red-500 font-semibold">Unsaved Changes</span>
           )}
+          <ModeToggle />
           <ProfileIcon />
         </div>
       </div>
-      <div className="w-full border-b border-b-[#e3e3e7]">
+      <div className="w-full border-b">
         <div className="w-full flex rounded-lg">
           <div className="done w-[25%] min-h-[300px] flex flex-col justify-start gap-5 p-5">
             <div className="font-semibold text-xl text-center">Checklist</div>

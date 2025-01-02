@@ -1,23 +1,21 @@
-'use client';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Plus, Trash } from 'lucide-react';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
-import { useCodingData } from './context/CodingDataContext';
+import { usePersonalData } from '@/app/context/PersonalDataContext';
+import { CheckboxType } from '@/interfaces/summary';
 
-import { CheckboxType } from './interfaces';
-
-interface CodingDataProps {
+interface PersonalDataProps {
   heading: string;
   setUnsavedChanges: Dispatch<SetStateAction<boolean>>;
 }
 
-const CodingData: React.FC<CodingDataProps> = ({
+const PersonalData: React.FC<PersonalDataProps> = ({
   heading,
   setUnsavedChanges,
 }) => {
-  const { items, setItems } = useCodingData();
+  const { items, setItems } = usePersonalData();
   const [editableInputId, setEditableInputId] = useState<number | null>(null);
   const editableInputRef = useRef<{ [key: number]: HTMLInputElement | null }>(
     {}
@@ -31,8 +29,8 @@ const CodingData: React.FC<CodingDataProps> = ({
 
   const toggleCheckbox = (id: number) => {
     setUnsavedChanges(true);
-    setItems((prevData) =>
-      prevData.map((item) =>
+    setItems((prevItems) =>
+      prevItems.map((item) =>
         item.id === id ? { ...item, checked: !item.checked } : item
       )
     );
@@ -49,9 +47,9 @@ const CodingData: React.FC<CodingDataProps> = ({
     setUnsavedChanges(true);
     const newDataItem = { id: Date.now(), name: '', checked: false };
     setItems((prevItems) => {
-      const updatedData = [...prevItems];
-      updatedData.splice(index + 1, 0, newDataItem);
-      return updatedData;
+      const updatedItems = [...prevItems];
+      updatedItems.splice(index + 1, 0, newDataItem);
+      return updatedItems;
     });
     setEditableInputId(newDataItem.id);
   };
@@ -92,7 +90,7 @@ const CodingData: React.FC<CodingDataProps> = ({
   };
 
   return (
-    <div className="tasks w-full border border-[#e3e3e7] shadow-sm rounded-lg p-6">
+    <div className="tasks w-full border shadow-sm rounded-lg p-6">
       <div className="flex justify-between items-center mb-4">
         <div className="font-semibold">{heading}</div>
         <Button
@@ -107,7 +105,7 @@ const CodingData: React.FC<CodingDataProps> = ({
         return (
           <div
             key={item.id}
-            className="flex items-center my-1 group hover:bg-gray-50 rounded pl-4"
+            className="flex items-center my-1 group rounded pl-4"
             onContextMenu={(e) => {
               e.preventDefault();
               toggleCheckbox(item.id);
@@ -136,10 +134,10 @@ const CodingData: React.FC<CodingDataProps> = ({
               }`}
             />
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={() => removeItem(item.id)}
-              className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+              className="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-200"
             >
               <Trash />
             </Button>
@@ -150,4 +148,4 @@ const CodingData: React.FC<CodingDataProps> = ({
   );
 };
 
-export default CodingData;
+export default PersonalData;

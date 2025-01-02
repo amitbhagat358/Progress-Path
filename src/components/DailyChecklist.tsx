@@ -1,13 +1,13 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { useAcademicData } from './summary/[date]/context/AcademicDataContext';
-import { useCodingData } from './summary/[date]/context/CodingDataContext';
-import { usePersonalData } from './summary/[date]/context/PersonalDataContext';
-import AcademicData from './summary/[date]/AcademicData';
-import CodingData from './summary/[date]/CodingData';
-import PersonalData from './summary/[date]/PersonalData';
+import { useAcademicData } from '@/app/context/AcademicDataContext';
+import { useCodingData } from '../app/context/CodingDataContext';
+import { usePersonalData } from '../app/context/PersonalDataContext';
+import AcademicData from './AcademicData';
+import CodingData from './CodingData';
+import PersonalData from './PersonalData';
 import { Button } from '@/components/ui/button';
-import { postDailyChecklist } from '../actions/dailyChecklist';
+import { postDailyChecklist } from '../app/actions/dailyChecklist';
 import { DailyChecklistType } from '@/interfaces/checklist';
 import { toast } from 'sonner';
 
@@ -77,7 +77,9 @@ const DialyChecklist = ({ initialData }: DialyChecklistProps) => {
   return (
     <div>
       <div className="flex flex-col gap-4 m-5 p-5 rounded-xl">
-        <div className="font-semibold text-xl text-center">Checklist</div>
+        <div className="font-semibold text-3xl mb-6">
+          Today&apos;s Checklist
+        </div>
         <AcademicData
           heading="Academics"
           setUnsavedChanges={setUnsavedChanges}
@@ -90,7 +92,7 @@ const DialyChecklist = ({ initialData }: DialyChecklistProps) => {
         <Button
           onClick={handleSave}
           disabled={!unsavedChanges}
-          variant={unsavedChanges ? 'destructive' : 'secondary'}
+          // variant={unsavedChanges ? '' : 'secondary'}
         >
           Save
         </Button>

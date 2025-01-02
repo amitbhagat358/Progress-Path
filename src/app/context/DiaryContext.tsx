@@ -7,7 +7,10 @@ interface DiaryContextType {
   setDiaryContent: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const DiaryContext = createContext<DiaryContextType | undefined>(undefined);
+const DiaryContext = createContext<DiaryContextType>({
+  diaryContent: '',
+  setDiaryContent: () => {},
+});
 
 export const DiaryContextProvider: React.FC<{ children: ReactNode }> = ({
   children,

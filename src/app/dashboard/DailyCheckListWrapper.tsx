@@ -1,6 +1,6 @@
 import React from 'react';
 import { fetchDailyChecklist } from '../actions/dailyChecklist';
-import DialyChecklist from './DailyChecklist';
+import DialyChecklist from '../../components/DailyChecklist';
 import { DailyChecklistType } from '@/interfaces/checklist';
 
 const DailyCheckListWrapper = async () => {

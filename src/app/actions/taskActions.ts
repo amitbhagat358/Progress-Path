@@ -2,35 +2,8 @@
 
 import { connectToDatabase } from '@/lib/mongodb';
 import { getUserIdFromCookies } from '@/lib/serverUtils';
-import mongoose from 'mongoose';
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
-
-const TasksSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
-  id: {
-    type: Number,
-    required: true,
-  },
-  task: {
-    type: String,
-    required: true,
-  },
-  completed: {
-    type: Boolean,
-    required: true,
-  },
-  deadline: {
-    type: Date,
-    required: false,
-  },
-});
-
-const Tasks = mongoose.models.Tasks || mongoose.model('Tasks', TasksSchema);
+import Tasks from '@/schemas/TaskSchema';
 
 export const fetchTasks = async () => {
   try {

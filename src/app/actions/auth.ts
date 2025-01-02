@@ -43,6 +43,15 @@ export async function signup(state: FormState, formData: FormData) {
   }
 
   const { username, email, password } = validatedFields.data;
+
+  const user = await Users.findOne({ email });
+  if (user) {
+    return {
+      message: 'User already exists',
+      description: "Please login if you're already a user",
+    };
+  }
+
   const hashedPassword = await bcrypt.hash(password, 10);
 
   await connectToDatabase();

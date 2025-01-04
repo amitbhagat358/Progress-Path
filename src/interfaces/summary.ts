@@ -17,3 +17,9 @@ export interface SummaryDataFromServer {
   personalData: CheckboxType[];
   diaryContent: string;
 }
+
+export interface userDataTypeForSidebar {
+  username: string;
+  email: string;
+  avatar: string;
+}

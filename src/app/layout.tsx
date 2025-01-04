@@ -10,6 +10,12 @@ import { DiaryContextProvider } from './context/DiaryContext';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Toaster } from 'sonner';
 import { UserContextProvider } from './context/userContext';
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from '@/components/ui/sidebar';
+import { AppSidebar } from '@/components/AppSidebar';
 
 export const metadata: Metadata = {
   title: 'Progress Path',
@@ -31,16 +37,19 @@ export default function RootLayout({
                 <LearningsProvider>
                   <DiaryContextProvider>
                     <body>
-                      <ThemeProvider
-                        attribute="class"
-                        defaultTheme="system"
-                        enableSystem
-                        disableTransitionOnChange
-                      >
-                        {children}
-                        <Toaster position="top-center" />
-                        <SpeedInsights />
-                      </ThemeProvider>
+                      <SidebarProvider>
+                        <ThemeProvider
+                          attribute="class"
+                          defaultTheme="system"
+                          enableSystem
+                          disableTransitionOnChange
+                        >
+                          <AppSidebar />
+                          {children}
+                          <Toaster position="top-center" />
+                          <SpeedInsights />
+                        </ThemeProvider>
+                      </SidebarProvider>
                     </body>
                   </DiaryContextProvider>
                 </LearningsProvider>

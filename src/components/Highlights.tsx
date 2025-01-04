@@ -123,7 +123,7 @@ const Highlights: React.FC<HighlightsProps> = ({
               onBlur={() => setEditableInputId(null)}
               onKeyDown={(e) => handleKeyDown(e, index, Highlight)}
               onClick={() => setEditableInputId(Highlight.id)}
-              className={`text-lg border-none focus-visible:ring-0 shadow-none ${
+              className={`text-base border-none focus-visible:ring-0 shadow-none ${
                 editableInputId !== Highlight.id ? 'cursor-pointer' : ''
               }`}
             />

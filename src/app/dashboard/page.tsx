@@ -1,4 +1,3 @@
-import ProfileIcon from '@/components/ProfileIcon';
 import CalendarForSummary from './CalendarForSummary';
 import TasksPage from './TaskPageWrapper';
 import DailyCheckListWrapper from './DailyCheckListWrapper';
@@ -11,7 +10,6 @@ const Dashbaord = () => {
         <div className="text-2xl font-bold pl-20">Progress Path</div>
         <div className="flex justify-end pr-20 items-center gap-10">
           <ModeToggle />
-          <ProfileIcon />
         </div>
       </div>
       <div className="w-full flex justify-center gap-20">

@@ -129,7 +129,7 @@ const PersonalData: React.FC<PersonalDataProps> = ({
               onKeyDown={(e) => handleKeyDown(e, index, item)}
               onClick={() => setEditableInputId(item.id)}
               onChange={(e) => updateItem(item.id, e.target.value)}
-              className={`text-lg leading-none border-none focus-visible:ring-0 shadow-none ${
+              className={`text-base border-none focus-visible:ring-0 shadow-none ${
                 editableInputId !== item.id ? 'cursor-pointer' : ''
               }`}
             />

@@ -123,7 +123,7 @@ const Learnings: React.FC<LearningsProps> = ({
               onBlur={() => setEditableInputId(null)}
               onKeyDown={(e) => handleKeyDown(e, index, learning)}
               onClick={() => setEditableInputId(learning.id)}
-              className={`text-lg border-none focus-visible:ring-0 shadow-none ${
+              className={`text-base border-none focus-visible:ring-0 shadow-none ${
                 editableInputId !== learning.id ? 'cursor-pointer' : ''
               }`}
             />

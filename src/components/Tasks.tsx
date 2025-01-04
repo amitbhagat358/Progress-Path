@@ -93,7 +93,7 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
           type="text"
           autoComplete="off"
           placeholder="Enter new task"
-          className="flex-2 text-lg"
+          className="flex-2"
         />
         <Input name="deadline" type="date" className="flex-1" />
         <Button type="submit" variant="outline">
@@ -102,7 +102,7 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
       </form>
 
       {/* Task List */}
-      <div className="py-3 border rounded-lg shadow-sm text-lg">
+      <div className="py-3 border rounded-lg shadow-sm">
         {tasks.map((task) => (
           <div
             key={task.id}

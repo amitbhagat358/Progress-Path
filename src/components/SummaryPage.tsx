@@ -25,7 +25,6 @@ import { toast } from 'sonner';
 
 import { postSummaryData } from '@/app/actions/summary';
 import { SummaryDataFromServer } from '@/interfaces/summary';
-import ProfileIcon from '@/components/ProfileIcon';
 import { ModeToggle } from './ui/mode-toggle';
 
 const SummaryPage = ({
@@ -155,7 +154,6 @@ const SummaryPage = ({
             </div>
           )}
           <ModeToggle />
-          <ProfileIcon />
         </div>
       </div>
       <div className="w-full flex flex-col items-center gap-20">

@@ -7,15 +7,15 @@ import { ModeToggle } from '@/components/ui/mode-toggle';
 const Dashbaord = () => {
   return (
     <div className="w-full relative">
-      <div className="w-full flex justify-center items-center p-3 border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b sticky top-0">
-        <div className="text-2xl font-bold w-1/4">Progress Path</div>
-        <div className="w-3/4 flex justify-end mr-10 items-center gap-10">
+      <div className="w-full flex justify-between items-center mb-16 p-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60  sticky top-0">
+        <div className="text-2xl font-bold pl-20">Progress Path</div>
+        <div className="flex justify-end pr-20 items-center gap-10">
           <ModeToggle />
           <ProfileIcon />
         </div>
       </div>
-      <div className="w-full flex gap-20">
-        <div className="w-[30%]">
+      <div className="w-full flex justify-center gap-20">
+        <div className="w-[35%]">
           <DailyCheckListWrapper />
         </div>
         <div className="w-[50%] flex flex-col">

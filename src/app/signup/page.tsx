@@ -4,14 +4,16 @@ import { signup } from '@/app/actions/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
-import { useActionState, useEffect } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { useUserContext } from '../context/userContext';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { EyeIcon, EyeOffIcon } from 'lucide-react';
 
 export default function SignupForm() {
   const [state, action, pending] = useActionState(signup, undefined);
   const { loginUser } = useUserContext();
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const router = useRouter();
 
@@ -33,22 +35,22 @@ export default function SignupForm() {
 
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center gap-10">
-      <form action={action} className="w-[448px] shadow-lg rounded-lg p-10 ">
+      <form
+        action={action}
+        className="w-[448px] border shadow-lg rounded-lg p-10"
+      >
         <h1 className="text-2xl font-semibold mb-6 text-center">Sign Up</h1>
 
         {/* Name Field */}
         <div className="mb-4">
-          <label
-            htmlFor="name"
-            className="block text-gray-700 font-medium mb-2"
-          >
+          <label htmlFor="name" className="block font-medium mb-2">
             Username
           </label>
           <Input
             id="username"
             name="username"
             placeholder="Enter username"
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 "
+            className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 "
           />
           {state?.errors?.username && (
             <p className="text-red-500 text-sm mt-1">{state.errors.username}</p>
@@ -57,17 +59,14 @@ export default function SignupForm() {
 
         {/* Email Field */}
         <div className="mb-4">
-          <label
-            htmlFor="email"
-            className="block text-gray-700 font-medium mb-2"
-          >
+          <label htmlFor="email" className="block  font-medium mb-2">
             Email
           </label>
           <Input
             id="email"
             name="email"
             placeholder="Enter email"
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 "
+            className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 "
           />
           {state?.errors?.email && (
             <p className="text-red-500 text-sm mt-1">{state.errors.email}</p>
@@ -76,19 +75,28 @@ export default function SignupForm() {
 
         {/* Password Field */}
         <div className="mb-4">
-          <label
-            htmlFor="password"
-            className="block text-gray-700 font-medium mb-2"
-          >
+          <label htmlFor="password" className="block font-medium mb-2">
             Password
           </label>
-          <Input
-            id="password"
-            name="password"
-            type="password"
-            placeholder="Enter password"
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 "
-          />
+          <div className="relative">
+            <Input
+              type={passwordVisible ? 'text' : 'password'}
+              id="password"
+              name="password"
+              placeholder="Enter your password"
+              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2"
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() => setPasswordVisible(!passwordVisible)}
+              className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7"
+            >
+              {passwordVisible ? <EyeIcon /> : <EyeOffIcon />}
+              <span className="sr-only">Toggle password visibility</span>
+            </Button>
+          </div>
           {state?.errors?.password && (
             <div className="mt-2 text-sm text-red-500">
               <p>Password must:</p>
@@ -107,7 +115,7 @@ export default function SignupForm() {
         <Button
           disabled={pending}
           type="submit"
-          className={`w-full p-2 mt-4 text-white font-semibold  rounded-md  focus:outline-none focus:ring-2  ${
+          className={`w-full p-2 mt-4 font-semibold  rounded-md  focus:outline-none focus:ring-2  ${
             pending ? 'opacity-50 cursor-not-allowed' : ''
           }`}
         >

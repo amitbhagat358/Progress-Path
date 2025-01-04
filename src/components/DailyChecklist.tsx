@@ -74,26 +74,22 @@ const DialyChecklist = ({ initialData }: DialyChecklistProps) => {
 
   return (
     <div>
-      <div className="flex flex-col gap-4 m-5 p-5 rounded-xl">
-        <div className="font-semibold text-3xl mb-6">
+      <div className="flex flex-col gap-4 p-4">
+        <div className="font-semibold text-center text-primary text-3xl mb-6">
           Today&apos;s Checklist
         </div>
-        <AcademicData
-          heading="Academics"
-          setUnsavedChanges={setUnsavedChanges}
-        />
-        <CodingData heading="Coding" setUnsavedChanges={setUnsavedChanges} />
-        <PersonalData
-          heading="Personal"
-          setUnsavedChanges={setUnsavedChanges}
-        />
-        <Button
-          onClick={handleSave}
-          disabled={!unsavedChanges}
-          // variant={unsavedChanges ? '' : 'secondary'}
-        >
-          Save
-        </Button>
+        <div className="border rounded-lg shadow-sm">
+          <AcademicData
+            heading="Academics"
+            setUnsavedChanges={setUnsavedChanges}
+          />
+          <CodingData heading="Coding" setUnsavedChanges={setUnsavedChanges} />
+          <PersonalData
+            heading="Personal"
+            setUnsavedChanges={setUnsavedChanges}
+          />
+        </div>
+        {unsavedChanges && <Button onClick={handleSave}>Save Changes</Button>}
       </div>
     </div>
   );

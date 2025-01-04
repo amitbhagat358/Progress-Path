@@ -90,9 +90,9 @@ const Learnings: React.FC<LearningsProps> = ({
   }, [editableInputId]);
 
   return (
-    <div className="w-full p-6 border shadow-sm rounded-lg">
+    <div className="w-full p-6">
       <div className="flex justify-between items-center">
-        <div className="font-semibold">{heading}</div>
+        <div className="text-primary font-semibold">{heading}</div>
         <Button
           onClick={() => addLearning(learnings.length - 1)}
           variant="outline"
@@ -123,7 +123,7 @@ const Learnings: React.FC<LearningsProps> = ({
               onBlur={() => setEditableInputId(null)}
               onKeyDown={(e) => handleKeyDown(e, index, learning)}
               onClick={() => setEditableInputId(learning.id)}
-              className={`text-[16px] leading-none border-none focus-visible:ring-0 shadow-none ${
+              className={`text-lg border-none focus-visible:ring-0 shadow-none ${
                 editableInputId !== learning.id ? 'cursor-pointer' : ''
               }`}
             />

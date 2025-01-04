@@ -90,9 +90,9 @@ const PersonalData: React.FC<PersonalDataProps> = ({
   };
 
   return (
-    <div className="tasks w-full border shadow-sm rounded-lg p-6">
-      <div className="flex justify-between items-center mb-4">
-        <div className="font-semibold">{heading}</div>
+    <div className="tasks w-full  shadow-sm rounded-lg p-6">
+      <div className="flex justify-between mb-4">
+        <div className="text-primary text-center font-semibold">{heading}</div>
         <Button
           onClick={() => addItem(items.length - 1)}
           variant="outline"
@@ -129,7 +129,7 @@ const PersonalData: React.FC<PersonalDataProps> = ({
               onKeyDown={(e) => handleKeyDown(e, index, item)}
               onClick={() => setEditableInputId(item.id)}
               onChange={(e) => updateItem(item.id, e.target.value)}
-              className={`text-sm leading-none border-none focus-visible:ring-0 shadow-none ${
+              className={`text-lg leading-none border-none focus-visible:ring-0 shadow-none ${
                 editableInputId !== item.id ? 'cursor-pointer' : ''
               }`}
             />

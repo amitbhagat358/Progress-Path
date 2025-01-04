@@ -81,8 +81,8 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
   };
 
   return (
-    <div className="m-5 p-5 rounded-xl">
-      <div className="w-full flex text-3xl font-semibold mb-10">
+    <div className="p-4">
+      <div className="w-full text-center text-3xl text-primary font-semibold mb-10">
         What I have to do?
       </div>
 
@@ -93,7 +93,7 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
           type="text"
           autoComplete="off"
           placeholder="Enter new task"
-          className="flex-2"
+          className="flex-2 text-lg"
         />
         <Input name="deadline" type="date" className="flex-1" />
         <Button type="submit" variant="outline">
@@ -102,11 +102,11 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
       </form>
 
       {/* Task List */}
-      <div className="space-y-4">
+      <div className="py-3 border rounded-lg shadow-sm text-lg">
         {tasks.map((task) => (
           <div
             key={task.id}
-            className="group flex justify-between items-center p-3 border rounded-lg"
+            className="group flex justify-between items-center px-5 py-2 rounded-lg"
           >
             <div className="flex items-center gap-3">
               <Checkbox

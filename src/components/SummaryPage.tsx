@@ -139,63 +139,71 @@ const SummaryPage = ({
 
   return (
     <div>
-      <div className="w-full flex justify-center items-center p-3 border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b sticky top-0">
-        <div className="text-2xl font-bold w-1/4">Progress Path</div>
-        <div className="w-1/2 flex justify-center items-center">
+      <div className="w-full flex justify-between items-center p-4 mb-16 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0">
+        <div className="text-2xl font-bold pl-20">Progress Path</div>
+        <div className="flex justify-center items-center">
           {formatDateToStandard(
             date === 'today'
               ? formatDateToYYYYMMDD(new Date())
               : formatDateToYYYYMMDD(new Date(date))
           )}
         </div>
-        <div className="w-1/4 flex justify-end items-center gap-10 mr-10">
+        <div className="flex justify-end items-center gap-10 pr-20">
           {unsavedChanges && (
-            <span className="text-red-500 font-semibold">Unsaved Changes</span>
+            <div className="flex justify-center items-center">
+              <Button onClick={handleSubmit}>Save changes </Button>
+            </div>
           )}
           <ModeToggle />
           <ProfileIcon />
         </div>
       </div>
-      <div className="w-full border-b">
-        <div className="w-full flex rounded-lg">
-          <div className="done w-[25%] min-h-[300px] flex flex-col justify-start gap-5 p-5">
-            <div className="font-semibold text-xl text-center">Checklist</div>
-            <AcademicData
-              heading="Academics"
-              setUnsavedChanges={setUnsavedChanges}
-            />
-            <CodingData
-              heading="Coding"
-              setUnsavedChanges={setUnsavedChanges}
-            />
-            <PersonalData
-              heading="Personal"
-              setUnsavedChanges={setUnsavedChanges}
-            />
-          </div>
-          <div className="w-[40%] p-5">
-            <div className="w-full h-full flex flex-col justify-start gap-5">
-              <div className="font-semibold text-xl text-center">
-                Daily Reflection
-              </div>
-              <Hightlights
-                heading={'What did I achieve today?'}
+      <div className="w-full flex flex-col items-center gap-20">
+        <div className="w-full flex justify-center gap-20 rounded-lg">
+          <div className="done w-[35%] min-h-[300px] flex flex-col justify-start gap-5 p-5">
+            <div className="font-semibold text-3xl text-center text-primary">
+              Checklist
+            </div>
+            <div className="border shadow-sm rounded-lg">
+              <AcademicData
+                heading="Academics"
                 setUnsavedChanges={setUnsavedChanges}
               />
-              <Learnings
-                heading={'What did I learn today?'}
+              <CodingData
+                heading="Coding"
+                setUnsavedChanges={setUnsavedChanges}
+              />
+              <PersonalData
+                heading="Personal"
                 setUnsavedChanges={setUnsavedChanges}
               />
             </div>
           </div>
-          <div className="w-[35%] p-5">
-            <div className="font-semibold text-xl text-center">Diary</div>
-            <Diary setUnsavedChanges={setUnsavedChanges} />
+          <div className="w-[50%] p-5">
+            <div className="w-full h-full flex flex-col justify-start gap-5">
+              <div className="font-semibold text-3xl text-center text-primary">
+                Daily Reflection
+              </div>
+              <div className="border rounded-lg shadow-sm">
+                <Hightlights
+                  heading={'What did I achieve today?'}
+                  setUnsavedChanges={setUnsavedChanges}
+                />
+                <Learnings
+                  heading={'What did I learn today?'}
+                  setUnsavedChanges={setUnsavedChanges}
+                />
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <div className="submit mt-4 flex justify-center items-center">
-        <Button onClick={handleSubmit}>Submit</Button>
+
+        <div className="w-1/2 flex flex-col justify-center p-5">
+          <div className="font-semibold text-3xl text-center text-primary">
+            Diary
+          </div>
+          <Diary setUnsavedChanges={setUnsavedChanges} />
+        </div>
       </div>
     </div>
   );

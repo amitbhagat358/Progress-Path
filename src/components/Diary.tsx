@@ -22,14 +22,13 @@ const Diary: React.FC<DiaryProps> = ({ setUnsavedChanges }) => {
   const convertToHtml = async (input: string) => await marked(input);
 
   return (
-    <div className="w-full py-5 flex flex-col gap-10 h-full">
+    <div className="w-full py-5 h-full">
       <div>
-        {/* {editable && <div>Preview</div>} */}
         <div
-          className="prose prose-custom border p-3 rounded-lg min-h-[100px] overflow-auto"
+          className="!w-full prose prose-custom border p-3 rounded-lg min-h-[100px] overflow-auto"
           dangerouslySetInnerHTML={{ __html: htmlContent }}
         ></div>
-        <div className="flex justify-end mb-20">
+        <div className="w-full flex justify-end mb-20">
           {!editable && (
             <Button className="mt-5" onClick={() => setEditable(!editable)}>
               Edit
@@ -37,11 +36,11 @@ const Diary: React.FC<DiaryProps> = ({ setUnsavedChanges }) => {
           )}
         </div>
         {editable ? (
-          <div>
+          <div className="w-full">
             <AutosizeTextarea
               value={diaryContent}
               placeholder="How was your day?"
-              className="md:text-[16px] focus-visible:ring-0 !min-h-[300px]"
+              className="w-full md:text-[16px] focus-visible:ring-0 !min-h-[300px]"
               onChange={(e) => {
                 setUnsavedChanges(true);
                 setDiaryContent(e.target.value);

@@ -70,6 +70,7 @@ const config: Config = {
             '--tw-prose-code': 'hsl(var(--foreground))',
             '--tw-prose-pre-bg': 'hsl(var(--card))',
             '--tw-prose-pre-border': 'hsl(var(--border))',
+            maxWidth: 'none',
           },
         },
       }),

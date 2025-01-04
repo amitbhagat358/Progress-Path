@@ -29,7 +29,7 @@ const CalendarForSummary = () => {
         prefetch={true}
       >
         <Button className="ml-5">
-          <Pencil /> Add Summary
+          <Pencil /> Get Summary
         </Button>
       </Link>
     </div>

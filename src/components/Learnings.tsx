@@ -92,7 +92,7 @@ const Learnings: React.FC<LearningsProps> = ({
   return (
     <div className="w-full p-6">
       <div className="flex justify-between items-center">
-        <div className="text-primary font-semibold">{heading}</div>
+        <div className="font-semibold">{heading}</div>
         <Button
           onClick={() => addLearning(learnings.length - 1)}
           variant="outline"
@@ -108,7 +108,7 @@ const Learnings: React.FC<LearningsProps> = ({
             className="flex items-center my-1 group rounded"
           >
             <div className="w-[36px] h-[36px] flex justify-center items-center">
-              <span className="text-xl font-bold">•</span>
+              <span className="text-xl text-primary font-bold">•</span>
             </div>
             <Input
               type="text"

@@ -82,6 +82,11 @@
   }
 }
 
+.toast-class {
+  background-color: hsl(var(--primary));
+  border: none;
+}
+
 @layer base {
   * {
     @apply border-border;

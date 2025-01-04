@@ -82,8 +82,10 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
 
   return (
     <div className="p-4">
-      <div className="w-full text-center text-3xl text-primary font-semibold mb-10">
-        What I have to do?
+      <div className="w-full text-center text-3xl font-semibold mb-10">
+        <span className="pb-0.5 border-b border-b-primary">
+          What I have to do?
+        </span>
       </div>
 
       {/* Task Addition Form */}

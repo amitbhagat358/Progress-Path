@@ -51,7 +51,7 @@ export async function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="">
+      <SidebarHeader className="mt-4 mb-2">
         <SidebarTrigger />
       </SidebarHeader>
       <SidebarContent>

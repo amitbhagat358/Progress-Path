@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import { Plus, Trash } from 'lucide-react';
+import { GraduationCap, Heart, Plus, Trash } from 'lucide-react';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { useAcademicData } from '@/app/context/AcademicDataContext';
 import { CheckboxType } from '@/interfaces/summary';
@@ -92,7 +92,7 @@ const AcademicData: React.FC<AcademicDataProps> = ({
   return (
     <div className="tasks w-full p-6">
       <div className="flex justify-between items-center mb-4">
-        <div className="text-primary font-semibold">{heading}</div>
+        <div className="flex gap-3 text-base font-semibold">{heading}</div>
         <Button
           onClick={() => addItem(items.length - 1)}
           variant="outline"

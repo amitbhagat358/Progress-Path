@@ -11,8 +11,6 @@ export const formatDateToStandard = (dateStr: string | null): string => {
   }
   const date = new Date(dateStr);
   const day = date.getDate();
-  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const dayOfWeek = dayNames[date.getDay()];
   const monthNames = [
     'January',
     'February',
@@ -30,7 +28,7 @@ export const formatDateToStandard = (dateStr: string | null): string => {
   const month = monthNames[date.getMonth()];
   const year = date.getFullYear();
 
-  return `${day} ${month} ${year} (${dayOfWeek})`;
+  return `${day} ${month} ${year}`;
 };
 
 export const formatDateToYYYYMMDD = (date: Date | undefined) => {

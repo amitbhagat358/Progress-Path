@@ -26,6 +26,7 @@ import { toast } from 'sonner';
 import { postSummaryData } from '@/app/actions/summary';
 import { SummaryDataFromServer } from '@/interfaces/summary';
 import { ModeToggle } from './ui/mode-toggle';
+import Link from 'next/link';
 
 const SummaryPage = ({
   date,
@@ -138,8 +139,10 @@ const SummaryPage = ({
 
   return (
     <div>
-      <div className="w-full flex justify-between items-center p-4 mb-16 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0">
-        <div className="text-2xl font-bold pl-20">Progress Path</div>
+      <div className="w-full flex justify-between items-center p-4 mb-16 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0">
+        <div className="text-2xl font-bold pl-20">
+          <Link href={'/'}>Progress Path</Link>
+        </div>
         <div className="flex justify-center items-center">
           {formatDateToStandard(
             date === 'today'
@@ -157,10 +160,12 @@ const SummaryPage = ({
         </div>
       </div>
       <div className="w-full flex flex-col items-center gap-20">
-        <div className="w-full flex justify-center gap-20 rounded-lg">
+        <div className="w-full flex justify-center gap-10 rounded-lg">
           <div className="done w-[35%] min-h-[300px] flex flex-col justify-start gap-5 p-5">
-            <div className="font-semibold text-3xl text-center text-primary">
-              Checklist
+            <div className="font-semibold text-3xl text-center pb-5">
+              <span className="pb-0.5 border-b border-b-primary">
+                Checklist
+              </span>
             </div>
             <div className="border shadow-sm rounded-lg">
               <AcademicData
@@ -177,10 +182,12 @@ const SummaryPage = ({
               />
             </div>
           </div>
-          <div className="w-[50%] p-5">
+          <div className="w-[60%] p-5">
             <div className="w-full h-full flex flex-col justify-start gap-5">
-              <div className="font-semibold text-3xl text-center text-primary">
-                Daily Reflection
+              <div className="font-semibold text-3xl text-center pb-5">
+                <span className="pb-0.5 border-b border-b-primary">
+                  Daily Reflection
+                </span>
               </div>
               <div className="border rounded-lg shadow-sm">
                 <Hightlights
@@ -197,8 +204,8 @@ const SummaryPage = ({
         </div>
 
         <div className="w-1/2 flex flex-col justify-center p-5">
-          <div className="font-semibold text-3xl text-center text-primary">
-            Diary
+          <div className="font-semibold text-3xl text-center pb-5">
+            <span className="pb-0.5 border-b border-b-primary">Diary</span>
           </div>
           <Diary setUnsavedChanges={setUnsavedChanges} />
         </div>

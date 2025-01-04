@@ -10,7 +10,7 @@ const CalendarForSummary = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
   return (
     <div>
-      <div className="add-summary flex justify-center items-center w-[300px] h-[300px] ml-5 my-5">
+      <div className="flex h-[300px] m-5">
         <Calendar
           initialFocus
           mode="single"
@@ -21,17 +21,19 @@ const CalendarForSummary = () => {
           onSelect={(selectedDate) => {
             setDate(selectedDate || undefined);
           }}
-          className="border rounded-lg"
+          className="rounded-lg border"
         />
       </div>
-      <Link
-        href={`/dashboard/summary/${formatDateToYYYYMMDD(date)}`}
-        prefetch={true}
-      >
-        <Button className="ml-5">
-          <Pencil /> Get Summary
-        </Button>
-      </Link>
+      <div className="ml-5">
+        <Link
+          href={`/dashboard/summary/${formatDateToYYYYMMDD(date)}`}
+          prefetch={true}
+        >
+          <Button>
+            <Pencil /> Get Summary
+          </Button>
+        </Link>
+      </div>
     </div>
   );
 };

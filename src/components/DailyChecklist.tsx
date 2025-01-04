@@ -75,8 +75,10 @@ const DialyChecklist = ({ initialData }: DialyChecklistProps) => {
   return (
     <div>
       <div className="flex flex-col gap-4 p-4">
-        <div className="font-semibold text-center text-primary text-3xl mb-6">
-          Today&apos;s Checklist
+        <div className="font-semibold text-center text-3xl mb-6">
+          <span className="pb-0.5 border-b border-b-primary">
+            Today&apos;s Checklist
+          </span>
         </div>
         <div className="border rounded-lg shadow-sm">
           <AcademicData

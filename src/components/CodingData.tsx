@@ -2,11 +2,12 @@
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import { Plus, Trash } from 'lucide-react';
+import { Code, Plus, Trash } from 'lucide-react';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { useCodingData } from '@/app/context/CodingDataContext';
 
 import { CheckboxType } from '@/interfaces/summary';
+import Image from 'next/image';
 
 interface CodingDataProps {
   heading: string;
@@ -94,7 +95,7 @@ const CodingData: React.FC<CodingDataProps> = ({
   return (
     <div className="tasks w-full rounded-lg p-6">
       <div className="flex justify-between items-center mb-4">
-        <div className="text-primary font-semibold">{heading}</div>
+        <div className="flex gap-3 text-base font-semibold">{heading}</div>
         <Button
           onClick={() => addItem(items.length - 1)}
           variant="outline"

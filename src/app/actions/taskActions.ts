@@ -57,7 +57,11 @@ export const deleteTask = async (id: number) => {
   }
 };
 
-export const editTask = async (id: number, task: string, deadline?: string) => {
+export const editTask = async (
+  id: number,
+  task: string,
+  deadline: Date | undefined
+) => {
   try {
     const userId = await getUserIdFromCookies();
     await connectToDatabase();

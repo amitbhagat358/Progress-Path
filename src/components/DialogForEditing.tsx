@@ -4,7 +4,6 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -13,42 +12,41 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dispatch, SetStateAction, useState } from 'react';
-import { format } from 'date-fns';
 import { Pencil } from 'lucide-react';
-
-type TasksType = {
-  id: number;
-  task: string;
-  completed: boolean;
-  deadline: Date | null;
-};
+import { CalendForInput } from './CalendarInput';
+import { toast } from 'sonner';
+import { TasksType } from '@/interfaces/task';
 
 export function DialogForEditing({
   setTasks,
   task,
+  tasks,
 }: {
   setTasks: Dispatch<SetStateAction<TasksType[]>>;
   task: TasksType;
+  tasks: TasksType[];
 }) {
   const [taskName, setTaskName] = useState(task.task);
-  const [deadline, setDeadline] = useState(
-    task.deadline ? format(new Date(task?.deadline), 'dd/MM/yyyy') : ''
+  const [deadline, setDeadline] = useState<Date | undefined>(
+    task.deadline ? task.deadline : undefined
   );
 
   const handleEditTask = async () => {
+    const tasksBeforeEdit = [...tasks];
+    setTasks((tasks) =>
+      tasks.map((t) =>
+        t.id === task.id ? { ...t, task: taskName, deadline } : t
+      )
+    );
+
     try {
       await editTask(task.id, taskName, deadline);
-      const parsedDeadline = deadline ? new Date(deadline) : null;
-
-      setTasks((tasks) =>
-        tasks.map((t) =>
-          t.id === task.id
-            ? { ...t, task: taskName, deadline: parsedDeadline }
-            : t
-        )
-      );
     } catch (error) {
-      console.error('Failed to edit task', error);
+      setTasks(tasksBeforeEdit);
+      toast.error('Error updating the task', {
+        duration: 3000,
+      });
+      return;
     }
   };
 
@@ -83,13 +81,9 @@ export function DialogForEditing({
             <Label htmlFor="username" className="text-right">
               Deadline
             </Label>
-            <Input
-              id="deadline"
-              type="date"
-              value={deadline}
-              onChange={(e) => setDeadline(e.target.value)}
-              className="col-span-3"
-            />
+            <div className="col-span-3">
+              <CalendForInput date={deadline} onDateChange={setDeadline} />
+            </div>
           </div>
         </div>
         <DialogFooter>

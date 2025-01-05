@@ -3,28 +3,18 @@
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import {
-  addTask,
-  deleteTask,
-  editTask,
-  toggleTask,
-} from '@/app/actions/taskActions';
+import { addTask, deleteTask, toggleTask } from '@/app/actions/taskActions';
 import { format } from 'date-fns';
 import { DialogForEditing } from './DialogForEditing';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { Plus, Trash } from 'lucide-react';
-
-// Task type definition
-type TasksType = {
-  id: number;
-  task: string;
-  completed: boolean;
-  deadline: Date | null;
-};
+import { Trash } from 'lucide-react';
+import { CalendForInput } from './CalendarInput';
+import { TasksType } from '@/interfaces/task';
 
 const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
   const [tasks, setTasks] = useState(initialTasks);
+  const [deadline, setDeadline] = useState<Date | undefined>(undefined);
 
   const handleToggle = async (taskId: number) => {
     setTasks((tasks) =>
@@ -41,7 +31,7 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
           task.id === taskId ? { ...task, completed: !task.completed } : task
         )
       );
-      console.error('Failed to update task', error);
+      return;
     }
   };
 
@@ -51,18 +41,41 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
     const form = e.currentTarget;
     const formData = new FormData(e.currentTarget);
     const task = formData.get('task') as string;
-    const deadline = formData.get('deadline') as string;
+
+    //@ts-expect-error don't know
+    if (deadline) formData.append('deadline', deadline);
+
+    if (task === '') {
+      toast.error('Task cannot be empty', {
+        duration: 3000,
+      });
+      return;
+    }
 
     const newTask = {
       id: Date.now(),
       task,
       completed: false,
-      deadline: deadline ? new Date(deadline) : null,
+      deadline: deadline ? new Date(deadline) : undefined,
     };
 
+    const tasksBeforeAdd = [...tasks];
     setTasks((tasks) => [newTask, ...tasks]);
-    await addTask(formData);
-    form.reset();
+
+    try {
+      await addTask(formData);
+      toast.success('Task added successfully 👍', {
+        duration: 3000,
+      });
+      form.reset();
+      setDeadline(undefined);
+    } catch (error) {
+      toast.error('Error adding task', {
+        description: 'Please try again.',
+        duration: 3000,
+      });
+      setTasks(tasksBeforeAdd);
+    }
   };
 
   const handleDeleteTask = async (taskId: number) => {
@@ -71,13 +84,20 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
 
     try {
       await deleteTask(taskId);
+      toast.success('Task deleted successfully 👍', {
+        duration: 3000,
+      });
     } catch (error) {
       setTasks(tasksBeforeDelte);
       toast.error('Error deleting task', {
-        description: 'Please try again later',
+        description: 'Try refreshing the page',
         duration: 3000,
       });
     }
+  };
+
+  const handleDateChange = (date: Date | undefined) => {
+    setDeadline(date);
   };
 
   return (
@@ -89,17 +109,25 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
       </div>
 
       {/* Task Addition Form */}
-      <form onSubmit={handleAddTask} className="flex gap-2 mb-5">
-        <Input
-          name="task"
-          type="text"
-          autoComplete="off"
-          placeholder="Enter new task"
-          className="flex-2"
-        />
-        <Input name="deadline" type="date" className="flex-1" />
-        <Button type="submit" variant="outline">
-          <Plus />
+      <form onSubmit={handleAddTask} className="flex flex-col gap-2 mb-5">
+        <div className="flex gap-5">
+          <Input
+            name="task"
+            type="text"
+            autoComplete="off"
+            placeholder="Enter new task..."
+            className="flex-2"
+          />
+          <div className="flex-1">
+            <CalendForInput onDateChange={handleDateChange} date={deadline} />
+          </div>
+        </div>
+        <Button
+          type="submit"
+          variant="outline"
+          className="hover:bg-primary hover:text-background"
+        >
+          Add Task
         </Button>
       </form>
 
@@ -139,7 +167,7 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
 
             {/* Actions */}
             <div className="flex items-center gap-2">
-              <DialogForEditing setTasks={setTasks} task={task} />
+              <DialogForEditing setTasks={setTasks} task={task} tasks={tasks} />
               <Button
                 variant="ghost"
                 className="opacity-0 group-focus-within:opacity-100 group-hover:opacity-100 transition-opacity duration-400"

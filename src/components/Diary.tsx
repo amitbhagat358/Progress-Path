@@ -28,6 +28,7 @@ const Diary: React.FC<DiaryProps> = ({ setUnsavedChanges }) => {
           className="!w-full prose prose-custom border p-3 rounded-lg min-h-[100px] overflow-auto"
           dangerouslySetInnerHTML={{ __html: htmlContent }}
         ></div>
+        <div className="text-primary text-sm font-bold">(M↓ enabled)</div>
         <div className="w-full flex justify-end mb-20">
           {!editable && (
             <Button className="mt-5" onClick={() => setEditable(!editable)}>

@@ -30,6 +30,7 @@ import {
 import { useUserContext } from '@/app/context/userContext';
 import { logout } from '@/app/actions/auth';
 import { userDataTypeForSidebar } from '@/interfaces/summary';
+import Link from 'next/link';
 
 export function NavUser({ user }: { user: userDataTypeForSidebar | null }) {
   const { isMobile } = useSidebar();
@@ -87,10 +88,12 @@ export function NavUser({ user }: { user: userDataTypeForSidebar | null }) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <User />
-                Profile
-              </DropdownMenuItem>
+              <Link href={'/profile'}>
+                <DropdownMenuItem>
+                  <User />
+                  Profile
+                </DropdownMenuItem>
+              </Link>
               <DropdownMenuItem>
                 <Settings />
                 Settings

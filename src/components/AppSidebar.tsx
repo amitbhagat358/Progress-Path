@@ -3,6 +3,7 @@ import {
   Home,
   SquareCheckBig as Task,
   CalendarCheck2 as Checklist,
+  Target,
 } from 'lucide-react';
 
 import {
@@ -20,6 +21,7 @@ import {
 } from '@/components/ui/sidebar';
 import { NavUser } from './NavUser';
 import { getUserData, getUserIdFromCookies } from '@/lib/serverUtils';
+import Link from 'next/link';
 
 // Menu items.
 const items = [
@@ -43,6 +45,11 @@ const items = [
     url: '/dashboard/get-summary',
     icon: Calendar,
   },
+  {
+    title: 'Purpose of Study',
+    url: '/purpose-of-study',
+    icon: Target,
+  },
 ];
 
 export async function AppSidebar() {
@@ -61,10 +68,10 @@ export async function AppSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title} className="mb-1">
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <Link href={item.url} prefetch>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

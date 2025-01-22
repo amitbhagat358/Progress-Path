@@ -47,7 +47,7 @@ export default function RootLayout({
                           <AppSidebar />
                           {children}
                           <Toaster
-                            position="top-center"
+                            position="bottom-right"
                             className="toaster group"
                             toastOptions={{
                               classNames: {

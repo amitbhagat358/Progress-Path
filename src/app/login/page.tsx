@@ -1,6 +1,6 @@
 "use client";
 
-import { login } from "@/app/actions/auth"; // Replace with your login action
+import { login } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
@@ -34,7 +34,10 @@ export default function LoginForm() {
 
   return (
     <div className="w-full p-5 h-screen flex flex-col justify-center items-center gap-10">
-      <form action={action} className="w-full border shadow-lg rounded-lg p-5">
+      <form
+        action={action}
+        className="w-full sm:w-[450px] border shadow-lg rounded-lg p-5"
+      >
         <h1 className="text-2xl font-semibold mb-6 text-center">Login</h1>
 
         {/* Email Field */}

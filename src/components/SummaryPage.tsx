@@ -140,7 +140,7 @@ const SummaryPage = ({
 
   return (
     <div className="w-full">
-      <div className="w-full flex flex-col justify-between p-5 pb-0 mb-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0">
+      <div className="w-full flex flex-col justify-between p-3 pb-0 mb-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0">
         <div className="w-full flex justify-between mb-2">
           <SidebarTrigger />
           <div className="flex text-2xl font-bold ">

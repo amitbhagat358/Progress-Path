@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { signup } from '@/app/actions/auth';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import Link from 'next/link';
-import { useActionState, useEffect, useState } from 'react';
-import { useUserContext } from '../context/userContext';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
-import { EyeIcon, EyeOffIcon } from 'lucide-react';
+import { signup } from "@/app/actions/auth";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import Link from "next/link";
+import { useActionState, useEffect, useState } from "react";
+import { useUserContext } from "../context/userContext";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 export default function SignupForm() {
   const [state, action, pending] = useActionState(signup, undefined);
@@ -21,10 +21,10 @@ export default function SignupForm() {
     if (!pending) {
       if (state?.userId) {
         loginUser(state.userId);
-        toast.success('Sign Up Successful', {
-          description: 'Welcome !',
+        toast.success("Sign Up Successful", {
+          description: "Welcome !",
         });
-        router.push('/dashboard');
+        router.push("/dashboard");
       } else if (state?.message) {
         toast.error(state.message, {
           description: state.description,
@@ -34,10 +34,10 @@ export default function SignupForm() {
   }, [state, pending]);
 
   return (
-    <div className="w-full h-screen flex flex-col justify-center items-center gap-10">
+    <div className="w-full h-screen flex flex-col justify-center items-center gap-10 p-5">
       <form
         action={action}
-        className="w-[448px] border shadow-lg rounded-lg p-10"
+        className="w-full sm:w-[450px] border shadow-lg rounded-lg p-5"
       >
         <h1 className="text-2xl font-semibold mb-6 text-center">Sign Up</h1>
 
@@ -59,7 +59,7 @@ export default function SignupForm() {
 
         {/* Email Field */}
         <div className="mb-4">
-          <label htmlFor="email" className="block  font-medium mb-2">
+          <label htmlFor="email" className="block font-medium mb-2">
             Email
           </label>
           <Input
@@ -80,7 +80,7 @@ export default function SignupForm() {
           </label>
           <div className="relative">
             <Input
-              type={passwordVisible ? 'text' : 'password'}
+              type={passwordVisible ? "text" : "password"}
               id="password"
               name="password"
               placeholder="Enter your password"
@@ -116,15 +116,15 @@ export default function SignupForm() {
           disabled={pending}
           type="submit"
           className={`w-full p-2 mt-4 font-semibold  rounded-md  focus:outline-none focus:ring-2  ${
-            pending ? 'opacity-50 cursor-not-allowed' : ''
+            pending ? "opacity-50 cursor-not-allowed" : ""
           }`}
         >
-          {pending ? 'Submitting...' : 'Sign Up'}
+          {pending ? "Submitting..." : "Sign Up"}
         </Button>
       </form>
       <div>
         Already have an account?
-        <Link href={'/login'}>
+        <Link href={"/login"}>
           <span className="ml-3 underline">Login</span>
         </Link>
       </div>

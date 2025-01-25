@@ -33,7 +33,7 @@ export default function RootLayout({
                 <LearningsProvider>
                   <DiaryContextProvider>
                     <body>
-                      <SidebarProvider className="duration-2000">
+                      <SidebarProvider>
                         <ThemeProvider
                           attribute="class"
                           defaultTheme="system"

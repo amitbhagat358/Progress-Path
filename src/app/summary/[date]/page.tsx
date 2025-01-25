@@ -1,4 +1,4 @@
-import SummaryPageWrapper from './SummaryPageWrapper';
+import SummaryPageWrapper from "./SummaryPageWrapper";
 
 const GetSummary = async ({
   params,

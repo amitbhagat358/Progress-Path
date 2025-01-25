@@ -1,10 +1,10 @@
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { GraduationCap, Heart, Plus, Trash } from 'lucide-react';
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
-import { useAcademicData } from '@/app/context/AcademicDataContext';
-import { CheckboxType } from '@/interfaces/summary';
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { GraduationCap, Heart, Plus, Trash } from "lucide-react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { useAcademicData } from "@/app/context/AcademicDataContext";
+import { CheckboxType } from "@/interfaces/summary";
 
 interface AcademicDataProps {
   heading: string;
@@ -45,7 +45,7 @@ const AcademicData: React.FC<AcademicDataProps> = ({
 
   const addItem = (index: number) => {
     setUnsavedChanges(true);
-    const newDataItem = { id: Date.now(), name: '', checked: false };
+    const newDataItem = { id: Date.now(), name: "", checked: false };
     setItems((prevItems) => {
       const updatedData = [...prevItems];
       updatedData.splice(index + 1, 0, newDataItem);
@@ -67,19 +67,19 @@ const AcademicData: React.FC<AcademicDataProps> = ({
     index: number,
     item: CheckboxType
   ) => {
-    if (e.key === 'ArrowUp') {
+    if (e.key === "ArrowUp") {
       if (index > 0) {
         setEditableInputId(items[index - 1].id);
         editableInputRef.current[items[index - 1].id]?.focus();
       }
-    } else if (e.key === 'ArrowDown') {
+    } else if (e.key === "ArrowDown") {
       if (index < items.length - 1) {
         setEditableInputId(items[index + 1].id);
         editableInputRef.current[items[index + 1].id]?.focus();
       }
-    } else if (e.key === 'Enter') {
+    } else if (e.key === "Enter") {
       addItem(index);
-    } else if (item.name === '' && e.key === 'Backspace') {
+    } else if (item.name === "" && e.key === "Backspace") {
       e.preventDefault();
       removeItem(item.id);
       if (index > 0) {
@@ -129,11 +129,11 @@ const AcademicData: React.FC<AcademicDataProps> = ({
             onClick={() => setEditableInputId(item.id)}
             onChange={(e) => updateItem(item.id, e.target.value)}
             className={`text-base leading-none border-none focus-visible:ring-0 shadow-none ${
-              editableInputId !== item.id ? 'cursor-pointer' : ''
+              editableInputId !== item.id ? "cursor-pointer" : ""
             }`}
           />
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
             onClick={() => removeItem(item.id)}
             className="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-200"

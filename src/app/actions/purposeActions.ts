@@ -37,8 +37,9 @@ export async function updatePurpose(data: PurposeType[]) {
       { upsert: true, new: true }
     );
     revalidatePath('/purpose-of-study');
+    return data;
   } catch (err) {
     console.error('Error updating purposes: ', err);
-    return null;
+    return [];
   }
 }

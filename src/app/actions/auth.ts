@@ -1,21 +1,21 @@
-'use server';
+"use server";
 import {
   SignupFormSchema,
   FormState,
   LoginFormState,
   LoginFormSchema,
-} from '@/lib/definitions';
-import { connectToDatabase } from '@/lib/mongodb';
-import bcrypt from 'bcryptjs';
-import { createSession, deleteSession } from '@/lib/sessions';
-import { redirect } from 'next/navigation';
-import Users from '@/schemas/UserSchema';
+} from "@/lib/definitions";
+import { connectToDatabase } from "@/lib/mongodb";
+import bcrypt from "bcryptjs";
+import { createSession, deleteSession } from "@/lib/sessions";
+import { redirect } from "next/navigation";
+import Users from "@/schemas/UserSchema";
 
 export async function signup(state: FormState, formData: FormData) {
   const validatedFields = SignupFormSchema.safeParse({
-    username: formData.get('username'),
-    email: formData.get('email'),
-    password: formData.get('password'),
+    username: formData.get("username"),
+    email: formData.get("email"),
+    password: formData.get("password"),
   });
 
   if (!validatedFields.success) {
@@ -30,7 +30,7 @@ export async function signup(state: FormState, formData: FormData) {
   const user = await Users.findOne({ email });
   if (user) {
     return {
-      message: 'User already exists',
+      message: "User already exists",
       description: "Please login if you're already a user",
     };
   }
@@ -46,8 +46,8 @@ export async function signup(state: FormState, formData: FormData) {
   const userId = newUser._id.toString();
   if (!userId) {
     return {
-      message: 'An error occurred while creating your account.',
-      description: 'Please try again',
+      message: "An error occurred while creating your account.",
+      description: "Please try again",
     };
   }
   await createSession(userId);
@@ -57,8 +57,8 @@ export async function signup(state: FormState, formData: FormData) {
 
 export async function login(state: LoginFormState, formData: FormData) {
   const validatedFields = LoginFormSchema.safeParse({
-    email: formData.get('email'),
-    password: formData.get('password'),
+    email: formData.get("email"),
+    password: formData.get("password"),
   });
 
   if (!validatedFields.success) {
@@ -73,7 +73,7 @@ export async function login(state: LoginFormState, formData: FormData) {
   const user = await Users.findOne({ email });
   if (!user) {
     return {
-      message: 'User Not Found',
+      message: "User Not Found",
       description: "Please check the email or sign up if you haven't already",
     };
   }
@@ -83,8 +83,8 @@ export async function login(state: LoginFormState, formData: FormData) {
 
   if (!isPasswordCorrect) {
     return {
-      message: 'Invalid Password',
-      description: 'Please try again.',
+      message: "Invalid Password",
+      description: "Please try again.",
     };
   }
   await createSession(user._id.toString());
@@ -93,5 +93,5 @@ export async function login(state: LoginFormState, formData: FormData) {
 
 export async function logout() {
   await deleteSession();
-  redirect('/login');
+  // redirect('/login');
 }

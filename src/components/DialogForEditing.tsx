@@ -1,5 +1,5 @@
-import { editTask } from '@/app/actions/taskActions';
-import { Button } from '@/components/ui/button';
+import { editTask } from "@/app/actions/taskActions";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -8,14 +8,14 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Dispatch, SetStateAction, useState } from 'react';
-import { Pencil } from 'lucide-react';
-import { CalendForInput } from './CalendarInput';
-import { toast } from 'sonner';
-import { TasksType } from '@/interfaces/task';
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Dispatch, SetStateAction, useState } from "react";
+import { Pencil } from "lucide-react";
+import { CalendForInput } from "./CalendarInput";
+import { toast } from "sonner";
+import { TasksType } from "@/interfaces/task";
 
 export function DialogForEditing({
   setTasks,
@@ -43,7 +43,7 @@ export function DialogForEditing({
       await editTask(task.id, taskName, deadline);
     } catch (error) {
       setTasks(tasksBeforeEdit);
-      toast.error('Error updating the task', {
+      toast.error("Error updating the task", {
         duration: 3000,
       });
       return;
@@ -53,10 +53,7 @@ export function DialogForEditing({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          className="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-400"
-        >
+        <Button variant="outline">
           <Pencil />
           Edit
         </Button>

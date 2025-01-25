@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   BadgeCheck,
@@ -9,9 +9,9 @@ import {
   Settings,
   Sparkles,
   User,
-} from 'lucide-react';
+} from "lucide-react";
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,20 +20,22 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '@/components/ui/sidebar';
-import { useUserContext } from '@/app/context/userContext';
-import { logout } from '@/app/actions/auth';
-import { userDataTypeForSidebar } from '@/interfaces/summary';
-import Link from 'next/link';
+} from "@/components/ui/sidebar";
+import { useUserContext } from "@/app/context/userContext";
+import { logout } from "@/app/actions/auth";
+import { userDataTypeForSidebar } from "@/interfaces/summary";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export function NavUser({ user }: { user: userDataTypeForSidebar | null }) {
-  const { isMobile } = useSidebar();
+  const router = useRouter();
+  const { isMobile, toggleSidebar } = useSidebar();
   const { logoutUser } = useUserContext();
 
   const handleLogout = async () => {
@@ -42,6 +44,9 @@ export function NavUser({ user }: { user: userDataTypeForSidebar | null }) {
 
     // to remove session from the cookies
     await logout();
+
+    toggleSidebar();
+    router.push("/login");
   };
 
   return (
@@ -67,7 +72,7 @@ export function NavUser({ user }: { user: userDataTypeForSidebar | null }) {
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-            side={isMobile ? 'bottom' : 'right'}
+            side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
           >
@@ -88,7 +93,7 @@ export function NavUser({ user }: { user: userDataTypeForSidebar | null }) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <Link href={'/profile'}>
+              <Link href={"/profile"}>
                 <DropdownMenuItem>
                   <User />
                   Profile

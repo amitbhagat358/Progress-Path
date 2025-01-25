@@ -1,32 +1,33 @@
-'use client';
-import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
+"use client";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   formatDateToStandard,
   formatDateToYYYYMMDD,
   isValidDateFormat,
-} from '@/lib/utils';
+} from "@/lib/utils";
 
-import AcademicData from './AcademicData';
-import CodingData from './CodingData';
-import PersonalData from './PersonalData';
-import Hightlights from './Highlights';
-import Learnings from './Learnings';
-import Diary from './Diary';
+import AcademicData from "./AcademicData";
+import CodingData from "./CodingData";
+import PersonalData from "./PersonalData";
+import Hightlights from "./Highlights";
+import Learnings from "./Learnings";
+import Diary from "./Diary";
 
-import { useHighlights } from '@/app/context/HighlightsContext';
-import { useAcademicData } from '@/app/context/AcademicDataContext';
-import { useCodingData } from '@/app/context/CodingDataContext';
-import { usePersonalData } from '@/app/context/PersonalDataContext';
-import { useLearnings } from '@/app/context/LearningsContext';
-import { useDiary } from '@/app//context/DiaryContext';
+import { useHighlights } from "@/app/context/HighlightsContext";
+import { useAcademicData } from "@/app/context/AcademicDataContext";
+import { useCodingData } from "@/app/context/CodingDataContext";
+import { usePersonalData } from "@/app/context/PersonalDataContext";
+import { useLearnings } from "@/app/context/LearningsContext";
+import { useDiary } from "@/app//context/DiaryContext";
 
-import { toast } from 'sonner';
+import { toast } from "sonner";
 
-import { postSummaryData } from '@/app/actions/summary';
-import { SummaryDataFromServer } from '@/interfaces/summary';
-import { ModeToggle } from './ui/mode-toggle';
-import Link from 'next/link';
+import { postSummaryData } from "@/app/actions/summary";
+import { SummaryDataFromServer } from "@/interfaces/summary";
+import { ModeToggle } from "./ui/mode-toggle";
+import Link from "next/link";
+import { SidebarTrigger } from "./ui/sidebar";
 
 const SummaryPage = ({
   date,
@@ -58,9 +59,9 @@ const SummaryPage = ({
   }, [initialData]);
 
   const isDateCorrect = () => {
-    if (date !== 'today' && !isValidDateFormat(date)) {
+    if (date !== "today" && !isValidDateFormat(date)) {
       toast.error(
-        'Please enter a valid date in YYYY-MM-DD format or enter today',
+        "Please enter a valid date in YYYY-MM-DD format or enter today",
         {
           duration: 4000,
         }
@@ -76,7 +77,7 @@ const SummaryPage = ({
     }
 
     if (!unsavedChanges) {
-      toast.success('Already saved the data', { duration: 3000 });
+      toast.success("Already saved the data", { duration: 3000 });
       return;
     }
 
@@ -94,8 +95,8 @@ const SummaryPage = ({
       toast.success(`${res.message}`, { duration: 3000 });
       setUnsavedChanges(false);
     } catch (error) {
-      toast.error('An unexpected error occurred.', {
-        description: 'Please try again later.',
+      toast.error("An unexpected error occurred.", {
+        description: "Please try again later.",
         duration: 3000,
       });
     }
@@ -103,16 +104,16 @@ const SummaryPage = ({
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key === 's') {
+      if (event.ctrlKey && event.key === "s") {
         event.preventDefault();
         handleSubmit();
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [
     unsavedChanges,
@@ -131,39 +132,42 @@ const SummaryPage = ({
       }
     };
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener("beforeunload", handleBeforeUnload);
     return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [unsavedChanges]);
 
   return (
-    <div>
-      <div className="w-full flex justify-between items-center p-4 mb-16 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0">
-        <div className="text-2xl font-bold pl-20">
-          <Link href={'/'}>Progress Path</Link>
+    <div className="w-full">
+      <div className="w-full flex flex-col justify-between p-5 pb-0 mb-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0">
+        <div className="w-full flex justify-between mb-2">
+          <SidebarTrigger />
+          <div className="flex text-2xl font-bold ">
+            <Link href={"/"}>Progress Path</Link>
+          </div>
+          <ModeToggle />
         </div>
         <div className="flex justify-center items-center">
           {formatDateToStandard(
-            date === 'today'
+            date === "today"
               ? formatDateToYYYYMMDD(new Date())
               : formatDateToYYYYMMDD(new Date(date))
           )}
         </div>
-        <div className="flex justify-end items-center gap-10 pr-20">
+        <div className="flex justify-center items-center mt-5 mb-2">
           {unsavedChanges && (
             <div className="flex justify-center items-center">
               <Button onClick={handleSubmit}>Save changes </Button>
             </div>
           )}
-          <ModeToggle />
         </div>
       </div>
       <div className="w-full flex flex-col items-center gap-20">
-        <div className="w-full flex justify-center gap-10 rounded-lg">
-          <div className="done w-[35%] min-h-[300px] flex flex-col justify-start gap-5 p-5">
+        <div className="w-full flex flex-col md:flex-row justify-center gap-10 rounded-lg">
+          <div className="done w-full md:w-[35%] min-h-[300px] flex flex-col justify-start gap-5 p-5">
             <div className="font-semibold text-3xl text-center pb-5">
-              <span className="pb-0.5 border-b border-b-primary">
+              <span className="underline underline-offset-8 decoration-1 decoration-primary">
                 Checklist
               </span>
             </div>
@@ -182,20 +186,20 @@ const SummaryPage = ({
               />
             </div>
           </div>
-          <div className="w-[60%] p-5">
+          <div className="w-full md:w-[60%] p-5">
             <div className="w-full h-full flex flex-col justify-start gap-5">
               <div className="font-semibold text-3xl text-center pb-5">
-                <span className="pb-0.5 border-b border-b-primary">
+                <span className="underline underline-offset-8 decoration-1 decoration-primary">
                   Daily Reflection
                 </span>
               </div>
               <div className="border rounded-lg shadow-sm">
                 <Hightlights
-                  heading={'What did I achieve today?'}
+                  heading={"What did I achieve today?"}
                   setUnsavedChanges={setUnsavedChanges}
                 />
                 <Learnings
-                  heading={'What did I learn today?'}
+                  heading={"What did I learn today?"}
                   setUnsavedChanges={setUnsavedChanges}
                 />
               </div>
@@ -203,9 +207,11 @@ const SummaryPage = ({
           </div>
         </div>
 
-        <div className="w-1/2 flex flex-col justify-center p-5">
+        <div className="w-full md:w-1/2 flex flex-col justify-center p-5">
           <div className="font-semibold text-3xl text-center pb-5">
-            <span className="pb-0.5 border-b border-b-primary">Diary</span>
+            <span className="underline underline-offset-8 decoration-1 decoration-primary">
+              Diary
+            </span>
           </div>
           <Diary setUnsavedChanges={setUnsavedChanges} />
         </div>

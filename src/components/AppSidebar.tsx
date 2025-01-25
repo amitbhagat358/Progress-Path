@@ -4,7 +4,7 @@ import {
   SquareCheckBig as Task,
   CalendarCheck2 as Checklist,
   Target,
-} from 'lucide-react';
+} from "lucide-react";
 
 import {
   Sidebar,
@@ -12,42 +12,41 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarTrigger,
-} from '@/components/ui/sidebar';
-import { NavUser } from './NavUser';
-import { getUserData, getUserIdFromCookies } from '@/lib/serverUtils';
-import Link from 'next/link';
+} from "@/components/ui/sidebar";
+import { NavUser } from "./NavUser";
+import { getUserData, getUserIdFromCookies } from "@/lib/serverUtils";
+import Link from "next/link";
 
 // Menu items.
 const items = [
   {
-    title: 'Dashboard',
-    url: '/dashboard',
+    title: "Dashboard",
+    url: "/dashboard",
     icon: Home,
   },
   {
     title: "Today's Checklist",
-    url: '/checklist',
+    url: "/checklist",
     icon: Checklist,
   },
   {
-    title: 'Tasks',
-    url: '/tasks',
+    title: "Tasks",
+    url: "/tasks",
     icon: Task,
   },
   {
-    title: 'Summary Calendar',
-    url: '/dashboard/get-summary',
+    title: "Summary Calendar",
+    url: "/get-summary",
     icon: Calendar,
   },
   {
-    title: 'Purpose of Study',
-    url: '/purpose-of-study',
+    title: "Purpose of Study",
+    url: "/purpose-of-study",
     icon: Target,
   },
 ];
@@ -58,7 +57,7 @@ export async function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="mt-4 mb-2">
+      <SidebarHeader className="mt-2 mb-2">
         <SidebarTrigger />
       </SidebarHeader>
       <SidebarContent>
@@ -79,7 +78,9 @@ export async function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>{userId && <NavUser user={userData} />}</SidebarFooter>
+      <SidebarFooter>
+        {userId && <NavUser user={userData ? userData : null} />}
+      </SidebarFooter>
     </Sidebar>
   );
 }

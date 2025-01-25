@@ -1,15 +1,16 @@
-'use client';
-import React, { useEffect, useState } from 'react';
-import { useAcademicData } from '@/app/context/AcademicDataContext';
-import { useCodingData } from '../app/context/CodingDataContext';
-import { usePersonalData } from '../app/context/PersonalDataContext';
-import AcademicData from './AcademicData';
-import CodingData from './CodingData';
-import PersonalData from './PersonalData';
-import { Button } from '@/components/ui/button';
-import { postDailyChecklist } from '../app/actions/dailyChecklist';
-import { DailyChecklistType } from '@/interfaces/checklist';
-import { toast } from 'sonner';
+"use client";
+import React, { useEffect, useState } from "react";
+import { useAcademicData } from "@/app/context/AcademicDataContext";
+import { useCodingData } from "../app/context/CodingDataContext";
+import { usePersonalData } from "../app/context/PersonalDataContext";
+import AcademicData from "./AcademicData";
+import CodingData from "./CodingData";
+import PersonalData from "./PersonalData";
+import { Button } from "@/components/ui/button";
+import { postDailyChecklist } from "../app/actions/dailyChecklist";
+import { DailyChecklistType } from "@/interfaces/checklist";
+import { toast } from "sonner";
+import { Header } from "./Header";
 
 interface DialyChecklistProps {
   initialData: DailyChecklistType | null;
@@ -27,7 +28,7 @@ const DialyChecklist = ({ initialData }: DialyChecklistProps) => {
 
   const handleSave = async () => {
     if (!unsavedChanges) {
-      toast.success('Already saved the data', { duration: 3000 });
+      toast.success("Already saved the data", { duration: 3000 });
       return;
     }
 
@@ -41,9 +42,9 @@ const DialyChecklist = ({ initialData }: DialyChecklistProps) => {
       toast.success(`${res.message}`, { duration: 3000 });
       setUnsavedChanges(false);
     } catch (err) {
-      console.log('Error saving data:', err);
-      toast.error('An unexpected error occurred.', {
-        description: 'Please try again later.',
+      console.log("Error saving data:", err);
+      toast.error("An unexpected error occurred.", {
+        description: "Please try again later.",
         duration: 3000,
       });
     }
@@ -59,24 +60,25 @@ const DialyChecklist = ({ initialData }: DialyChecklistProps) => {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key === 's') {
+      if (event.ctrlKey && event.key === "s") {
         event.preventDefault();
         handleSave();
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [unsavedChanges, AcademicDataItems, CodingDataItems, PersonalDataItems]);
 
   return (
-    <div>
-      <div className="flex flex-col gap-4 p-4">
-        <div className="font-semibold text-center text-3xl mb-6">
-          <span className="pb-0.5 border-b border-b-primary">
+    <div className="w-full">
+      <Header />
+      <div className="w-full md:w-[70%] flex flex-col gap-4 m-auto p-5">
+        <div className="font-semibold md:text-center text-3xl mb-6">
+          <span className="underline underline-offset-8 decoration-1 decoration-primary">
             Today&apos;s Checklist
           </span>
         </div>

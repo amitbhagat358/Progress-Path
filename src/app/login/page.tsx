@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { login } from '@/app/actions/auth'; // Replace with your login action
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import Link from 'next/link';
-import { useActionState, useEffect, useState } from 'react';
-import { toast } from 'sonner';
-import { useUserContext } from '../context/userContext';
-import { useRouter } from 'next/navigation';
-import { EyeIcon, EyeOffIcon } from 'lucide-react';
+import { login } from "@/app/actions/auth"; // Replace with your login action
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import Link from "next/link";
+import { useActionState, useEffect, useState } from "react";
+import { toast } from "sonner";
+import { useUserContext } from "../context/userContext";
+import { useRouter } from "next/navigation";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -20,10 +20,10 @@ export default function LoginForm() {
     if (!pending) {
       if (state?.userId) {
         loginUser(state.userId);
-        toast.success('Login Successful', {
-          description: 'Welcome back!',
+        toast.success("Login Successful", {
+          description: "Welcome back!",
         });
-        router.push('/dashboard');
+        router.push("/dashboard");
       } else if (state?.message) {
         toast.error(state.message, {
           description: state.description,
@@ -33,11 +33,8 @@ export default function LoginForm() {
   }, [state, pending]);
 
   return (
-    <div className="w-full h-screen flex flex-col justify-center items-center gap-10">
-      <form
-        action={action}
-        className="w-[448px] border shadow-lg rounded-lg p-10 "
-      >
+    <div className="w-full p-5 h-screen flex flex-col justify-center items-center gap-10">
+      <form action={action} className="w-full border shadow-lg rounded-lg p-5">
         <h1 className="text-2xl font-semibold mb-6 text-center">Login</h1>
 
         {/* Email Field */}
@@ -63,7 +60,7 @@ export default function LoginForm() {
           </label>
           <div className="relative">
             <Input
-              type={passwordVisible ? 'text' : 'password'}
+              type={passwordVisible ? "text" : "password"}
               id="password"
               name="password"
               placeholder="Enter your password"
@@ -90,15 +87,15 @@ export default function LoginForm() {
           disabled={pending}
           type="submit"
           className={`w-full p-2 mt-4 font-semibold rounded-md focus:outline-none focus:ring-2 ${
-            pending ? 'opacity-50 cursor-not-allowed' : ''
+            pending ? "opacity-50 cursor-not-allowed" : ""
           }`}
         >
-          {pending ? 'Logging in...' : 'Login'}
+          {pending ? "Logging in..." : "Login"}
         </Button>
       </form>
       <div>
         New Here?
-        <Link href={'/signup'}>
+        <Link href={"/signup"}>
           <span className="ml-3 underline">Sign Up</span>
         </Link>
       </div>

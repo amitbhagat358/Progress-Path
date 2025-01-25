@@ -7,7 +7,7 @@ const GetSummary = async ({
 }) => {
   const date: string = (await params).date;
   return (
-    <div>
+    <div className="w-full">
       <SummaryPageWrapper date={date} />
     </div>
   );

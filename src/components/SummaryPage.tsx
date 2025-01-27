@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   formatDateToStandard,
   formatDateToYYYYMMDD,
+  getPrevAndNextDate,
   isValidDateFormat,
 } from "@/lib/utils";
 
@@ -28,6 +29,13 @@ import { SummaryDataFromServer } from "@/interfaces/summary";
 import { ModeToggle } from "./ui/mode-toggle";
 import Link from "next/link";
 import { SidebarTrigger } from "./ui/sidebar";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
+import {
+  initial_academic_data,
+  initial_coding_data,
+  initial_personal_data,
+} from "@/lib/initialData";
 
 const SummaryPage = ({
   date,
@@ -52,9 +60,16 @@ const SummaryPage = ({
       setHighlights(initialData.highlights);
       setLearnings(initialData.learnings);
       setDiaryContent(initialData.diaryContent);
-      setAcademicDataItems(initialData.academicData || []);
-      setCodingDataItems(initialData.codingData || []);
-      setPersonalDataItems(initialData.personalData || []);
+      setAcademicDataItems(initialData.academicData);
+      setCodingDataItems(initialData.codingData);
+      setPersonalDataItems(initialData.personalData);
+    } else {
+      setDiaryContent("");
+      setHighlights([]);
+      setLearnings([]);
+      setAcademicDataItems(initial_academic_data);
+      setCodingDataItems(initial_coding_data);
+      setPersonalDataItems(initial_personal_data);
     }
   }, [initialData]);
 
@@ -138,26 +153,46 @@ const SummaryPage = ({
     };
   }, [unsavedChanges]);
 
+  const { previousDate, nextDate } = getPrevAndNextDate(date);
+
   return (
     <div className="w-full">
-      <div className="w-full flex flex-col justify-between p-3 pb-0 mb-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0">
-        <div className="w-full flex justify-between mb-2">
+      <div className="w-full flex flex-col justify-between p-3 mb-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0">
+        <div className="w-full flex justify-between mb-3">
           <SidebarTrigger />
           <div className="flex text-2xl font-bold ">
             <Link href={"/"}>Progress Path</Link>
           </div>
           <ModeToggle />
         </div>
-        <div className="flex justify-center items-center">
-          {formatDateToStandard(
-            date === "today"
-              ? formatDateToYYYYMMDD(new Date())
-              : formatDateToYYYYMMDD(new Date(date))
-          )}
+        <div className="flex justify-center items-center gap-10">
+          <div>
+            <Link href={`/summary/${previousDate}`}>
+              <Button size="sm" variant="outline">
+                <ChevronLeft />
+              </Button>
+            </Link>
+          </div>
+          <div>
+            {formatDateToStandard(
+              date === "today"
+                ? formatDateToYYYYMMDD(new Date())
+                : formatDateToYYYYMMDD(new Date(date))
+            )}
+          </div>
+          <div>
+            <div>
+              <Link href={`/summary/${nextDate}`}>
+                <Button size="sm" variant="outline">
+                  <ChevronRight />
+                </Button>
+              </Link>
+            </div>
+          </div>
         </div>
-        <div className="flex justify-center items-center mt-5 mb-2">
+        <div>
           {unsavedChanges && (
-            <div className="flex justify-center items-center">
+            <div className="flex justify-center items-center mt-5 mb-2">
               <Button onClick={handleSubmit}>Save changes </Button>
             </div>
           )}

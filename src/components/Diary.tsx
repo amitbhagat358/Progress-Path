@@ -1,5 +1,4 @@
 import { AutosizeTextarea } from "@/components/ui/textarea";
-import { useDiary } from "@/app/context/DiaryContext";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { marked } from "marked";
 import { Button } from "@/components/ui/button";

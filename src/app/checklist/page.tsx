@@ -2,8 +2,11 @@ import DialyChecklist from "@/components/DailyChecklist";
 import { SummaryDataType } from "@/interfaces/summary";
 import { defaultChecklistData } from "@/lib/defaultData";
 import { fetchChecklistData } from "@/app/actions/dailyChecklist";
+import { formatDateToYYYYMMDD } from "@/lib/utils";
 
-const DailyChecklistWrapper = async ({ date }: { date: string }) => {
+const ChecklistWrapper = async () => {
+  const date = formatDateToYYYYMMDD(new Date());
+
   //@ts-expect-error sdfsdf
   const data: SummaryDataType[] = await fetchChecklistData(date);
 
@@ -16,4 +19,4 @@ const DailyChecklistWrapper = async ({ date }: { date: string }) => {
   );
 };
 
-export default DailyChecklistWrapper;
+export default ChecklistWrapper;

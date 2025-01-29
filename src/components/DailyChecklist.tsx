@@ -1,62 +1,22 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useAcademicData } from "@/app/context/AcademicDataContext";
-import { useCodingData } from "../app/context/CodingDataContext";
-import { usePersonalData } from "../app/context/PersonalDataContext";
-import AcademicData from "./AcademicData";
-import CodingData from "./CodingData";
-import PersonalData from "./PersonalData";
-import { Button } from "@/components/ui/button";
-import { postDailyChecklist } from "../app/actions/dailyChecklist";
-import { DailyChecklistType } from "@/interfaces/checklist";
-import { toast } from "sonner";
+
+import ChecklistPart from "./ChecklistPart";
 import { Header } from "./Header";
 
-interface DialyChecklistProps {
-  initialData: DailyChecklistType | null;
-}
+import { Button } from "@/components/ui/button";
+import { postChecklistData } from "@/app/actions/dailyChecklist";
+import { CheckboxType, ChecklistItemType } from "@/interfaces/summary";
 
-const DialyChecklist = ({ initialData }: DialyChecklistProps) => {
-  const { items: AcademicDataItems, setItems: setAcademicDataItems } =
-    useAcademicData();
-  const { items: CodingDataItems, setItems: setCodingDataItems } =
-    useCodingData();
-  const { items: PersonalDataItems, setItems: setPersonalDataItems } =
-    usePersonalData();
+import { toast } from "sonner";
 
+const DialyChecklist = ({
+  initialData,
+}: {
+  initialData: ChecklistItemType[];
+}) => {
+  const [checklistData, setChecklistData] = useState(initialData);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
-
-  const handleSave = async () => {
-    if (!unsavedChanges) {
-      toast.success("Already saved the data", { duration: 3000 });
-      return;
-    }
-
-    try {
-      const data = {
-        academicData: AcademicDataItems,
-        codingData: CodingDataItems,
-        personalData: PersonalDataItems,
-      };
-      const res = await postDailyChecklist(data);
-      toast.success(`${res.message}`, { duration: 3000 });
-      setUnsavedChanges(false);
-    } catch (err) {
-      console.log("Error saving data:", err);
-      toast.error("An unexpected error occurred.", {
-        description: "Please try again later.",
-        duration: 3000,
-      });
-    }
-  };
-
-  useEffect(() => {
-    if (initialData) {
-      setAcademicDataItems(initialData.academicData || []);
-      setCodingDataItems(initialData.codingData || []);
-      setPersonalDataItems(initialData.personalData || []);
-    }
-  }, [initialData]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -71,7 +31,47 @@ const DialyChecklist = ({ initialData }: DialyChecklistProps) => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [unsavedChanges, AcademicDataItems, CodingDataItems, PersonalDataItems]);
+  }, [unsavedChanges, checklistData]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (unsavedChanges) {
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [unsavedChanges]);
+
+  const handleSave = async () => {
+    if (!unsavedChanges) {
+      toast.success("Already saved the data", { duration: 3000 });
+      return;
+    }
+
+    try {
+      const res = await postChecklistData(checklistData);
+      toast.success(res.message, { duration: 3000 });
+      setUnsavedChanges(false);
+    } catch (err) {
+      console.log("Error saving data:", err);
+      toast.error("An unexpected error occurred.", {
+        description: "Please try again later.",
+        duration: 3000,
+      });
+    }
+  };
+
+  const handleChecklistDataChange = (name: string, data: CheckboxType[]) => {
+    setChecklistData((prev) =>
+      prev.map((item) =>
+        item.heading === name ? { heading: name, checklist: data } : item
+      )
+    );
+  };
 
   return (
     <div className="w-full">
@@ -83,15 +83,15 @@ const DialyChecklist = ({ initialData }: DialyChecklistProps) => {
           </span>
         </div>
         <div className="border rounded-lg shadow-sm">
-          <AcademicData
-            heading="Academics"
-            setUnsavedChanges={setUnsavedChanges}
-          />
-          <CodingData heading="Coding" setUnsavedChanges={setUnsavedChanges} />
-          <PersonalData
-            heading="Personal"
-            setUnsavedChanges={setUnsavedChanges}
-          />
+          {checklistData.map((item, index) => (
+            <ChecklistPart
+              key={index}
+              name={item.heading}
+              data={item.checklist}
+              handleChange={handleChecklistDataChange}
+              setUnsavedChanges={setUnsavedChanges}
+            />
+          ))}
         </div>
         {unsavedChanges && <Button onClick={handleSave}>Save Changes</Button>}
       </div>

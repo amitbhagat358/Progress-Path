@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { SummaryDataFromServer } from "../../interfaces/summary";
+
 import {
   formatDateToStandard,
   formatDateToYYYYMMDD,
@@ -13,10 +13,9 @@ import { connectToDatabase } from "@/lib/mongodb";
 import Summary from "@/schemas/SummarySchema";
 import { getUserIdFromCookies } from "@/lib/serverUtils";
 import { revalidatePath } from "next/cache";
+import { SummaryDataType } from "@/interfaces/summary";
 
-export const fetchSummaryData = async (
-  dateFromUrl: string
-): Promise<SummaryDataFromServer[] | null> => {
+export const fetchSummaryData = async (dateFromUrl: string) => {
   if (dateFromUrl === "today" || !isValidDateFormat(dateFromUrl)) {
     const dateInFormat = formatDateToYYYYMMDD(new Date());
     redirect(`/summary/${dateInFormat}`);
@@ -32,7 +31,6 @@ export const fetchSummaryData = async (
       .select("-_id -__v -date -userId")
       .exec();
 
-    // @ts-expect-error handled type correctly
     return summaries;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -42,13 +40,9 @@ export const fetchSummaryData = async (
 
 export const postSummaryData = async (
   dateFromUrl: string,
-  data: SummaryDataFromServer
+  data: SummaryDataType
 ) => {
   try {
-    if (dateFromUrl === "today") {
-      dateFromUrl = formatDateToYYYYMMDD(new Date());
-    }
-
     if (!isValidDateFormat(dateFromUrl)) {
       throw new Error("Invalid date format");
     }
@@ -60,6 +54,7 @@ export const postSummaryData = async (
     const summaryExists = await Summary.findOne({ userId, date });
 
     if (summaryExists) {
+      console.log(data, "❤️❤️❤️");
       await Summary.updateOne(
         { date, userId },
         {
@@ -70,6 +65,7 @@ export const postSummaryData = async (
           },
         }
       );
+      // console.log("❤️❤️❤️", newSummary);
       revalidatePath("/dashboard");
       return {
         message: `Summary updated for ${formatDateToStandard(dateFromUrl)}.`,

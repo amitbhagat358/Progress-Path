@@ -1,12 +1,12 @@
-'use server';
+"use server";
 
-import { DailyChecklistType } from '@/interfaces/checklist';
-import { connectToDatabase } from '@/lib/mongodb';
-import { getUserIdFromCookies } from '@/lib/serverUtils';
-import { formatDateToYYYYMMDD } from '@/lib/utils';
-import Summary from '@/schemas/SummarySchema';
+import Summary from "@/schemas/SummarySchema";
+import { ChecklistItemType } from "@/interfaces/summary";
+import { connectToDatabase } from "@/lib/mongodb";
+import { formatDateToYYYYMMDD } from "@/lib/utils";
+import { getUserIdFromCookies } from "@/lib/serverUtils";
 
-const fetchDailyChecklist = async () => {
+export const fetchChecklistData = async () => {
   try {
     const userId = await getUserIdFromCookies();
     const rawDate = formatDateToYYYYMMDD(new Date());
@@ -15,19 +15,19 @@ const fetchDailyChecklist = async () => {
     await connectToDatabase();
     const dailyChecklist = await Summary.find(
       { userId, date },
-      'academicData codingData personalData -_id'
+      "checklistData -_id"
     )
       .lean()
       .exec();
 
     return dailyChecklist;
   } catch (error) {
-    console.error('Error fetching data:', error);
+    console.error("Error fetching data:", error);
     return null;
   }
 };
 
-const postDailyChecklist = async (data: DailyChecklistType) => {
+export const postChecklistData = async (data: ChecklistItemType[]) => {
   try {
     const userId = await getUserIdFromCookies();
     const rawDate = formatDateToYYYYMMDD(new Date());
@@ -37,17 +37,13 @@ const postDailyChecklist = async (data: DailyChecklistType) => {
     await Summary.updateOne(
       { userId, date },
       {
-        academicData: data.academicData,
-        codingData: data.codingData,
-        personalData: data.personalData,
+        checklistData: data,
       },
       { upsert: true }
     ).exec();
-    return { message: 'Data saved successfully' };
+    return { message: "Data saved successfully" };
   } catch (error) {
-    console.error('Error saving data:', error);
-    return { message: 'An unexpected error occurred. Please try again.' };
+    console.error("Error saving data:", error);
+    return { message: "An unexpected error occurred. Please try again." };
   }
 };
-
-export { fetchDailyChecklist, postDailyChecklist };

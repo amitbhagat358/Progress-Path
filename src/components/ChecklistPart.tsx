@@ -1,21 +1,24 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { GraduationCap, Heart, Plus, Trash } from "lucide-react";
+import { Plus, Trash } from "lucide-react";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { useAcademicData } from "@/app/context/AcademicDataContext";
 import { CheckboxType } from "@/interfaces/summary";
 
-interface AcademicDataProps {
-  heading: string;
+interface ChecklistPartProps {
   setUnsavedChanges: Dispatch<SetStateAction<boolean>>;
+  name: string;
+  data: CheckboxType[];
+  handleChange: (name: string, items: CheckboxType[]) => void;
 }
 
-const AcademicData: React.FC<AcademicDataProps> = ({
-  heading,
+const ChecklistPart: React.FC<ChecklistPartProps> = ({
   setUnsavedChanges,
+  name,
+  data,
+  handleChange,
 }) => {
-  const { items, setItems } = useAcademicData();
+  const [items, setItems] = useState(data);
   const [editableInputId, setEditableInputId] = useState<number | null>(null);
   const editableInputRef = useRef<{ [key: number]: HTMLInputElement | null }>(
     {}
@@ -27,36 +30,37 @@ const AcademicData: React.FC<AcademicDataProps> = ({
     }
   }, [editableInputId]);
 
-  const toggleCheckbox = (id: number) => {
+  const updateItems = (updatedItems: CheckboxType[]) => {
+    setItems(updatedItems);
     setUnsavedChanges(true);
-    setItems((prevData) =>
-      prevData.map((item) =>
-        item.id === id ? { ...item, checked: !item.checked } : item
-      )
-    );
+    handleChange(name, updatedItems);
   };
 
-  const updateItem = (id: number, name: string) => {
-    setUnsavedChanges(true);
-    setItems((prevItems) =>
-      prevItems.map((item) => (item.id === id ? { ...item, name } : item))
+  const toggleCheckbox = (id: number) => {
+    const updatedItems = items.map((item) =>
+      item.id === id ? { ...item, checked: !item.checked } : item
     );
+    updateItems(updatedItems);
+  };
+
+  const updateItem = (id: number, newName: string) => {
+    const updatedItems = items.map((item) =>
+      item.id === id ? { ...item, name: newName } : item
+    );
+    updateItems(updatedItems);
   };
 
   const addItem = (index: number) => {
-    setUnsavedChanges(true);
-    const newDataItem = { id: Date.now(), name: "", checked: false };
-    setItems((prevItems) => {
-      const updatedData = [...prevItems];
-      updatedData.splice(index + 1, 0, newDataItem);
-      return updatedData;
-    });
-    setEditableInputId(newDataItem.id);
+    const newItem = { id: Date.now(), name: "", checked: false };
+    const updatedItems = [...items];
+    updatedItems.splice(index + 1, 0, newItem);
+    updateItems(updatedItems);
+    setEditableInputId(newItem.id);
   };
 
   const removeItem = (id: number) => {
-    setUnsavedChanges(true);
-    setItems((prevItems) => prevItems.filter((item) => item.id !== id));
+    const updatedItems = items.filter((item) => item.id !== id);
+    updateItems(updatedItems);
     if (editableInputId === id) {
       setEditableInputId(null);
     }
@@ -67,19 +71,15 @@ const AcademicData: React.FC<AcademicDataProps> = ({
     index: number,
     item: CheckboxType
   ) => {
-    if (e.key === "ArrowUp") {
-      if (index > 0) {
-        setEditableInputId(items[index - 1].id);
-        editableInputRef.current[items[index - 1].id]?.focus();
-      }
-    } else if (e.key === "ArrowDown") {
-      if (index < items.length - 1) {
-        setEditableInputId(items[index + 1].id);
-        editableInputRef.current[items[index + 1].id]?.focus();
-      }
+    if (e.key === "ArrowUp" && index > 0) {
+      setEditableInputId(items[index - 1].id);
+      editableInputRef.current[items[index - 1].id]?.focus();
+    } else if (e.key === "ArrowDown" && index < items.length - 1) {
+      setEditableInputId(items[index + 1].id);
+      editableInputRef.current[items[index + 1].id]?.focus();
     } else if (e.key === "Enter") {
       addItem(index);
-    } else if (item.name === "" && e.key === "Backspace") {
+    } else if (e.key === "Backspace" && item.name === "") {
       e.preventDefault();
       removeItem(item.id);
       if (index > 0) {
@@ -92,7 +92,7 @@ const AcademicData: React.FC<AcademicDataProps> = ({
   return (
     <div className="tasks w-full p-6">
       <div className="flex justify-between items-center mb-4">
-        <div className="flex gap-3 text-base font-semibold">{heading}</div>
+        <div className="flex gap-3 text-base font-semibold">{name}</div>
         <Button
           onClick={() => addItem(items.length - 1)}
           variant="outline"
@@ -101,7 +101,7 @@ const AcademicData: React.FC<AcademicDataProps> = ({
           <Plus />
         </Button>
       </div>
-      {items.map((item, index) => (
+      {items?.map((item, index) => (
         <div
           key={item.id}
           className="flex items-center my-1 group rounded-lg pl-4"
@@ -117,14 +117,11 @@ const AcademicData: React.FC<AcademicDataProps> = ({
           />
           <Input
             ref={(el) => {
-              if (editableInputRef.current) {
+              if (editableInputRef.current)
                 editableInputRef.current[item.id] = el;
-              }
             }}
             value={item.name}
-            onBlur={() => {
-              setEditableInputId(null);
-            }}
+            onBlur={() => setEditableInputId(null)}
             onKeyDown={(e) => handleKeyDown(e, index, item)}
             onClick={() => setEditableInputId(item.id)}
             onChange={(e) => updateItem(item.id, e.target.value)}
@@ -146,4 +143,4 @@ const AcademicData: React.FC<AcademicDataProps> = ({
   );
 };
 
-export default AcademicData;
+export default ChecklistPart;

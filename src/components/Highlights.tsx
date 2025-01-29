@@ -1,60 +1,33 @@
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Plus, Trash } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Plus, Trash } from "lucide-react";
 import React, {
   Dispatch,
   SetStateAction,
   useEffect,
   useRef,
   useState,
-} from 'react';
-import { useHighlights } from '@/app/context/HighlightsContext';
-import { BulletPointType } from '@/interfaces/summary';
+} from "react";
+import { BulletPointType } from "@/interfaces/summary";
 
 interface HighlightsProps {
   heading: string;
   setUnsavedChanges: Dispatch<SetStateAction<boolean>>;
+  data: BulletPointType[];
+  setData: Dispatch<SetStateAction<BulletPointType[]>>;
 }
 
 const Highlights: React.FC<HighlightsProps> = ({
   heading,
   setUnsavedChanges,
+  data,
+  setData,
 }) => {
-  const { highlights, setHighlights } = useHighlights();
+  const [highlights, setHighlights] = useState(data);
   const [editableInputId, setEditableInputId] = useState<number | null>(null);
   const editableInputRef = useRef<{ [key: number]: HTMLInputElement | null }>(
     {}
   );
-
-  const addHighlight = (index: number) => {
-    setUnsavedChanges(true);
-    const newHighlight = { id: Date.now(), text: '' };
-    setHighlights((prevhighlights) => {
-      const updatedhighlights = [...prevhighlights];
-      updatedhighlights.splice(index + 1, 0, newHighlight);
-      return updatedhighlights;
-    });
-    setEditableInputId(newHighlight.id);
-  };
-
-  const updateHighlight = (id: number, text: string) => {
-    setUnsavedChanges(true);
-    setHighlights((prevhighlights) =>
-      prevhighlights.map((Highlight) =>
-        Highlight.id === id ? { ...Highlight, text } : Highlight
-      )
-    );
-  };
-
-  const removeHighlight = (id: number) => {
-    setUnsavedChanges(true);
-    setHighlights((prevhighlights) =>
-      prevhighlights.filter((Highlight) => Highlight.id !== id)
-    );
-    if (editableInputId === id) {
-      setEditableInputId(null);
-    }
-  };
 
   useEffect(() => {
     if (editableInputId !== null && editableInputRef.current[editableInputId]) {
@@ -62,26 +35,53 @@ const Highlights: React.FC<HighlightsProps> = ({
     }
   }, [editableInputId]);
 
+  const updateHighlights = (updatedHighlights: BulletPointType[]) => {
+    setHighlights(updatedHighlights);
+    setUnsavedChanges(true);
+    setData(updatedHighlights);
+  };
+
+  const addHighlight = (index: number) => {
+    const newHighlight = { id: Date.now(), text: "" };
+    const updatedHighlights = [...highlights];
+    updatedHighlights.splice(index + 1, 0, newHighlight);
+    updateHighlights(updatedHighlights);
+    setEditableInputId(newHighlight.id);
+  };
+
+  const updateHighlight = (id: number, text: string) => {
+    const updatedHighlights = highlights.map((highlight) =>
+      highlight.id === id ? { ...highlight, text } : highlight
+    );
+    updateHighlights(updatedHighlights);
+  };
+
+  const removeHighlight = (id: number) => {
+    const updatedHighlights = highlights.filter(
+      (highlight) => highlight.id !== id
+    );
+    updateHighlights(updatedHighlights);
+    if (editableInputId === id) {
+      setEditableInputId(null);
+    }
+  };
+
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
     index: number,
-    Highlight: BulletPointType
+    highlight: BulletPointType
   ) => {
-    if (e.key === 'ArrowUp') {
-      if (index > 0) {
-        setEditableInputId(highlights[index - 1].id);
-        editableInputRef.current[highlights[index - 1].id]?.focus();
-      }
-    } else if (e.key === 'ArrowDown') {
-      if (index < highlights.length - 1) {
-        setEditableInputId(highlights[index + 1].id);
-        editableInputRef.current[highlights[index + 1].id]?.focus();
-      }
-    } else if (e.key === 'Enter') {
+    if (e.key === "ArrowUp" && index > 0) {
+      setEditableInputId(highlights[index - 1].id);
+      editableInputRef.current[highlights[index - 1].id]?.focus();
+    } else if (e.key === "ArrowDown" && index < highlights.length - 1) {
+      setEditableInputId(highlights[index + 1].id);
+      editableInputRef.current[highlights[index + 1].id]?.focus();
+    } else if (e.key === "Enter") {
       addHighlight(index);
-    } else if (Highlight.text === '' && e.key === 'Backspace') {
+    } else if (highlight.text === "" && e.key === "Backspace") {
       e.preventDefault();
-      removeHighlight(Highlight.id);
+      removeHighlight(highlight.id);
       if (index > 0) {
         setEditableInputId(highlights[index - 1].id);
         editableInputRef.current[highlights[index - 1].id]?.focus();
@@ -102,9 +102,9 @@ const Highlights: React.FC<HighlightsProps> = ({
         </Button>
       </div>
       <ul className="pl-4">
-        {highlights.map((Highlight, index) => (
+        {highlights.map((highlight, index) => (
           <li
-            key={Highlight.id}
+            key={highlight.id}
             className="flex items-center my-1 group rounded"
           >
             <div className="w-[36px] h-[36px] flex justify-center items-center">
@@ -112,25 +112,25 @@ const Highlights: React.FC<HighlightsProps> = ({
             </div>
             <Input
               type="text"
-              id={`${Highlight.id}`}
-              onChange={(e) => updateHighlight(Highlight.id, e.target.value)}
+              id={`${highlight.id}`}
+              onChange={(e) => updateHighlight(highlight.id, e.target.value)}
               ref={(el) => {
                 if (editableInputRef.current) {
-                  editableInputRef.current[Highlight.id] = el;
+                  editableInputRef.current[highlight.id] = el;
                 }
               }}
-              value={Highlight.text}
+              value={highlight.text}
               onBlur={() => setEditableInputId(null)}
-              onKeyDown={(e) => handleKeyDown(e, index, Highlight)}
-              onClick={() => setEditableInputId(Highlight.id)}
-              className={`text-base border-none focus-visible:ring-0 shadow-none ${
-                editableInputId !== Highlight.id ? 'cursor-pointer' : ''
+              onKeyDown={(e) => handleKeyDown(e, index, highlight)}
+              onClick={() => setEditableInputId(highlight.id)}
+              className={`text-base border-none focus-visible:ring-0 shadow-none transition-all ease-in-out duration-200 ${
+                editableInputId !== highlight.id ? "cursor-pointer" : ""
               }`}
             />
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => removeHighlight(Highlight.id)}
+              onClick={() => removeHighlight(highlight.id)}
               className="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-200"
             >
               <Trash />

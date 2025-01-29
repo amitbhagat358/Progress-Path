@@ -9,13 +9,20 @@ export interface CheckboxType {
   checked: boolean;
 }
 
-export interface SummaryDataFromServer {
+export interface ChecklistItemType {
+  heading: string;
+  checklist: CheckboxType[];
+}
+
+export interface ChecklistDataType {
+  checklistData: ChecklistItemType[];
+}
+
+export interface SummaryDataType {
   highlights: BulletPointType[];
   learnings: BulletPointType[];
-  codingData: CheckboxType[];
-  academicData: CheckboxType[];
-  personalData: CheckboxType[];
   diaryContent: string;
+  checklistData: Array<ChecklistItemType>;
 }
 
 export interface userDataTypeForSidebar {

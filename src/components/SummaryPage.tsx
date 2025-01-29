@@ -1,121 +1,51 @@
 "use client";
 import { useEffect, useState } from "react";
+
 import { Button } from "@/components/ui/button";
+import { SidebarTrigger } from "./ui/sidebar";
+import { ModeToggle } from "./ui/mode-toggle";
+
+import { toast } from "sonner";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
 import {
   formatDateToStandard,
   formatDateToYYYYMMDD,
   getPrevAndNextDate,
-  isValidDateFormat,
 } from "@/lib/utils";
 
-import AcademicData from "./AcademicData";
-import CodingData from "./CodingData";
-import PersonalData from "./PersonalData";
+import ChecklistPart from "./ChecklistPart";
 import Hightlights from "./Highlights";
 import Learnings from "./Learnings";
 import Diary from "./Diary";
 
-import { useHighlights } from "@/app/context/HighlightsContext";
-import { useAcademicData } from "@/app/context/AcademicDataContext";
-import { useCodingData } from "@/app/context/CodingDataContext";
-import { usePersonalData } from "@/app/context/PersonalDataContext";
-import { useLearnings } from "@/app/context/LearningsContext";
-import { useDiary } from "@/app//context/DiaryContext";
-
-import { toast } from "sonner";
-
 import { postSummaryData } from "@/app/actions/summary";
-import { SummaryDataFromServer } from "@/interfaces/summary";
-import { ModeToggle } from "./ui/mode-toggle";
-import Link from "next/link";
-import { SidebarTrigger } from "./ui/sidebar";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import {
-  initial_academic_data,
-  initial_coding_data,
-  initial_personal_data,
-} from "@/lib/initialData";
+  BulletPointType,
+  CheckboxType,
+  SummaryDataType,
+} from "@/interfaces/summary";
+
+import Link from "next/link";
 
 const SummaryPage = ({
   date,
   initialData,
 }: {
   date: string;
-  initialData: SummaryDataFromServer | null;
+  initialData: SummaryDataType;
 }) => {
-  const { highlights, setHighlights } = useHighlights();
-  const { learnings, setLearnings } = useLearnings();
-  const { diaryContent, setDiaryContent } = useDiary();
-  const { items: AcademicDataItems, setItems: setAcademicDataItems } =
-    useAcademicData();
-  const { items: CodingDataItems, setItems: setCodingDataItems } =
-    useCodingData();
-  const { items: PersonalDataItems, setItems: setPersonalDataItems } =
-    usePersonalData();
+  const [highlights, setHighlights] = useState(initialData?.highlights || []);
+  const [learnings, setLearnings] = useState(initialData?.learnings || []);
+  const [diaryContent, setDiaryContent] = useState(
+    initialData?.diaryContent || ""
+  );
+  const [checklistData, setChecklistData] = useState(
+    initialData?.checklistData || []
+  );
   const [unsavedChanges, setUnsavedChanges] = useState(false);
-
-  useEffect(() => {
-    if (initialData) {
-      setHighlights(initialData.highlights);
-      setLearnings(initialData.learnings);
-      setDiaryContent(initialData.diaryContent);
-      setAcademicDataItems(initialData.academicData);
-      setCodingDataItems(initialData.codingData);
-      setPersonalDataItems(initialData.personalData);
-    } else {
-      setDiaryContent("");
-      setHighlights([]);
-      setLearnings([]);
-      setAcademicDataItems(initial_academic_data);
-      setCodingDataItems(initial_coding_data);
-      setPersonalDataItems(initial_personal_data);
-    }
-  }, [initialData]);
-
-  const isDateCorrect = () => {
-    if (date !== "today" && !isValidDateFormat(date)) {
-      toast.error(
-        "Please enter a valid date in YYYY-MM-DD format or enter today",
-        {
-          duration: 4000,
-        }
-      );
-      return false;
-    }
-    return true;
-  };
-
-  const handleSubmit = async () => {
-    if (!isDateCorrect()) {
-      return;
-    }
-
-    if (!unsavedChanges) {
-      toast.success("Already saved the data", { duration: 3000 });
-      return;
-    }
-
-    const data: SummaryDataFromServer = {
-      highlights,
-      learnings,
-      diaryContent,
-      academicData: AcademicDataItems,
-      codingData: CodingDataItems,
-      personalData: PersonalDataItems,
-    };
-
-    try {
-      const res = await postSummaryData(date, data);
-      toast.success(`${res.message}`, { duration: 3000 });
-      setUnsavedChanges(false);
-    } catch (error) {
-      toast.error("An unexpected error occurred.", {
-        description: "Please try again later.",
-        duration: 3000,
-      });
-    }
-  };
+  const { previousDate, nextDate } = getPrevAndNextDate(date);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -130,15 +60,7 @@ const SummaryPage = ({
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [
-    unsavedChanges,
-    highlights,
-    learnings,
-    diaryContent,
-    AcademicDataItems,
-    CodingDataItems,
-    PersonalDataItems,
-  ]);
+  }, [unsavedChanges, highlights, learnings, diaryContent, checklistData]);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -153,7 +75,38 @@ const SummaryPage = ({
     };
   }, [unsavedChanges]);
 
-  const { previousDate, nextDate } = getPrevAndNextDate(date);
+  const handleSubmit = async () => {
+    if (!unsavedChanges) {
+      toast.success("Already saved the data", { duration: 3000 });
+      return;
+    }
+
+    const data: SummaryDataType = {
+      highlights,
+      learnings,
+      diaryContent,
+      checklistData,
+    };
+
+    try {
+      const res = await postSummaryData(date, data);
+      toast.success(res.message, { duration: 3000 });
+      setUnsavedChanges(false);
+    } catch (error) {
+      toast.error("An unexpected error occurred.", {
+        description: "Please try again later.",
+        duration: 3000,
+      });
+    }
+  };
+
+  const handleChecklistDataChange = (name: string, data: CheckboxType[]) => {
+    setChecklistData((prev) =>
+      prev.map((item) =>
+        item.heading === name ? { heading: name, checklist: data } : item
+      )
+    );
+  };
 
   return (
     <div className="w-full">
@@ -207,18 +160,15 @@ const SummaryPage = ({
               </span>
             </div>
             <div className="border shadow-sm rounded-lg">
-              <AcademicData
-                heading="Academics"
-                setUnsavedChanges={setUnsavedChanges}
-              />
-              <CodingData
-                heading="Coding"
-                setUnsavedChanges={setUnsavedChanges}
-              />
-              <PersonalData
-                heading="Personal"
-                setUnsavedChanges={setUnsavedChanges}
-              />
+              {checklistData.map((item, index) => (
+                <ChecklistPart
+                  key={index}
+                  name={item.heading}
+                  data={item.checklist}
+                  handleChange={handleChecklistDataChange}
+                  setUnsavedChanges={setUnsavedChanges}
+                />
+              ))}
             </div>
           </div>
           <div className="w-full md:w-[60%] p-5">
@@ -231,10 +181,14 @@ const SummaryPage = ({
               <div className="border rounded-lg shadow-sm">
                 <Hightlights
                   heading={"What did I achieve today?"}
+                  data={highlights}
+                  setData={setHighlights}
                   setUnsavedChanges={setUnsavedChanges}
                 />
                 <Learnings
                   heading={"What did I learn today?"}
+                  data={learnings}
+                  setData={setLearnings}
                   setUnsavedChanges={setUnsavedChanges}
                 />
               </div>
@@ -248,7 +202,11 @@ const SummaryPage = ({
               Diary
             </span>
           </div>
-          <Diary setUnsavedChanges={setUnsavedChanges} />
+          <Diary
+            setUnsavedChanges={setUnsavedChanges}
+            data={diaryContent}
+            setData={setDiaryContent}
+          />
         </div>
       </div>
     </div>

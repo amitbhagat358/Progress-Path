@@ -1,56 +1,64 @@
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Plus, Trash } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Plus, Trash } from "lucide-react";
 import React, {
   Dispatch,
   SetStateAction,
   useEffect,
   useRef,
   useState,
-} from 'react';
-import { useLearnings } from '@/app/context/LearningsContext';
-import { BulletPointType } from '@/interfaces/summary';
+} from "react";
+import { BulletPointType } from "@/interfaces/summary";
 
 interface LearningsProps {
   heading: string;
   setUnsavedChanges: Dispatch<SetStateAction<boolean>>;
+  data: BulletPointType[];
+  setData: Dispatch<SetStateAction<BulletPointType[]>>;
 }
 
 const Learnings: React.FC<LearningsProps> = ({
   heading,
   setUnsavedChanges,
+  data,
+  setData,
 }) => {
-  const { learnings, setLearnings } = useLearnings();
+  const [learnings, setLearnings] = useState(data);
   const [editableInputId, setEditableInputId] = useState<number | null>(null);
   const editableInputRef = useRef<{ [key: number]: HTMLInputElement | null }>(
     {}
   );
 
-  const addLearning = (index: number) => {
+  useEffect(() => {
+    if (editableInputId !== null && editableInputRef.current[editableInputId]) {
+      editableInputRef.current[editableInputId]?.focus();
+    }
+  }, [editableInputId]);
+
+  const updateLearnings = (updatedLearnings: BulletPointType[]) => {
+    setLearnings(updatedLearnings);
     setUnsavedChanges(true);
-    const newLearning = { id: Date.now(), text: '' };
-    setLearnings((prevLearnings) => {
-      const updatedLearnings = [...prevLearnings];
-      updatedLearnings.splice(index + 1, 0, newLearning);
-      return updatedLearnings;
-    });
+    setData(updatedLearnings);
+  };
+
+  const addLearning = (index: number) => {
+    const newLearning = { id: Date.now(), text: "" };
+    const updatedLearnings = [...learnings];
+    updatedLearnings.splice(index + 1, 0, newLearning);
+    updateLearnings(updatedLearnings);
     setEditableInputId(newLearning.id);
   };
 
   const updateLearning = (id: number, text: string) => {
-    setUnsavedChanges(true);
-    setLearnings((prevLearnings) =>
-      prevLearnings.map((learning) =>
-        learning.id === id ? { ...learning, text } : learning
-      )
+    const updatedLearnings = learnings.map((learning) =>
+      learning.id === id ? { ...learning, text } : learning
     );
+    updateLearnings(updatedLearnings);
   };
 
   const removeLearning = (id: number) => {
-    setUnsavedChanges(true);
-    setLearnings((prevLearnings) =>
-      prevLearnings.filter((learning) => learning.id !== id)
-    );
+    const updatedLearnings = learnings.filter((learning) => learning.id !== id);
+    updateLearnings(updatedLearnings);
     if (editableInputId === id) {
       setEditableInputId(null);
     }
@@ -59,35 +67,25 @@ const Learnings: React.FC<LearningsProps> = ({
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
     index: number,
-    Highlight: BulletPointType
+    learning: BulletPointType
   ) => {
-    if (e.key === 'ArrowUp') {
-      if (index > 0) {
-        setEditableInputId(learnings[index - 1].id);
-        editableInputRef.current[learnings[index - 1].id]?.focus();
-      }
-    } else if (e.key === 'ArrowDown') {
-      if (index < learnings.length - 1) {
-        setEditableInputId(learnings[index + 1].id);
-        editableInputRef.current[learnings[index + 1].id]?.focus();
-      }
-    } else if (e.key === 'Enter') {
+    if (e.key === "ArrowUp" && index > 0) {
+      setEditableInputId(learnings[index - 1].id);
+      editableInputRef.current[learnings[index - 1].id]?.focus();
+    } else if (e.key === "ArrowDown" && index < learnings.length - 1) {
+      setEditableInputId(learnings[index + 1].id);
+      editableInputRef.current[learnings[index + 1].id]?.focus();
+    } else if (e.key === "Enter") {
       addLearning(index);
-    } else if (Highlight.text === '' && e.key === 'Backspace') {
+    } else if (learning.text === "" && e.key === "Backspace") {
       e.preventDefault();
-      removeLearning(Highlight.id);
+      removeLearning(learning.id);
       if (index > 0) {
         setEditableInputId(learnings[index - 1].id);
         editableInputRef.current[learnings[index - 1].id]?.focus();
       }
     }
   };
-
-  useEffect(() => {
-    if (editableInputId !== null && editableInputRef.current[editableInputId]) {
-      editableInputRef.current[editableInputId]?.focus();
-    }
-  }, [editableInputId]);
 
   return (
     <div className="w-full p-6">
@@ -101,11 +99,11 @@ const Learnings: React.FC<LearningsProps> = ({
           <Plus />
         </Button>
       </div>
-      <ul className="pl-4">
+      <ul className="pl-4 mt-4">
         {learnings.map((learning, index) => (
           <li
             key={learning.id}
-            className="flex items-center my-1 group rounded"
+            className="flex items-center my-2 group rounded"
           >
             <div className="w-[36px] h-[36px] flex justify-center items-center">
               <span className="text-xl text-primary font-bold">•</span>
@@ -123,8 +121,8 @@ const Learnings: React.FC<LearningsProps> = ({
               onBlur={() => setEditableInputId(null)}
               onKeyDown={(e) => handleKeyDown(e, index, learning)}
               onClick={() => setEditableInputId(learning.id)}
-              className={`text-base border-none focus-visible:ring-0 shadow-none ${
-                editableInputId !== learning.id ? 'cursor-pointer' : ''
+              className={`text-base border-none focus-visible:ring-0 shadow-none transition-all ease-in-out duration-200 ${
+                editableInputId !== learning.id ? "cursor-pointer" : ""
               }`}
             />
             <Button

@@ -1,16 +1,22 @@
-import React from 'react';
-import { fetchDailyChecklist } from '@/app/actions/dailyChecklist';
-import DialyChecklist from '@/components/DailyChecklist';
-import { DailyChecklistType } from '@/interfaces/checklist';
+import DialyChecklist from "@/components/DailyChecklist";
+import { SummaryDataType } from "@/interfaces/summary";
+import { defaultChecklistData } from "@/lib/defaultData";
+import { fetchChecklistData } from "@/app/actions/dailyChecklist";
+import { formatDateToYYYYMMDD } from "@/lib/utils";
 
-const DailyCheckListWrapper = async () => {
-  //@ts-expect-error handled type correctly
-  const daillyChecklist: DailyChecklistType[] | null =
-    await fetchDailyChecklist();
+const ChecklistWrapper = async () => {
+  const date = formatDateToYYYYMMDD(new Date());
+
+  //@ts-expect-error sdfsdf
+  const data: SummaryDataType[] = await fetchChecklistData(date);
 
   return (
-    <DialyChecklist initialData={daillyChecklist ? daillyChecklist[0] : null} />
+    <DialyChecklist
+      initialData={
+        data.length === 0 ? defaultChecklistData : data[0].checklistData
+      }
+    />
   );
 };
 
-export default DailyCheckListWrapper;
+export default ChecklistWrapper;

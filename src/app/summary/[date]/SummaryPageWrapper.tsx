@@ -1,13 +1,18 @@
 import SummaryPage from "@/components/SummaryPage";
 import { fetchSummaryData } from "@/app/actions/summary";
-import { SummaryDataFromServer } from "@/interfaces/summary";
+import { SummaryDataType } from "@/interfaces/summary";
+import { defaultSummaryData } from "@/lib/defaultData";
 
 const SummaryPageWrapper = async ({ date }: { date: string }) => {
-  const data: SummaryDataFromServer[] | null = await fetchSummaryData(date);
+  //@ts-expect-error sdfsdf
+  const data: SummaryDataType[] = await fetchSummaryData(date);
 
-  console.log(data, "initialData");
-
-  return <SummaryPage date={date} initialData={data ? data[0] : null} />;
+  return (
+    <SummaryPage
+      date={date}
+      initialData={data.length === 0 ? defaultSummaryData : data[0]}
+    />
+  );
 };
 
 export default SummaryPageWrapper;

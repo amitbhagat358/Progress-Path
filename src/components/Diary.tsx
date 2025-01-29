@@ -1,15 +1,16 @@
 import { AutosizeTextarea } from "@/components/ui/textarea";
-import { useDiary } from "@/app/context/DiaryContext";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { marked } from "marked";
 import { Button } from "@/components/ui/button";
 
 interface DiaryProps {
   setUnsavedChanges: Dispatch<SetStateAction<boolean>>;
+  data: string;
+  setData: Dispatch<SetStateAction<string>>;
 }
 
-const Diary: React.FC<DiaryProps> = ({ setUnsavedChanges }) => {
-  const { diaryContent, setDiaryContent } = useDiary();
+const Diary: React.FC<DiaryProps> = ({ setUnsavedChanges, data, setData }) => {
+  const [diaryContent, setDiaryContent] = useState(data);
   const [htmlContent, setHtmlContent] = useState("");
   const [editable, setEditable] = useState(false);
 
@@ -45,6 +46,7 @@ const Diary: React.FC<DiaryProps> = ({ setUnsavedChanges }) => {
               onChange={(e) => {
                 setUnsavedChanges(true);
                 setDiaryContent(e.target.value);
+                setData(e.target.value);
               }}
             />
             <div className="flex justify-end mt-4">

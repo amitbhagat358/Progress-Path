@@ -10,8 +10,8 @@
   :root {
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card: 240 5% 96%; /* Light subtle shade for card */
+    --card-foreground: 240 8% 7%; /* Complementary darker shade */
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
     --primary: 142.1 76.2% 36.3%;
@@ -48,8 +48,8 @@
     /* --background: 0, 0%, 13%; chatgpt */
     --background: 0 0% 9%;
     --foreground: 0 0% 95%;
-    --card: 24 9.8% 10%;
-    --card-foreground: 0 0% 95%;
+    --card: 240 5% 12%; /* Soft dark grey for the dark theme */
+    --card-foreground: 240 5% 85%; /* Complementary soft light shade */
     --popover: 0 0% 9%;
     --popover-foreground: 0 0% 95%;
     --primary: 142.1 70.6% 45.3%;

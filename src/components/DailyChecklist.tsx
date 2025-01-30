@@ -5,10 +5,11 @@ import ChecklistPart from "./ChecklistPart";
 import { Header } from "./Header";
 
 import { Button } from "@/components/ui/button";
-import { postChecklistData } from "@/app/actions/dailyChecklist";
+import { postChecklistData } from "@/app/actions/checklist";
 import { CheckboxType, ChecklistItemType } from "@/interfaces/summary";
 
 import { toast } from "sonner";
+import Link from "next/link";
 
 const DialyChecklist = ({
   initialData,
@@ -92,6 +93,14 @@ const DialyChecklist = ({
               setUnsavedChanges={setUnsavedChanges}
             />
           ))}
+        </div>
+        <div className="w-full flex justify-end">
+          <Link
+            href={"/checklist/edit"}
+            className="underline hover:text-primary cursor-pointer font-semibold "
+          >
+            Edit Default Checklist
+          </Link>
         </div>
         {unsavedChanges && <Button onClick={handleSave}>Save Changes</Button>}
       </div>

@@ -29,8 +29,13 @@ export default function Purpose({ data }: { data: PurposeType[] }) {
             ))}
           </div>
           <div className="w-full md:min-w-[50%]  md:max-w-full flex m-auto mt-10">
-            <div className="underline hover:text-primary cursor-pointer font-semibold ">
-              <Link href={"/purpose-of-study/edit"}>Edit Purpose List</Link>
+            <div className="w-full flex justify-end">
+              <Link
+                href={"/purpose-of-study/edit"}
+                className="underline hover:text-primary cursor-pointer font-semibold "
+              >
+                Edit Purpose List
+              </Link>
             </div>
           </div>
         </div>

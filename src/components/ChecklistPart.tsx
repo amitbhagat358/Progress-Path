@@ -125,7 +125,7 @@ const ChecklistPart: React.FC<ChecklistPartProps> = ({
             onKeyDown={(e) => handleKeyDown(e, index, item)}
             onClick={() => setEditableInputId(item.id)}
             onChange={(e) => updateItem(item.id, e.target.value)}
-            className={`text-base leading-none border-none focus-visible:ring-0 shadow-none ${
+            className={`text-base border-none focus-visible:ring-0 shadow-none transition-all ease-in-out duration-200 ${
               editableInputId !== item.id ? "cursor-pointer" : ""
             }`}
           />

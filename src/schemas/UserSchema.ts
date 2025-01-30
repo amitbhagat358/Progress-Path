@@ -15,9 +15,7 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    defaultChecklistData: {
-      type: Array,
-    },
+    defaultChecklistData: Array,
   },
   { strict: false }
 );

@@ -14,6 +14,7 @@ import Summary from "@/schemas/SummarySchema";
 import { getUserIdFromCookies } from "@/lib/serverUtils";
 import { revalidatePath } from "next/cache";
 import { SummaryDataType } from "@/interfaces/summary";
+import { fetchChecklistData } from "./checklist";
 
 export const fetchSummaryData = async (dateFromUrl: string) => {
   if (dateFromUrl === "today" || !isValidDateFormat(dateFromUrl)) {
@@ -28,10 +29,15 @@ export const fetchSummaryData = async (dateFromUrl: string) => {
     await connectToDatabase();
     const summaries = await Summary.find({ userId, date })
       .lean()
-      .select("-_id -__v -date -userId")
+      .select("-_id -__v -date -userId -checklistData")
       .exec();
 
-    return summaries;
+    const checklistData = await fetchChecklistData(date);
+    const completeSummaryData = {
+      ...summaries[0],
+      checklistData: [...checklistData],
+    };
+    return completeSummaryData;
   } catch (error) {
     console.error("Error fetching data:", error);
     return null;
@@ -54,7 +60,6 @@ export const postSummaryData = async (
     const summaryExists = await Summary.findOne({ userId, date });
 
     if (summaryExists) {
-      console.log(data, "❤️❤️❤️");
       await Summary.updateOne(
         { date, userId },
         {
@@ -65,7 +70,6 @@ export const postSummaryData = async (
           },
         }
       );
-      // console.log("❤️❤️❤️", newSummary);
       revalidatePath("/dashboard");
       return {
         message: `Summary updated for ${formatDateToStandard(dateFromUrl)}.`,

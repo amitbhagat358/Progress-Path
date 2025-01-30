@@ -1,6 +1,6 @@
 import { SummaryDataType } from "@/interfaces/summary";
 
-export const defaultChecklistData = [
+export const hardcodedChecklistData = [
   {
     heading: "Academics",
     checklist: [{ id: 0, name: "class revision", checked: false }],
@@ -27,5 +27,5 @@ export const defaultSummaryData: SummaryDataType = {
   highlights: [],
   learnings: [],
   diaryContent: "",
-  checklistData: defaultChecklistData,
+  checklistData: hardcodedChecklistData,
 };

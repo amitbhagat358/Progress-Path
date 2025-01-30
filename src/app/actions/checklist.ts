@@ -6,12 +6,13 @@ import { connectToDatabase } from "@/lib/mongodb";
 import { formatDateToYYYYMMDD } from "@/lib/utils";
 import { getUserIdFromCookies } from "@/lib/serverUtils";
 import Users from "@/schemas/UserSchema";
+import { hardcodedChecklistData } from "@/lib/hardcodedData";
+import { revalidatePath } from "next/cache";
 
-export const fetchChecklistData = async () => {
+export const fetchChecklistData = async (dateFromParent: string) => {
   try {
     const userId = await getUserIdFromCookies();
-    const rawDate = formatDateToYYYYMMDD(new Date());
-    const date = new Date(rawDate).toISOString();
+    const date = new Date(dateFromParent).toISOString();
 
     await connectToDatabase();
     const dailyChecklist = await Summary.find(
@@ -21,13 +22,15 @@ export const fetchChecklistData = async () => {
       .lean()
       .exec();
 
-    // data will be in form of array
+    // if exists, return checklist data for the requested day
     if (dailyChecklist.length !== 0) return dailyChecklist[0].checklistData;
 
-    // if no data for that day then send the default checklist
-    // and if the default checklist is not there for the user, it will send the one hardcoded in a seperate file
-    const data = await getDefaultChecklistData();
-    return data;
+    // if no data is there for that day then send the default checklist data for that particular user
+    const defaultData = await getDefaultChecklistDataForTheUser();
+    if (defaultData.length !== 0) return defaultData;
+
+    // if the default checklist is not there for the user, send the hardcoded data.
+    return hardcodedChecklistData;
   } catch (error) {
     console.error("Error fetching data:", error);
     return null;
@@ -55,7 +58,7 @@ export const postChecklistData = async (data: ChecklistItemType[]) => {
   }
 };
 
-export const getDefaultChecklistData = async () => {
+export const getDefaultChecklistDataForTheUser = async () => {
   try {
     const userId = await getUserIdFromCookies();
 
@@ -68,7 +71,7 @@ export const getDefaultChecklistData = async () => {
       .exec();
 
     //@ts-expect-error if data exists, it will always have defaultChecklistData
-    if (data) return data.defaultChecklistData;
+    if (data.length !== 0) return data.defaultChecklistData;
 
     return null;
   } catch (error) {
@@ -79,6 +82,8 @@ export const getDefaultChecklistData = async () => {
 export const postDefaultChecklistData = async (data: ChecklistItemType[]) => {
   try {
     const userId = await getUserIdFromCookies();
+    const rawDate = formatDateToYYYYMMDD(new Date());
+    const date = new Date(rawDate).toISOString();
 
     await connectToDatabase();
     const defaultChecklistData = await Users.updateOne(
@@ -91,6 +96,13 @@ export const postDefaultChecklistData = async (data: ChecklistItemType[]) => {
       .lean()
       .exec();
 
+    // update the checklist for that day.
+    await Summary.updateOne(
+      { userId, date },
+      { $set: { checklistData: data } }
+    );
+
+    revalidatePath("/checklist");
     return defaultChecklistData;
   } catch (error) {
     console.log(error);

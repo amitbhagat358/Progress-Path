@@ -1,18 +1,13 @@
 import { fetchChecklistData } from "@/app/actions/checklist";
-import { defaultChecklistData } from "@/lib/defaultData";
 import EditChecklist from "./Edit";
+import { formatDateToYYYYMMDD } from "@/lib/utils";
 
 const ChecklistWrapper = async () => {
-  const checklistData = await fetchChecklistData();
-  console.log("checklistData", checklistData);
+  const rawDate = formatDateToYYYYMMDD(new Date());
+  const date = new Date(rawDate).toISOString();
+  const checklistData = await fetchChecklistData(date);
 
-  return (
-    <EditChecklist
-      initialData={
-        checklistData.length !== 0 ? checklistData : defaultChecklistData
-      }
-    />
-  );
+  return <EditChecklist initialData={checklistData} />;
 };
 
 export default ChecklistWrapper;

@@ -84,7 +84,7 @@ const DialyChecklist = ({
           </span>
         </div>
         <div className="border rounded-lg shadow-sm">
-          {checklistData.map((item, index) => (
+          {checklistData?.map((item, index) => (
             <ChecklistPart
               key={index}
               name={item.heading}

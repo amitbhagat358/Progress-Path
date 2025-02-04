@@ -5,7 +5,6 @@ import { redirect } from "next/navigation";
 import {
   formatDateToStandard,
   formatDateToYYYYMMDD,
-  getPrevAndNextDate,
   isValidDateFormat,
 } from "@/lib/utils";
 
@@ -32,7 +31,9 @@ export const fetchSummaryData = async (dateFromUrl: string) => {
       .select("-_id -__v -date -userId -checklistData")
       .exec();
 
-    const checklistData = await fetchChecklistData(date);
+    let checklistData = await fetchChecklistData(date);
+    if (!checklistData) checklistData = [];
+
     const completeSummaryData = {
       ...summaries[0],
       checklistData: [...checklistData],

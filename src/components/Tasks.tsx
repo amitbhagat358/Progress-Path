@@ -144,8 +144,8 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
         </form>
 
         {/* Task List */}
-        <div className="w-full md:w-[70%] m-auto py-3 border rounded-lg shadow-sm">
-          {tasks.map((task) => (
+        <div className="w-full md:w-[70%] m-auto py-3 border rounded-lg shadow-sm empty:hidden">
+          {tasks?.map((task) => (
             <div
               key={task.id}
               className="group flex flex-col justify-between items-center px-2 py-3 md:px-5 rounded-lg cursor-pointer select-none"

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { FormEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -100,7 +100,7 @@ const EditChecklist = ({
       </div>
       <div className="w-full md:w-[70%] m-auto flex flex-col p-5">
         <form onSubmit={handleSubmit} className="space-y-4">
-          {checklistSections.map((section, sectionIndex) => (
+          {checklistSections?.map((section, sectionIndex) => (
             <Card key={sectionIndex} className="mb-4">
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>
@@ -124,7 +124,7 @@ const EditChecklist = ({
                 </Button>
               </CardHeader>
               <CardContent className="space-y-4">
-                {section.checklist.map((checklistItem, checklistIndex) => (
+                {section?.checklist?.map((checklistItem, checklistIndex) => (
                   <div
                     key={checklistItem.id}
                     className="flex items-center space-x-2"

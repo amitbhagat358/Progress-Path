@@ -16,7 +16,7 @@ export default function Purpose({ data }: { data: PurposeType[] }) {
           </span>
         </div>
         <div className="w-full md:w-auto md:min-w-[40%] md:max-w-full flex flex-col mt-10">
-          <div className="rounded-lg border">
+          <div className="rounded-lg border empty:hidden">
             {data?.map((item, index) => (
               <div key={item.id}>
                 <div className="group flex items-center p-2">

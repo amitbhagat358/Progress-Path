@@ -10,6 +10,8 @@ import { CheckboxType, ChecklistItemType } from "@/interfaces/summary";
 
 import { toast } from "sonner";
 import Link from "next/link";
+import useWarnUnsavedChanges from "@/hooks/use-warn-unsaved";
+import useSaveShortcut from "@/hooks/use-save-shortcut";
 
 const DialyChecklist = ({
   initialData,
@@ -18,34 +20,6 @@ const DialyChecklist = ({
 }) => {
   const [checklistData, setChecklistData] = useState(initialData);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key === "s") {
-        event.preventDefault();
-        handleSave();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [unsavedChanges, checklistData]);
-
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (unsavedChanges) {
-        e.preventDefault();
-      }
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [unsavedChanges]);
 
   const handleSave = async () => {
     if (!unsavedChanges) {
@@ -73,6 +47,9 @@ const DialyChecklist = ({
       )
     );
   };
+
+  useWarnUnsavedChanges(unsavedChanges);
+  useSaveShortcut(handleSave);
 
   return (
     <div className="w-full">

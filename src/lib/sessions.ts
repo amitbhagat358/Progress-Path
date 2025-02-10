@@ -1,4 +1,4 @@
-"use server-only";
+"use server";
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
 import { SessionPayload } from "@/lib/definitions";

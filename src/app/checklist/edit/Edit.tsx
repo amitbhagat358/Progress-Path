@@ -10,6 +10,8 @@ import { Header } from "@/components/Header";
 import { postDefaultChecklistData } from "@/app/actions/checklist";
 import { toast } from "sonner";
 import { ChecklistItemType } from "@/interfaces/summary";
+import useWarnUnsavedChanges from "@/hooks/use-warn-unsaved";
+import useSaveShortcut from "@/hooks/use-save-shortcut";
 
 const EditChecklist = ({
   initialData,
@@ -17,13 +19,19 @@ const EditChecklist = ({
   initialData: ChecklistItemType[];
 }) => {
   const [checklistSections, setChecklistSections] = useState(initialData);
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
+
+  const updateHelper = (data: ChecklistItemType[]) => {
+    setChecklistSections(data);
+    setUnsavedChanges(true);
+  };
 
   const addChecklistSection = () => {
     const newChecklistSection = {
       heading: "",
       checklist: [{ id: Date.now(), name: "", checked: false }],
     };
-    setChecklistSections([...checklistSections, newChecklistSection]);
+    updateHelper([...checklistSections, newChecklistSection]);
   };
 
   const addChecklist = (sectionIndex: number) => {
@@ -33,13 +41,13 @@ const EditChecklist = ({
       name: "",
       checked: false,
     });
-    setChecklistSections(updatedSections);
+    updateHelper(updatedSections);
   };
 
   const handleHeadingChange = (sectionIndex: number, value: string) => {
     const updatedSections = [...checklistSections];
     updatedSections[sectionIndex].heading = value;
-    setChecklistSections(updatedSections);
+    updateHelper(updatedSections);
   };
 
   const handleChecklistChange = (
@@ -49,7 +57,7 @@ const EditChecklist = ({
   ) => {
     const updatedSections = [...checklistSections];
     updatedSections[sectionIndex].checklist[checklistIndex].name = value;
-    setChecklistSections(updatedSections);
+    updateHelper(updatedSections);
   };
 
   const handleChecklistCheckedChange = (
@@ -59,14 +67,14 @@ const EditChecklist = ({
     const updatedSections = [...checklistSections];
     updatedSections[sectionIndex].checklist[checklistIndex].checked =
       !updatedSections[sectionIndex].checklist[checklistIndex].checked;
-    setChecklistSections(updatedSections);
+    updateHelper(updatedSections);
   };
 
   const removeChecklistSection = (sectionIndex: number) => {
     const updatedSections = checklistSections.filter(
       (_, index) => index !== sectionIndex
     );
-    setChecklistSections(updatedSections);
+    updateHelper(updatedSections);
   };
 
   const removeChecklist = (sectionIndex: number, checklistIndex: number) => {
@@ -74,19 +82,22 @@ const EditChecklist = ({
     updatedSections[sectionIndex].checklist = updatedSections[
       sectionIndex
     ].checklist.filter((_, index) => index !== checklistIndex);
-    setChecklistSections(updatedSections);
+    updateHelper(updatedSections);
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     try {
       await postDefaultChecklistData(checklistSections);
       toast.success("Default checklist data updated.", { duration: 3000 });
+      setUnsavedChanges(false);
     } catch (error) {
       toast.error("Error updating default checklist data.", { duration: 3000 });
       console.log("error submitting defaultChecklistData");
     }
   };
+
+  useWarnUnsavedChanges(unsavedChanges);
+  useSaveShortcut(handleSubmit);
 
   return (
     <div className="w-full container">
@@ -99,7 +110,7 @@ const EditChecklist = ({
         </div>
       </div>
       <div className="w-full md:w-[70%] m-auto flex flex-col p-5">
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-4">
           {checklistSections?.map((section, sectionIndex) => (
             <Card key={sectionIndex} className="mb-4">
               <CardHeader className="flex flex-row items-center justify-between">
@@ -185,13 +196,13 @@ const EditChecklist = ({
             Add Checklist Section
           </Button>
           <Button
-            type="submit"
+            onClick={handleSubmit}
             variant="outline"
             className="w-full hover:bg-primary hover:text-background text-primary"
           >
             Submit
           </Button>
-        </form>
+        </div>
       </div>
     </div>
   );

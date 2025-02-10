@@ -3,6 +3,7 @@ import { updatePurpose } from "@/app/actions/purposeActions";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import useWarnUnsavedChanges from "@/hooks/use-warn-unsaved";
 import { PurposeType } from "@/interfaces/purpose";
 import { Trash } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -68,18 +69,7 @@ export default function EditPurpose({ data }: { data: PurposeType[] }) {
     };
   }, [unsavedChanges]);
 
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (unsavedChanges) {
-        e.preventDefault();
-      }
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [unsavedChanges]);
+  useWarnUnsavedChanges(unsavedChanges);
 
   return (
     <div className="w-full relative">

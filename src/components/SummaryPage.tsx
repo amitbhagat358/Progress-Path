@@ -28,6 +28,8 @@ import {
 } from "@/interfaces/summary";
 
 import Link from "next/link";
+import useSaveShortcut from "@/hooks/use-save-shortcut";
+import useWarnUnsavedChanges from "@/hooks/use-warn-unsaved";
 
 const SummaryPage = ({
   date,
@@ -46,34 +48,6 @@ const SummaryPage = ({
   );
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const { previousDate, nextDate } = getPrevAndNextDate(date);
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key === "s") {
-        event.preventDefault();
-        handleSubmit();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [unsavedChanges, highlights, learnings, diaryContent, checklistData]);
-
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (unsavedChanges) {
-        e.preventDefault();
-      }
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [unsavedChanges]);
 
   const handleSubmit = async () => {
     if (!unsavedChanges) {
@@ -107,6 +81,9 @@ const SummaryPage = ({
       )
     );
   };
+
+  useWarnUnsavedChanges(unsavedChanges);
+  useSaveShortcut(handleSubmit);
 
   return (
     <div className="w-full">

@@ -3,7 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { addTask } from "@/app/actions/taskActions";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { CalendForInput } from "./CalendarInput";
 import { TasksType } from "@/interfaces/task";
@@ -97,7 +97,7 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
         </form>
 
         <Suspense fallback={<div>Loading Tasks</div>}>
-          <TaskList initialTasks={initialTasks} />
+          <TaskList tasks={tasks} setTasks={setTasks} />
         </Suspense>
       </div>
     </div>

@@ -5,16 +5,18 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { deleteTask, toggleTask } from "@/app/actions/taskActions";
 import { format } from "date-fns";
 import { DialogForEditing } from "./DialogForEditing";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { toast } from "sonner";
 import { Trash } from "lucide-react";
 import { TasksType } from "@/interfaces/task";
+
 export default function TaskList({
-  initialTasks,
+  tasks,
+  setTasks,
 }: {
-  initialTasks: TasksType[];
+  tasks: TasksType[];
+  setTasks: Dispatch<SetStateAction<TasksType[]>>;
 }) {
-  const [tasks, setTasks] = useState(initialTasks);
   const [clicked, setClicked] = useState<number | null>(null);
 
   const handleToggle = async (taskId: number) => {
@@ -64,6 +66,7 @@ export default function TaskList({
         <div
           key={task.id}
           className="group flex flex-col justify-between items-center px-2 py-3 md:px-5 rounded-lg cursor-pointer select-none"
+          onClick={() => handleClick(task.id)}
         >
           <div className="w-full flex items-center gap-3">
             <Checkbox
@@ -72,7 +75,7 @@ export default function TaskList({
                 await handleToggle(task.id);
               }}
             />
-            <div onClick={() => handleClick(task.id)}>
+            <div>
               <p
                 className={`${
                   task.completed

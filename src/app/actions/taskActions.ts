@@ -1,9 +1,9 @@
-'use server';
+"use server";
 
-import { connectToDatabase } from '@/lib/mongodb';
-import { getUserIdFromCookies } from '@/lib/serverUtils';
-import { revalidatePath } from 'next/cache';
-import Tasks from '@/schemas/TaskSchema';
+import { connectToDatabase } from "@/lib/mongodb";
+import { getUserIdFromCookies } from "@/lib/serverUtils";
+import { revalidatePath } from "next/cache";
+import Tasks from "@/schemas/TaskSchema";
 
 export const fetchTasks = async () => {
   try {
@@ -11,13 +11,13 @@ export const fetchTasks = async () => {
     await connectToDatabase();
     const tasks = await Tasks.find({ userId })
       .lean()
-      .select('-_id -__v -userId')
+      .select("-_id -__v -userId")
       .sort({ _id: -1 })
       .exec();
 
     return tasks;
   } catch (error) {
-    console.error('Error fetching data:', error);
+    console.error("Error fetching data:", error);
     return null;
   }
 };
@@ -31,16 +31,16 @@ export const addTask = async (formData: FormData) => {
     const newTask = new Tasks({
       userId,
       id: Date.now(),
-      task: formData.get('task') as string,
+      task: formData.get("task") as string,
       completed: false,
-      deadline: formData.get('deadline'),
+      deadline: formData.get("deadline"),
     });
 
     await newTask.save();
-    revalidatePath('/dashboard');
+    revalidatePath("/tasks");
     return;
   } catch (error) {
-    console.error('Error adding product:', error);
+    console.error("Error adding product:", error);
     return;
   }
 };
@@ -50,10 +50,10 @@ export const deleteTask = async (id: number) => {
     const userId = await getUserIdFromCookies();
     await connectToDatabase();
     await Tasks.deleteOne({ userId, id });
-    // revalidatePath('/dashboard');
+    revalidatePath("/tasks");
   } catch (err) {
-    console.error('Error deleting task: ', err);
-    throw new Error('Error deleting task: ');
+    console.error("Error deleting task: ", err);
+    throw new Error("Error deleting task: ");
   }
 };
 
@@ -75,9 +75,9 @@ export const editTask = async (
         },
       }
     );
-    revalidatePath('/dashboard');
+    revalidatePath("/dashboard");
   } catch (err) {
-    console.error('Error editing task: ', err);
+    console.error("Error editing task: ", err);
     return;
   }
 };
@@ -92,9 +92,9 @@ export const toggleTask = async (id: number) => {
       { userId, id },
       { $set: { completed: !task.completed } }
     );
-    revalidatePath('/dashboard');
+    revalidatePath("/dashboard");
   } catch (err) {
-    console.error('Error toggling task: ', err);
+    console.error("Error toggling task: ", err);
     return;
   }
 };

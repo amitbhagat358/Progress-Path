@@ -18,11 +18,10 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { NavUser } from "./NavUser";
-import { getUserData, getUserIdFromCookies } from "@/lib/serverUtils";
 import Link from "next/link";
+import UserProfileCard from "./user-profile-card";
+import { Suspense } from "react";
 
-// Menu items.
 const items = [
   {
     title: "Dashboard",
@@ -52,9 +51,6 @@ const items = [
 ];
 
 export async function AppSidebar() {
-  const userId = await getUserIdFromCookies();
-  const userData = await getUserData(userId);
-
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="mt-2 mb-2">
@@ -79,7 +75,9 @@ export async function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        {userId && <NavUser user={userData ? userData : null} />}
+        <Suspense>
+          <UserProfileCard />
+        </Suspense>
       </SidebarFooter>
     </Sidebar>
   );

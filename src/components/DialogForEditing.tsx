@@ -53,7 +53,10 @@ export function DialogForEditing({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">
+        <Button
+          variant="outline"
+          className="hover:bg-primary hover:text-background"
+        >
           <Pencil />
           Edit
         </Button>

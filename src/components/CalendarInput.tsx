@@ -1,14 +1,14 @@
-import { Calendar } from './ui/calendar';
-import { Calendar as CalendarIcon } from 'lucide-react';
+import { Calendar } from "./ui/calendar";
+import { Calendar as CalendarIcon } from "lucide-react";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { format } from 'date-fns';
+} from "@/components/ui/dropdown-menu";
+import { format } from "date-fns";
 
 interface CalendForInputProps {
   date: Date | undefined;
@@ -20,7 +20,7 @@ export function CalendForInput({ onDateChange, date }: CalendForInputProps) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="w-full">
-          {date ? format(date, 'dd-MM-yyyy') : <CalendarIcon />}
+          {date ? format(date, "dd-MM-yyyy") : <CalendarIcon />}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
@@ -45,7 +45,7 @@ export function CalendForInput({ onDateChange, date }: CalendForInputProps) {
           <Button className="w-1/3" onClick={() => onDateChange(new Date())}>
             Today
           </Button>
-          <Button className="w-1/3">Ok</Button>
+          <Button className="w-1/3">{date ? "Select" : "Cancel"}</Button>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

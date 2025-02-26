@@ -16,7 +16,6 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
 
   const handleAddTask = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     const form = e.currentTarget;
     const formData = new FormData(e.currentTarget);
     const task = formData.get("task") as string;
@@ -53,6 +52,7 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
         description: "Please try again.",
         duration: 3000,
       });
+
       setTasks(tasksBeforeAdd);
     }
   };

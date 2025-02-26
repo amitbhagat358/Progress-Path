@@ -1,8 +1,24 @@
-import { getUserData, getUserIdFromCookies } from "@/lib/serverUtils";
+"use client";
+import { getUserData } from "@/lib/serverUtils";
 import { NavUser } from "./NavUser";
+import { useEffect, useState } from "react";
+import { userDataTypeForSidebar } from "@/interfaces/summary";
 
-export default async function UserProfileCard() {
-  const userId = await getUserIdFromCookies();
-  const userData = await getUserData(userId);
-  return <div>{userId && <NavUser user={userData ? userData : null} />}</div>;
+export default function UserProfileCard() {
+  const [userData, setUserData] = useState<userDataTypeForSidebar | null>(null);
+
+  useEffect(() => {
+    const helper = async () => {
+      setUserData(await getUserData());
+    };
+    helper();
+  }, []);
+
+  useEffect(() => {
+    console.log("userdata", userData);
+  }, [userData]);
+
+  // const userId = await getUserIdFromCookies();
+  // const userData = await getUserData(userId);
+  return <NavUser user={userData ? userData : null} />;
 }

@@ -65,8 +65,7 @@ export default function TaskList({
       {tasks?.map((task) => (
         <div
           key={task.id}
-          className="group flex flex-col justify-between items-center px-2 py-3 md:px-5 rounded-lg cursor-pointer select-none"
-          onClick={() => handleClick(task.id)}
+          className="group flex flex-col justify-between items-center px-2 py-3 md:mx-5 rounded-lg cursor-pointer select-none hover:bg-secondary"
         >
           <div className="w-full flex items-center gap-3">
             <Checkbox
@@ -75,7 +74,7 @@ export default function TaskList({
                 await handleToggle(task.id);
               }}
             />
-            <div>
+            <div className="w-full" onClick={() => handleClick(task.id)}>
               <p
                 className={`${
                   task.completed
@@ -107,6 +106,7 @@ export default function TaskList({
                 <Button
                   variant="outline"
                   onClick={() => handleDeleteTask(task.id)}
+                  className="hover:bg-primary hover:text-background"
                 >
                   <Trash />
                   Delete

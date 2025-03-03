@@ -1,24 +1,14 @@
 "use client";
-import { getUserData } from "@/lib/serverUtils";
+import { useSession } from "next-auth/react";
 import { NavUser } from "./NavUser";
-import { useEffect, useState } from "react";
-import { userDataTypeForSidebar } from "@/interfaces/summary";
+import { useUserContext } from "@/app/context/userContext";
 
 export default function UserProfileCard() {
-  const [userData, setUserData] = useState<userDataTypeForSidebar | null>(null);
+  const { data: session } = useSession();
+  console.log("session", session);
+  // const { userData } = useUserContext();
+  // console.log("userData", userData);
+  if (session) return <NavUser user={session ? session.user : null} />;
 
-  useEffect(() => {
-    const helper = async () => {
-      setUserData(await getUserData());
-    };
-    helper();
-  }, []);
-
-  useEffect(() => {
-    console.log("userdata", userData);
-  }, [userData]);
-
-  // const userId = await getUserIdFromCookies();
-  // const userData = await getUserData(userId);
-  return <NavUser user={userData ? userData : null} />;
+  return null;
 }

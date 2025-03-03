@@ -26,7 +26,9 @@ export interface SummaryDataType {
 }
 
 export interface userDataTypeForSidebar {
-  username: string;
+  name?: string;
+  username?: string;
   email: string;
   avatar: string;
+  image?: string;
 }

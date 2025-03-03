@@ -11,7 +11,7 @@ import {
   User,
 } from "lucide-react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,7 +28,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useUserContext } from "@/app/context/userContext";
-import { logout } from "@/app/actions/auth";
 import { userDataTypeForSidebar } from "@/interfaces/summary";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -39,13 +38,8 @@ export function NavUser({ user }: { user: userDataTypeForSidebar | null }) {
   const { logoutUser } = useUserContext();
 
   const handleLogout = async () => {
-    // to remove userId from the localstorage
     logoutUser();
-
-    // to remove session from the cookies
-    await logout();
-
-    toggleSidebar();
+    if (isMobile) toggleSidebar();
     router.push("/login");
   };
 
@@ -60,11 +54,11 @@ export function NavUser({ user }: { user: userDataTypeForSidebar | null }) {
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarFallback className="rounded-lg">
-                  {user?.avatar}
+                  <img src={`${user?.image}`} alt="user profile photo" />
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user?.username}</span>
+                <span className="truncate font-semibold">{user?.name}</span>
                 <span className="truncate text-xs">{user?.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
@@ -80,13 +74,11 @@ export function NavUser({ user }: { user: userDataTypeForSidebar | null }) {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarFallback className="rounded-lg">
-                    {user?.avatar}
+                    <img src={`${user?.image}`} alt="user profile photo" />
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">
-                    {user?.username}
-                  </span>
+                  <span className="truncate font-semibold">{user?.name}</span>
                   <span className="truncate text-xs">{user?.email}</span>
                 </div>
               </div>

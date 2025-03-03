@@ -1,9 +1,9 @@
-import { Metadata } from 'next';
-import '../globals.css';
+import { Metadata } from "next";
+import "../globals.css";
 
 export const metadata: Metadata = {
-  title: 'Login | Progress Path',
-  description: 'Login page for Progress Path',
+  title: "Login | Progress Path",
+  description: "Login page for Progress Path",
 };
 
 export default async function RootLayout({

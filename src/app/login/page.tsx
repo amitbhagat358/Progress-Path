@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { useUserContext } from "../context/userContext";
 import { useRouter } from "next/navigation";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { signIn, useSession } from "next-auth/react";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -16,10 +17,13 @@ export default function LoginForm() {
   const [state, action, pending] = useActionState(login, undefined);
   const [passwordVisible, setPasswordVisible] = useState(false);
 
+  const { data: session } = useSession();
+  console.log("session", session);
+
   useEffect(() => {
     if (!pending) {
       if (state?.userId) {
-        loginUser(state.userId);
+        loginUser();
         toast.success("Login Successful", {
           description: "Welcome back!",
         });
@@ -94,6 +98,15 @@ export default function LoginForm() {
           }`}
         >
           {pending ? "Logging in..." : "Login"}
+        </Button>
+
+        <Button
+          type="button"
+          className="google-button"
+          variant="outline"
+          onClick={() => signIn("google")}
+        >
+          Continue with Google
         </Button>
       </form>
       <div>

@@ -20,7 +20,7 @@ export default function SignupForm() {
   useEffect(() => {
     if (!pending) {
       if (state?.userId) {
-        loginUser(state.userId);
+        loginUser();
         toast.success("Sign Up Successful", {
           description: "Welcome !",
         });

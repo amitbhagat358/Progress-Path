@@ -1,42 +1,46 @@
-'use client';
+"use client";
 
+import { userDataTypeForSidebar } from "@/interfaces/summary";
+import { getUserData } from "@/lib/serverUtils";
 import {
   createContext,
   ReactNode,
   useContext,
   useEffect,
   useState,
-} from 'react';
+} from "react";
+import { logout } from "@/app/actions/auth";
 
 type UserContextType = {
-  userId: string | undefined;
-  loginUser: (userData: string | undefined) => void;
+  userData: userDataTypeForSidebar | null;
+  loginUser: () => void;
   logoutUser: () => void;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserContextProvider = ({ children }: { children: ReactNode }) => {
-  const [userId, setUserId] = useState<string | undefined>(undefined);
+  const [userData, setUserData] = useState<userDataTypeForSidebar | null>(null);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUserId(JSON.parse(storedUser));
-    }
+    handleUserDataChange();
   }, []);
 
-  const loginUser = (userData: string | undefined) => {
-    setUserId(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+  const handleUserDataChange = async () => {
+    setUserData(await getUserData());
   };
 
-  const logoutUser = () => {
-    setUserId(undefined);
-    localStorage.removeItem('user');
+  const loginUser = async () => {
+    await handleUserDataChange();
   };
+
+  const logoutUser = async () => {
+    await logout();
+    await handleUserDataChange();
+  };
+
   return (
-    <UserContext.Provider value={{ userId, loginUser, logoutUser }}>
+    <UserContext.Provider value={{ userData, loginUser, logoutUser }}>
       {children}
     </UserContext.Provider>
   );
@@ -45,7 +49,7 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
 export const useUserContext = () => {
   const context = useContext(UserContext);
   if (!context) {
-    throw new Error('useUserContext must be used within a UserProvider');
+    throw new Error("useUserContext must be used within a UserProvider");
   }
   return context;
 };

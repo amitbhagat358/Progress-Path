@@ -9,9 +9,59 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "sonner";
 import SessionProvider from "@/components/SessionProvider";
 
+// export const metadata: Metadata = {
+//   title: "Progress Path",
+//   description: "Manage Tasks and store memories for each day",
+// };
+
+import type { Viewport } from "next";
+
+const APP_NAME = "Progress Path";
+const APP_DEFAULT_TITLE = "Progress Path";
+const APP_TITLE_TEMPLATE = "%s";
+const APP_DESCRIPTION = "Personal Tracking App";
+
 export const metadata: Metadata = {
-  title: "Progress Path",
-  description: "Manage Tasks and store memories for each day",
+  applicationName: APP_NAME,
+  title: {
+    default: APP_DEFAULT_TITLE,
+    template: APP_TITLE_TEMPLATE,
+  },
+  description: APP_DESCRIPTION,
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: APP_DEFAULT_TITLE,
+    // startUpImage: [],
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  openGraph: {
+    type: "website",
+    siteName: APP_NAME,
+    title: {
+      default: APP_DEFAULT_TITLE,
+      template: APP_TITLE_TEMPLATE,
+    },
+    description: APP_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary",
+    title: {
+      default: APP_DEFAULT_TITLE,
+      template: APP_TITLE_TEMPLATE,
+    },
+    description: APP_DESCRIPTION,
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "hsl(0, 0%, 100%)" }, // Light mode
+    { media: "(prefers-color-scheme: dark)", color: "hsl(0, 0%, 9%)" }, // Dark mode
+  ],
 };
 
 export default function RootLayout({

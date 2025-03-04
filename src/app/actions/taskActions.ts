@@ -1,13 +1,13 @@
 "use server";
 
 import { connectToDatabase } from "@/lib/mongodb";
-import { getUserIdFromCookies } from "@/lib/serverUtils";
+import { getUserIdFromToken } from "@/lib/serverUtils";
 import { revalidatePath } from "next/cache";
 import Tasks from "@/schemas/TaskSchema";
 
 export const fetchTasks = async () => {
   try {
-    const userId = await getUserIdFromCookies();
+    const userId = await getUserIdFromToken();
     await connectToDatabase();
     const tasks = await Tasks.find({ userId })
       .lean()
@@ -24,7 +24,7 @@ export const fetchTasks = async () => {
 
 export const addTask = async (formData: FormData) => {
   try {
-    const userId = await getUserIdFromCookies();
+    const userId = await getUserIdFromToken();
 
     await connectToDatabase();
 
@@ -47,7 +47,7 @@ export const addTask = async (formData: FormData) => {
 
 export const deleteTask = async (id: number) => {
   try {
-    const userId = await getUserIdFromCookies();
+    const userId = await getUserIdFromToken();
     await connectToDatabase();
     await Tasks.deleteOne({ userId, id });
     revalidatePath("/tasks");
@@ -63,7 +63,7 @@ export const editTask = async (
   deadline: Date | undefined
 ) => {
   try {
-    const userId = await getUserIdFromCookies();
+    const userId = await getUserIdFromToken();
     await connectToDatabase();
 
     await Tasks.updateOne(
@@ -84,7 +84,7 @@ export const editTask = async (
 
 export const toggleTask = async (id: number) => {
   try {
-    const userId = await getUserIdFromCookies();
+    const userId = await getUserIdFromToken();
     await connectToDatabase();
 
     const task = await Tasks.findOne({ userId, id });

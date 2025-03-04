@@ -10,7 +10,7 @@ import {
 
 import { connectToDatabase } from "@/lib/mongodb";
 import Summary from "@/schemas/SummarySchema";
-import { getUserIdFromCookies } from "@/lib/serverUtils";
+import { getUserIdFromToken } from "@/lib/serverUtils";
 import { revalidatePath } from "next/cache";
 import { SummaryDataType } from "@/interfaces/summary";
 import { fetchChecklistData } from "./checklist";
@@ -23,7 +23,7 @@ export const fetchSummaryData = async (dateFromUrl: string) => {
 
   try {
     const date = new Date(dateFromUrl).toISOString();
-    const userId = await getUserIdFromCookies();
+    const userId = await getUserIdFromToken();
 
     await connectToDatabase();
     const summaries = await Summary.find({ userId, date })
@@ -55,7 +55,7 @@ export const postSummaryData = async (
     }
 
     const date = new Date(dateFromUrl).toISOString();
-    const userId = await getUserIdFromCookies();
+    const userId = await getUserIdFromToken();
 
     await connectToDatabase();
     const summaryExists = await Summary.findOne({ userId, date });

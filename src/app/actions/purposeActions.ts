@@ -1,18 +1,18 @@
-'use server';
-import { PurposeType } from '@/interfaces/purpose';
-import { connectToDatabase } from '@/lib/mongodb';
-import { getUserIdFromCookies } from '@/lib/serverUtils';
-import Purpose from '@/schemas/Purpose';
-import { revalidatePath } from 'next/cache';
+"use server";
+import { PurposeType } from "@/interfaces/purpose";
+import { connectToDatabase } from "@/lib/mongodb";
+import { getUserIdFromToken } from "@/lib/serverUtils";
+import Purpose from "@/schemas/Purpose";
+import { revalidatePath } from "next/cache";
 
 export async function getPurposes() {
   try {
-    const userId = await getUserIdFromCookies();
+    const userId = await getUserIdFromToken();
 
     await connectToDatabase();
     const data = await Purpose.findOne({ userId })
       .lean()
-      .select('-_id -__v -userId')
+      .select("-_id -__v -userId")
       .exec();
 
     //@ts-expect-error don't know
@@ -21,14 +21,14 @@ export async function getPurposes() {
 
     return finalData;
   } catch (err) {
-    console.error('Error fetching purposes:', err);
+    console.error("Error fetching purposes:", err);
     return [];
   }
 }
 
 export async function updatePurpose(data: PurposeType[]) {
   try {
-    const userId = await getUserIdFromCookies();
+    const userId = await getUserIdFromToken();
 
     await connectToDatabase();
     const updatedPurpose = await Purpose.findOneAndUpdate(
@@ -36,10 +36,10 @@ export async function updatePurpose(data: PurposeType[]) {
       { $set: { purposes: data } },
       { upsert: true, new: true }
     );
-    revalidatePath('/purpose-of-study');
+    revalidatePath("/purpose-of-study");
     return data;
   } catch (err) {
-    console.error('Error updating purposes: ', err);
+    console.error("Error updating purposes: ", err);
     return [];
   }
 }

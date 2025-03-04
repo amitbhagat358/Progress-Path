@@ -5,14 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useActionState, useEffect, useState } from "react";
-import { useUserContext } from "../context/userContext";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 export default function SignupForm() {
   const [state, action, pending] = useActionState(signup, undefined);
-  const { loginUser } = useUserContext();
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   const router = useRouter();
@@ -20,11 +18,10 @@ export default function SignupForm() {
   useEffect(() => {
     if (!pending) {
       if (state?.userId) {
-        loginUser();
         toast.success("Sign Up Successful", {
-          description: "Welcome !",
+          description: "Kindly login with the credentials !",
         });
-        router.push("/dashboard");
+        router.push("/login");
       } else if (state?.message) {
         toast.error(state.message, {
           description: state.description,

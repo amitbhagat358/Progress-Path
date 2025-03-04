@@ -4,14 +4,14 @@ import Summary from "@/schemas/SummarySchema";
 import { ChecklistItemType } from "@/interfaces/summary";
 import { connectToDatabase } from "@/lib/mongodb";
 import { formatDateToYYYYMMDD } from "@/lib/utils";
-import { getUserIdFromCookies } from "@/lib/serverUtils";
+import { getUserIdFromToken } from "@/lib/serverUtils";
 import Users from "@/schemas/UserSchema";
 import { hardcodedChecklistData } from "@/lib/hardcodedData";
 import { revalidatePath } from "next/cache";
 
 export const fetchChecklistData = async (dateFromParent: string) => {
   try {
-    const userId = await getUserIdFromCookies();
+    const userId = await getUserIdFromToken();
     const date = new Date(dateFromParent).toISOString();
 
     await connectToDatabase();
@@ -39,7 +39,7 @@ export const fetchChecklistData = async (dateFromParent: string) => {
 
 export const postChecklistData = async (data: ChecklistItemType[]) => {
   try {
-    const userId = await getUserIdFromCookies();
+    const userId = await getUserIdFromToken();
     const rawDate = formatDateToYYYYMMDD(new Date());
     const date = new Date(rawDate).toISOString();
 
@@ -60,7 +60,7 @@ export const postChecklistData = async (data: ChecklistItemType[]) => {
 
 export const getDefaultChecklistDataForTheUser = async () => {
   try {
-    const userId = await getUserIdFromCookies();
+    const userId = await getUserIdFromToken();
 
     await connectToDatabase();
     const data = await Users.findOne(
@@ -81,7 +81,7 @@ export const getDefaultChecklistDataForTheUser = async () => {
 
 export const postDefaultChecklistData = async (data: ChecklistItemType[]) => {
   try {
-    const userId = await getUserIdFromCookies();
+    const userId = await getUserIdFromToken();
     const rawDate = formatDateToYYYYMMDD(new Date());
     const date = new Date(rawDate).toISOString();
 

@@ -19,8 +19,8 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import UserProfileCard from "./user-profile-card";
 import { Suspense } from "react";
+import { NavUser } from "./NavUser";
 
 const items = [
   {
@@ -76,7 +76,7 @@ export async function AppSidebar() {
       </SidebarContent>
       <SidebarFooter>
         <Suspense>
-          <UserProfileCard />
+          <NavUser />
         </Suspense>
       </SidebarFooter>
     </Sidebar>

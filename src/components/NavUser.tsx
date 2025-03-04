@@ -1,15 +1,6 @@
 "use client";
 
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Settings,
-  Sparkles,
-  User,
-} from "lucide-react";
+import { ChevronsUpDown, LogOut, Settings, User } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -27,21 +18,27 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useUserContext } from "@/app/context/userContext";
-import { userDataTypeForSidebar } from "@/interfaces/summary";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
+import { userDataTypeForSidebar } from "@/interfaces/summary";
 
-export function NavUser({ user }: { user: userDataTypeForSidebar | null }) {
+export function NavUser() {
   const router = useRouter();
+
   const { isMobile, toggleSidebar } = useSidebar();
-  const { logoutUser } = useUserContext();
+  const { data: session } = useSession();
+  const user: userDataTypeForSidebar = session?.user;
 
   const handleLogout = async () => {
-    logoutUser();
+    await signOut();
     if (isMobile) toggleSidebar();
     router.push("/login");
   };
+
+  if (!session?.user) {
+    return null;
+  }
 
   return (
     <SidebarMenu>
@@ -54,7 +51,10 @@ export function NavUser({ user }: { user: userDataTypeForSidebar | null }) {
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarFallback className="rounded-lg">
-                  <img src={`${user?.image}`} alt="user profile photo" />
+                  {/* {user.image} */}
+                  {user.image && (
+                    <img src={`${user?.image}`} alt="user profile photo" />
+                  )}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -74,7 +74,10 @@ export function NavUser({ user }: { user: userDataTypeForSidebar | null }) {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarFallback className="rounded-lg">
-                    <img src={`${user?.image}`} alt="user profile photo" />
+                    {/* {user.image} */}
+                    {user.image && (
+                      <img src={`${user?.image}`} alt="user profile photo" />
+                    )}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">

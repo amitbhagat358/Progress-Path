@@ -50,7 +50,7 @@ export async function signup(state: FormState, formData: FormData) {
       description: "Please try again",
     };
   }
-  await createSession(userId);
+  // await createSession(userId);
 
   return { userId: newUser._id.toString() };
 }

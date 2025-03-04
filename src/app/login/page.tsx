@@ -35,7 +35,7 @@ export default function LoginForm() {
     });
 
     if (!res?.error) {
-      router.push("/dashboard");
+      router.refresh();
     } else {
       toast.error(res.error);
     }

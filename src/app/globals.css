@@ -44,9 +44,10 @@
   }
 
   .dark {
-    /* --background: 20 14.3% 4.1%; */ /* complete black default */
+    --background: 20 14.3% 4.1%;
+    /* --background: 240, 6%, 10%; // vercel dark-shade */
     /* --background: 0, 0%, 13%; chatgpt */
-    --background: 0 0% 9%;
+    /* --background: 0 0% 9%; */
     --foreground: 0 0% 95%;
     --card: 240 5% 12%; /* Soft dark grey for the dark theme */
     --card-foreground: 240 5% 85%; /* Complementary soft light shade */

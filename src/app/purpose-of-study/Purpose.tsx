@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Header } from "./Header";
+import { Header } from "@/components/Header";
 import { PurposeType } from "@/interfaces/purpose";
 
 export default function Purpose({ data }: { data: PurposeType[] }) {

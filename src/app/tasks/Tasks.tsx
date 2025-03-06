@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { addTask } from "@/app/actions/taskActions";
 import { Suspense, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { CalendForInput } from "./CalendarInput";
+import { CalendForInput } from "../../components/CalendarInput";
 import { TasksType } from "@/interfaces/task";
-import { Header } from "./Header";
+import { Header } from "../../components/Header";
 import TaskList from "./task-list";
 
 const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {

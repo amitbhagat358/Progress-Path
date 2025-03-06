@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { SidebarTrigger } from "./ui/sidebar";
-import { ModeToggle } from "./ui/mode-toggle";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 
 import { toast } from "sonner";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -14,10 +14,10 @@ import {
   getPrevAndNextDate,
 } from "@/lib/utils";
 
-import ChecklistPart from "./ChecklistPart";
 import Hightlights from "./Highlights";
 import Learnings from "./Learnings";
-import Diary from "./Diary";
+import Diary from "@/components/Diary";
+import ChecklistPart from "@/components/ChecklistPart";
 
 import { postSummaryData } from "@/app/actions/summary";
 

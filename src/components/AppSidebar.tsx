@@ -1,3 +1,4 @@
+"use client";
 import {
   Calendar,
   Home,
@@ -21,6 +22,7 @@ import {
 import Link from "next/link";
 import { Suspense } from "react";
 import { NavUser } from "./NavUser";
+import { usePathname } from "next/navigation";
 
 const items = [
   {
@@ -50,7 +52,8 @@ const items = [
   },
 ];
 
-export async function AppSidebar() {
+export function AppSidebar() {
+  const path = usePathname();
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="mt-2 mb-2">
@@ -61,7 +64,12 @@ export async function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
-                <SidebarMenuItem key={item.title} className="mb-1">
+                <SidebarMenuItem
+                  key={item.title}
+                  className={`${
+                    path === item.url && "bg-sidebar-accent rounded-lg"
+                  }`}
+                >
                   <SidebarMenuButton asChild>
                     <Link href={item.url} prefetch>
                       <item.icon />

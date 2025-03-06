@@ -1,4 +1,4 @@
-import SummaryPage from "@/components/SummaryPage";
+import SummaryPage from "./SummaryPage";
 import { fetchSummaryData } from "@/app/actions/summary";
 import { SummaryDataType } from "@/interfaces/summary";
 import { defaultSummaryData } from "@/lib/hardcodedData";

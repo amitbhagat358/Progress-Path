@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { deleteTask, toggleTask } from "@/app/actions/taskActions";
 import { format } from "date-fns";
-import { DialogForEditing } from "./DialogForEditing";
+import { DialogForEditing } from "@/components/DialogForEditing";
 import { Dispatch, SetStateAction, useState } from "react";
 import { toast } from "sonner";
 import { Trash } from "lucide-react";

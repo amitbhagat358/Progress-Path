@@ -1,4 +1,5 @@
-import mongoose from 'mongoose';
+"use server";
+import mongoose from "mongoose";
 
 type ConnectionObject = {
   isConnected?: number;
@@ -8,17 +9,17 @@ const connection: ConnectionObject = {};
 
 export const connectToDatabase = async (): Promise<void> => {
   if (connection.isConnected) {
-    console.log('Already connected to the database');
+    console.log("Already connected to the database");
     return;
   }
 
   try {
-    const db = await mongoose.connect(process.env.MONGODB_URI || '');
+    const db = await mongoose?.connect(process.env.MONGODB_URI || "");
 
     connection.isConnected = db.connection.readyState;
-    console.log('Database connected successfully');
+    console.log("Database connected successfully");
   } catch (error) {
-    console.error('Database connection failed:', error);
+    console.error("Database connection failed:", error);
     process.exit(1);
   }
 };

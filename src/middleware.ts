@@ -1,14 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-const protectedRoutes: string[] = [
-  "/dashboard",
-  "/checklist",
-  "/tasks",
-  "/get-summary",
-  "/purpose-of-study",
-];
-
 const publicRoutes = ["/login", "/signup", "/", ""];
 
 export default async function middleware(req: NextRequest) {
@@ -20,7 +12,7 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
-  if (!token && protectedRoutes.includes(path)) {
+  if (!token && !publicRoutes.includes(path)) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 

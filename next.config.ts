@@ -1,4 +1,4 @@
-// import type { NextConfig } from 'next';
+import { NextConfig } from "next";
 
 // const nextConfig: NextConfig = {
 //   // logging: {
@@ -11,7 +11,16 @@
 
 // export default nextConfig;
 
-const nextConfig = {};
+const nextConfig: NextConfig = {
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
+  },
+  images: {
+    domains: ["res.cloudinary.com", "images.unsplash.com"],
+  },
+};
 
 export default nextConfig;
 

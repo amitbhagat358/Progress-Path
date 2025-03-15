@@ -9,6 +9,9 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "sonner";
 import SessionProvider from "@/components/SessionProvider";
 
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
+
 // export const metadata: Metadata = {
 //   title: "Progress Path",
 //   description: "Manage Tasks and store memories for each day",
@@ -68,7 +71,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${GeistSans.variable} ${GeistMono.variable}`}
+    >
       <body>
         <SessionProvider>
           <SidebarProvider>
@@ -81,7 +88,7 @@ export default function RootLayout({
               <AppSidebar />
               {children}
               <Toaster
-                position="top-center"
+                position="bottom-right"
                 className="toaster group"
                 toastOptions={{
                   classNames: {

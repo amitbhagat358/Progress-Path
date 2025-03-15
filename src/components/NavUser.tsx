@@ -52,8 +52,12 @@ export function NavUser() {
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarFallback className="rounded-lg">
                   {/* {user.image} */}
-                  {user.image && (
+                  {user.image ? (
                     <img src={`${user?.image}`} alt="user profile photo" />
+                  ) : (
+                    <div>
+                      <User />
+                    </div>
                   )}
                 </AvatarFallback>
               </Avatar>
@@ -75,8 +79,12 @@ export function NavUser() {
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarFallback className="rounded-lg">
                     {/* {user.image} */}
-                    {user.image && (
+                    {user.image ? (
                       <img src={`${user?.image}`} alt="user profile photo" />
+                    ) : (
+                      <div>
+                        <User />
+                      </div>
                     )}
                   </AvatarFallback>
                 </Avatar>

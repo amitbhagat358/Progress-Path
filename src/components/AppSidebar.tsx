@@ -23,6 +23,8 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { NavUser } from "./NavUser";
 import { usePathname } from "next/navigation";
+import { ThemeProvider } from "./ui/theme-provider";
+import { ModeToggle } from "./ui/mode-toggle";
 
 const items = [
   {
@@ -83,6 +85,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
+        <ModeToggle />
         <Suspense>
           <NavUser />
         </Suspense>

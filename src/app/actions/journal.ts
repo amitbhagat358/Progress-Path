@@ -4,7 +4,7 @@ import { connectToDatabase } from "@/lib/mongodb";
 import { getUserIdFromToken } from "@/lib/serverUtils";
 import Journal from "@/schemas/Journal";
 import Users from "@/schemas/UserSchema";
-import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 export const addJournal = async (
   date: Date,
@@ -19,6 +19,9 @@ export const addJournal = async (
       { content },
       { upsert: true, new: true }
     );
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    revalidatePath(`/journal/${year}/${month}`);
   } catch (error) {
     console.error("Error adding/updating journal:", error);
   }
@@ -107,51 +110,4 @@ export async function getAvailableJournalYears(): Promise<number[]> {
     console.log("Error:", error);
     return [];
   }
-}
-
-export async function getMonthsWithEntries(
-  year: number
-): Promise<{ month: number; entryCount: number; previewImage?: string }[]> {
-  // This is a placeholder implementation.
-  // In a real application, this function would query your database
-  // to find all months in the given year that have journal entries,
-  // along with the count of entries for each month.
-
-  // Example data (replace with actual data fetching logic)
-  const monthsData = [];
-
-  if (year === 2025) {
-    monthsData.push({
-      month: 1,
-      entryCount: 3,
-      previewImage: "/placeholder.jpg",
-    });
-    monthsData.push({
-      month: 3,
-      entryCount: 5,
-      previewImage: "/placeholder.jpg",
-    });
-    monthsData.push({ month: 5, entryCount: 2 });
-    monthsData.push({
-      month: 10,
-      entryCount: 7,
-      previewImage: "/placeholder.jpg",
-    });
-  } else if (year === 2024) {
-    monthsData.push({
-      month: 11,
-      entryCount: 4,
-      previewImage: "/placeholder.jpg",
-    });
-    monthsData.push({
-      month: 12,
-      entryCount: 6,
-      previewImage: "/placeholder.jpg",
-    });
-  }
-
-  // Simulate loading delay
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  return monthsData;
 }

@@ -3,6 +3,7 @@
 import { connectToDatabase } from "@/lib/mongodb";
 import { getUserIdFromToken } from "@/lib/serverUtils";
 import Journal from "@/schemas/Journal";
+import Users from "@/schemas/UserSchema";
 import { redirect } from "next/navigation";
 
 export const addJournal = async (
@@ -70,3 +71,87 @@ export const getJournalByMonth = async (
     return [];
   }
 };
+
+export async function getAvailableJournalYears(): Promise<number[]> {
+  try {
+    await connectToDatabase();
+    console.log("Database connected successfully");
+
+    const userId = await getUserIdFromToken();
+    if (!userId) {
+      throw new Error("User ID not found");
+    }
+
+    const user = await Users.findById(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    if (!user.createdAt) {
+      throw new Error("User creation date is missing");
+    }
+
+    const joiningYear = new Date(user.createdAt).getFullYear();
+    if (isNaN(joiningYear)) {
+      throw new Error("Invalid joining year");
+    }
+
+    const currentYear = new Date().getFullYear();
+    const years = Array.from(
+      { length: currentYear - joiningYear + 1 },
+      (_, i) => joiningYear + i
+    );
+
+    return years;
+  } catch (error) {
+    console.log("Error:", error);
+    return [];
+  }
+}
+
+export async function getMonthsWithEntries(
+  year: number
+): Promise<{ month: number; entryCount: number; previewImage?: string }[]> {
+  // This is a placeholder implementation.
+  // In a real application, this function would query your database
+  // to find all months in the given year that have journal entries,
+  // along with the count of entries for each month.
+
+  // Example data (replace with actual data fetching logic)
+  const monthsData = [];
+
+  if (year === 2025) {
+    monthsData.push({
+      month: 1,
+      entryCount: 3,
+      previewImage: "/placeholder.jpg",
+    });
+    monthsData.push({
+      month: 3,
+      entryCount: 5,
+      previewImage: "/placeholder.jpg",
+    });
+    monthsData.push({ month: 5, entryCount: 2 });
+    monthsData.push({
+      month: 10,
+      entryCount: 7,
+      previewImage: "/placeholder.jpg",
+    });
+  } else if (year === 2024) {
+    monthsData.push({
+      month: 11,
+      entryCount: 4,
+      previewImage: "/placeholder.jpg",
+    });
+    monthsData.push({
+      month: 12,
+      entryCount: 6,
+      previewImage: "/placeholder.jpg",
+    });
+  }
+
+  // Simulate loading delay
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  return monthsData;
+}

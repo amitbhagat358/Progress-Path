@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import Link from "next/link";
 import useWarnUnsavedChanges from "@/hooks/use-warn-unsaved";
 import useSaveShortcut from "@/hooks/use-save-shortcut";
+import { SidebarTrigger } from "./ui/sidebar";
 
 const DialyChecklist = ({
   initialData,
@@ -53,12 +54,12 @@ const DialyChecklist = ({
 
   return (
     <div className="w-full">
-      <Header />
       <div className="w-full md:w-[70%] flex flex-col gap-4 m-auto p-5">
-        <div className="font-semibold md:text-center text-3xl mb-6">
+        <div className="w-full flex justify-between md:justify-center items-center font-semibold md:text-center text-3xl mb-6">
           <span className="underline underline-offset-8 decoration-1 decoration-primary">
             Today&apos;s Checklist
           </span>
+          <SidebarTrigger className="md:hidden" />
         </div>
         <div className="border rounded-lg shadow-sm">
           {checklistData?.map((item, index) => (

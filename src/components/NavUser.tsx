@@ -1,6 +1,12 @@
 "use client";
 
-import { ChevronsUpDown, LogOut, Settings, User } from "lucide-react";
+import {
+  ChevronsUpDown,
+  LogOut,
+  Settings,
+  User,
+  UserRound,
+} from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -22,6 +28,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { userDataTypeForSidebar } from "@/interfaces/summary";
+import Image from "next/image";
+import { Button } from "./ui/button";
 
 export function NavUser() {
   const router = useRouter();
@@ -49,15 +57,27 @@ export function NavUser() {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
+              {/* {user.image ? (
+                <Image
+                  src={`${user?.image}`}
+                  alt="user profile photo"
+                  height={10}
+                  width={10}
+                />
+              ) : (
+                <User size={48} scale={2} />
+              )} */}
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarFallback className="rounded-lg">
-                  {/* {user.image} */}
+                <AvatarFallback className="rounded-lg" asChild>
                   {user.image ? (
-                    <img src={`${user?.image}`} alt="user profile photo" />
+                    <Image
+                      src={`${user?.image}`}
+                      alt="user profile photo"
+                      height={10}
+                      width={10}
+                    />
                   ) : (
-                    <div>
-                      <User />
-                    </div>
+                    <User className="p-1" />
                   )}
                 </AvatarFallback>
               </Avatar>
@@ -77,14 +97,16 @@ export function NavUser() {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarFallback className="rounded-lg">
-                    {/* {user.image} */}
+                  <AvatarFallback className="rounded-lg" asChild>
                     {user.image ? (
-                      <img src={`${user?.image}`} alt="user profile photo" />
+                      <Image
+                        src={`${user?.image}`}
+                        alt="user profile photo"
+                        height={10}
+                        width={10}
+                      />
                     ) : (
-                      <div>
-                        <User />
-                      </div>
+                      <User className="p-1" />
                     )}
                   </AvatarFallback>
                 </Avatar>

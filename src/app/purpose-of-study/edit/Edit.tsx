@@ -73,7 +73,7 @@ export default function EditPurpose({ data }: { data: PurposeType[] }) {
 
   return (
     <div className="w-full relative">
-      <Header />
+      {/* <Header /> */}
       <div className="w-full p-5">
         <div className="w-full flex justify-center items-center mb-10">
           <div className="w-full md:w-[70%] flex justify-between">

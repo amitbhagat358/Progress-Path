@@ -19,19 +19,11 @@ const parseJournalEntries = (entries: { date: Date; content: string }[]) => {
 
     const title = document.querySelector("h1")?.textContent || "";
 
-    // Find the first meaningful <p> tag (ignoring empty ones)
-    let description = "";
     const paragraphs = document.querySelectorAll("p");
-    for (const p of paragraphs) {
-      const text = p.textContent?.trim();
-      if (text && text !== "\u200B") {
-        // Ignore empty & zero-width space content
-        description = text;
-        break;
-      }
-    }
-
-    // Get the first valid image URL
+    const description = Array.from(paragraphs)
+      .map((p) => p.textContent?.trim())
+      .filter((text) => text && text !== "\u200B")
+      .join("\n\n");
     const imageUrl = document.querySelector("img")?.getAttribute("src") || "";
 
     return { date, title, description, imageUrl };
@@ -68,7 +60,9 @@ const getEntries = async (
     }
   });
 
-  return entries.sort((a, b) => b.date.getTime() - a.date.getTime());
+  return entries;
+
+  // return entries.sort((a, b) => b.date.getTime() - a.date.getTime());
 };
 
 export default async function JournalPageServer({

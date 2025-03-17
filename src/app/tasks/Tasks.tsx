@@ -7,8 +7,8 @@ import { Suspense, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { CalendForInput } from "../../components/CalendarInput";
 import { TasksType } from "@/interfaces/task";
-import { Header } from "../../components/Header";
 import TaskList from "./task-list";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
   const [tasks, setTasks] = useState(initialTasks);
@@ -62,13 +62,15 @@ const Tasks = ({ initialTasks }: { initialTasks: TasksType[] }) => {
   };
 
   return (
-    <div className="w-full">
-      <Header />
+    <div className="container mx-auto px-4 py-6 md:py-8 max-w-5xl">
       <div className="w-full p-5">
         <div className="w-full m-auto md:text-center text-3xl font-semibold mb-10">
-          <span className="underline underline-offset-8 decoration-1 decoration-primary">
-            What I have to do?
-          </span>
+          <div className="w-full flex justify-between items-center md:justify-center">
+            <span className="underline underline-offset-8 decoration-1 decoration-primary">
+              What I have to do?
+            </span>
+            <SidebarTrigger className="md:hidden" />
+          </div>
         </div>
 
         <form

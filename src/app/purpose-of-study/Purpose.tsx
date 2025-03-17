@@ -1,19 +1,19 @@
 import Link from "next/link";
-import { Header } from "@/components/Header";
 import { PurposeType } from "@/interfaces/purpose";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function Purpose({ data }: { data: PurposeType[] }) {
   return (
-    <div className="w-full">
-      <Header />
+    <div className="container mx-auto px-4 py-6 md:py-8 max-w-5xl">
       <div
         className="w-full p-5 flex flex-col items-center"
         suppressHydrationWarning
       >
-        <div className="w-full md:w-[70%] flex md:justify-center">
+        <div className="w-full md:w-[70%] md:justify-center flex justify-between items-center">
           <span className="underline underline-offset-8 decoration-1 decoration-primary text-3xl font-semibold">
             Why Should I Study?
           </span>
+          <SidebarTrigger className="md:hidden" />
         </div>
         <div className="w-full md:w-auto md:min-w-[40%] md:max-w-full flex flex-col mt-10">
           <div className="rounded-lg border empty:hidden">

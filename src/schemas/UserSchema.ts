@@ -20,7 +20,7 @@ const UserSchema = new mongoose.Schema(
     },
     defaultChecklistData: Array,
   },
-  { strict: false }
+  { timestamps: true, strict: false }
 );
 
 const Users = mongoose.models.Users || mongoose.model("Users", UserSchema);

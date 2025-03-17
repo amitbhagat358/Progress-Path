@@ -41,11 +41,11 @@ export default function FullscreenWrapper({
     <div
       className={`transition-all ease-linear duration-300 ${
         isFullscreen
-          ? "fixed inset-0 z-50 bg-background p-6 overflow-auto"
+          ? "fixed inset-0 z-50 bg-background py-0 overflow-auto"
           : "w-full"
       }`}
     >
-      <div className="fixed top-[95vh] right-10 z-10 flex justify-end mb-2">
+      <div className="fixed top-[90svh] right-10 z-10 flex justify-end mb-2">
         <Button
           variant="ghost"
           size="icon"

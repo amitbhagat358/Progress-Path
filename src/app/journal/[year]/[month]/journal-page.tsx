@@ -6,11 +6,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { JSDOM } from "jsdom";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Plus, Calendar } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 interface JournalEntry {
   date: Date;
@@ -84,16 +85,15 @@ export default function JournalPage({
 
   // Combine filtered entries with missing days if showing missing days
   const displayEntries = showMissingDays
-    ? [...filteredEntries, ...missingDays].sort(
-        (a, b) => b.date.getTime() - a.date.getTime()
-      )
+    ? [...filteredEntries, ...missingDays]
     : filteredEntries;
 
   return (
-    <div className="container mx-auto px-4 py-6 md:py-8 max-w-md md:max-w-4xl">
+    <div className="container mx-auto px-4 py-6 md:py-8 max-w-5xl">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-        <h1 className="text-3xl md:text-4xl font-bold text-foreground">
+        <h1 className="w-full flex justify-between text-3xl md:text-4xl font-bold text-foreground">
           {monthName} {year}
+          <SidebarTrigger className="md:hidden" />
         </h1>
 
         <div className="flex flex-col md:flex-row gap-2 mt-4 md:mt-0 w-full md:w-auto">

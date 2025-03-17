@@ -25,15 +25,25 @@ import useSaveShortcut from "@/hooks/use-save-shortcut";
 import { ImageEditDialog } from "@/app/journal/[year]/[month]/[date]/components/image/image-edit-dialog";
 import { LinkEditPopover } from "@/app/journal/[year]/[month]/[date]/components/link/link-edit-popover";
 import { MdHorizontalRule } from "react-icons/md";
+import useWarnUnsavedChanges from "@/hooks/use-warn-unsaved";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 export default function MenuBar({
   editor,
   handleSave,
+  saved,
 }: {
   editor: Editor | null;
   handleSave: () => void;
+  saved: boolean;
 }) {
   useSaveShortcut(handleSave);
+  useWarnUnsavedChanges(!saved);
 
   if (!editor) {
     return null;
@@ -139,9 +149,22 @@ export default function MenuBar({
             </Button>
             <LinkEditPopover editor={editor} size="sm" />
             <ImageEditDialog editor={editor} size="sm" />
-            <Button variant="ghost" onClick={handleSave} className="px-3">
-              <SaveIcon />
-            </Button>
+            {!saved && (
+              <TooltipProvider>
+                <Tooltip delayDuration={0}>
+                  <TooltipTrigger asChild>
+                    <Button
+                      onClick={handleSave}
+                      disabled={saved}
+                      className="px-3"
+                    >
+                      <SaveIcon />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Save Changes (Ctrl + S)</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
           </div>
         </div>
         // </BubbleMenu>

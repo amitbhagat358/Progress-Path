@@ -15,7 +15,7 @@ import Heading from "@tiptap/extension-heading";
 import Underline from "@tiptap/extension-underline";
 
 import MenuBar from "./menu-bar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { addJournal } from "@/app/actions/journal";
 import { toast } from "sonner";
 
@@ -40,14 +40,19 @@ export default function RichTextEditor({
   date: Date;
 }) {
   const [post, setPost] = useState(content);
+  const [saved, setSaved] = useState(true);
   const onChange = (content: string) => {
     setPost(content);
-    console.log(content);
   };
+
+  useEffect(() => {
+    setSaved(content === post);
+  }, [post]);
 
   const handleSave = async () => {
     try {
       await addJournal(date, post);
+      setSaved(true);
       toast.success("Journal updated");
     } catch (error) {
       toast.error("Error saving the journal", {
@@ -189,7 +194,7 @@ export default function RichTextEditor({
   });
   return (
     <div>
-      <MenuBar editor={editor} handleSave={handleSave} />
+      <MenuBar editor={editor} handleSave={handleSave} saved={saved} />
       <EditorContent editor={editor} />
     </div>
   );

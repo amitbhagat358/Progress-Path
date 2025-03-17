@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { addJournal, getJournalByDate } from "@/app/actions/journal";
+import { getJournalByDate } from "@/app/actions/journal";
 import FullscreenWrapper from "./components/full-screen-wrapper";
 
 interface JournalEntryPageProps {
@@ -20,8 +20,6 @@ interface JournalEntryPageProps {
     date: string;
   }>;
 }
-
-export const dynamic = "force-dynamic";
 
 export default async function JournalEntryPage({
   params,

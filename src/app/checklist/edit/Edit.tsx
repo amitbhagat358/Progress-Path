@@ -101,7 +101,7 @@ const EditChecklist = ({
 
   return (
     <div className="w-full container">
-      <Header />
+      {/* <Header /> */}
       <div className="w-full flex justify-center items-center mb-10 p-5">
         <div className="w-full md:w-[70%] flex justify-between">
           <div className="text-3xl underline underline-offset-8 decoration-1 decoration-primary font-semibold">

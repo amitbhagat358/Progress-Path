@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { getJournalByDate } from "@/app/actions/journal";
 import FullscreenWrapper from "./components/full-screen-wrapper";
+import { Suspense } from "react";
+import { wait } from "@/lib/utils";
 
 interface JournalEntryPageProps {
   params: Promise<{
@@ -20,6 +22,34 @@ interface JournalEntryPageProps {
     date: string;
   }>;
 }
+
+const MenuBarSkeleton = () => {
+  return (
+    <div className="z-10 flex justify-center sticky top-0 py-2">
+      <div className="border p-3 rounded-lg bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex gap-2">
+        {Array.from({ length: 16 }).map((_, index) => (
+          <div
+            key={index}
+            className="w-8 h-8 bg-card animate-pulse rounded-md"
+          ></div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const SuspenseHandler = async ({ entryDate }: { entryDate: Date }) => {
+  const content = await getJournalByDate(entryDate);
+  return (
+    <FullscreenWrapper>
+      <main className="editor-main w-full">
+        <div className="w-full space-y-8">
+          <RichTextEditor content={content} date={entryDate} />
+        </div>
+      </main>
+    </FullscreenWrapper>
+  );
+};
 
 export default async function JournalEntryPage({
   params,
@@ -39,15 +69,13 @@ export default async function JournalEntryPage({
     )
   );
 
-  const content = await getJournalByDate(entryDate);
-
   // Format the date as "Thursday, August 29, 2024"
   const formattedDate = format(entryDate, "EEEE, MMMM d, yyyy");
 
   return (
     <div className="w-full relative min-h-screen bg-background">
       {/* Header */}
-      <header className="w-full sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="w-full sticky top-0 z-10 border-b border-dashed py-0.5 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="w-full flex h-14 items-center px-4 md:px-10">
           <div className="flex flex-1 items-center justify-between">
             <Link
@@ -97,13 +125,10 @@ export default async function JournalEntryPage({
 
       {/* Main Content */}
 
-      <FullscreenWrapper>
-        <main className="editor-main w-full">
-          <div className="w-full space-y-8">
-            <RichTextEditor content={content} date={entryDate} />
-          </div>
-        </main>
-      </FullscreenWrapper>
+      <Suspense fallback={<MenuBarSkeleton />}>
+        <SuspenseHandler entryDate={entryDate} />
+      </Suspense>
+
       {/* <main className="w-full">
         <div className="w-full space-y-8">
           <RichTextEditor content={content} date={entryDate} />

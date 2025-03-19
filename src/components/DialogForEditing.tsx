@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { AutosizeTextarea } from "@/components/ui/textarea";
 import { Dispatch, SetStateAction, useState } from "react";
 import { Pencil } from "lucide-react";
 import { CalendForInput } from "./CalendarInput";
@@ -53,24 +54,21 @@ export function DialogForEditing({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          className="hover:bg-primary hover:text-background"
-        >
+        <Button>
           <Pencil />
           Edit
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="w-full max-w-[600px] h-auto overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Task</DialogTitle>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
+        <div className="grid gap-6 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="name" className="text-right">
               Task
             </Label>
-            <Input
+            <AutosizeTextarea
               id="taskName"
               value={taskName}
               onChange={(e) => setTaskName(e.target.value)}

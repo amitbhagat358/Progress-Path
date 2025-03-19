@@ -13,6 +13,7 @@ import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import HorizontalRule from "@tiptap/extension-horizontal-rule";
 import Heading from "@tiptap/extension-heading";
 import Underline from "@tiptap/extension-underline";
+import Blockquote from "@tiptap/extension-blockquote";
 
 import MenuBar from "./menu-bar";
 import { useEffect, useState } from "react";
@@ -105,6 +106,7 @@ export default function RichTextEditor({
       CodeBlockLowlight.configure({
         lowlight,
       }),
+      Blockquote,
       Image.configure({
         HTMLAttributes: {
           class: "image-classes h-full cover flex justify-center items-center",

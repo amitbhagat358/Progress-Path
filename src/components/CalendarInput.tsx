@@ -20,7 +20,8 @@ export function CalendForInput({ onDateChange, date }: CalendForInputProps) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="w-full">
-          {date ? format(date, "dd-MM-yyyy") : <CalendarIcon />}
+          <CalendarIcon />
+          {date ? format(date, "dd-MM-yyyy") : "Select Deadline"}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>

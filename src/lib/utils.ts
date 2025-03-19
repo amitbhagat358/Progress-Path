@@ -75,3 +75,5 @@ export const getPrevAndNextDate = (date: string) => {
     nextDate: nextDate.toISOString().split("T")[0].trim(), // Format: YYYY-MM-DD
   };
 };
+
+export const wait = (ms: number) => new Promise((res) => setTimeout(res, ms));

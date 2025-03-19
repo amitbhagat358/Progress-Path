@@ -34,21 +34,18 @@ export default function TaskList({
           task.id === taskId ? { ...task, completed: !task.completed } : task
         )
       );
-      return;
     }
   };
 
   const handleDeleteTask = async (taskId: number) => {
-    const tasksBeforeDelte = [...tasks];
+    const tasksBeforeDelete = [...tasks];
     setTasks((tasks) => tasks.filter((task) => task.id !== taskId));
 
     try {
       await deleteTask(taskId);
-      toast.success("Task deleted successfully 👍", {
-        duration: 3000,
-      });
+      toast.success("Task deleted successfully 👍", { duration: 3000 });
     } catch (error) {
-      setTasks(tasksBeforeDelte);
+      setTasks(tasksBeforeDelete);
       toast.error("Error deleting task", {
         description: "Try refreshing the page",
         duration: 3000,
@@ -61,31 +58,32 @@ export default function TaskList({
   };
 
   return (
-    <div className="w-full md:w-[70%] m-auto py-3 border rounded-lg shadow-sm empty:hidden">
+    <div className="py-3 border rounded-lg shadow-sm empty:hidden">
       {tasks?.map((task) => (
         <div
           key={task.id}
-          className="group flex flex-col justify-between items-center px-2 py-3 md:mx-5 rounded-lg cursor-pointer select-none hover:bg-secondary"
+          className="group flex flex-col justify-between px-2 py-3 md:mx-5 rounded-lg cursor-pointer select-none hover:bg-secondary"
         >
-          <div className="w-full flex items-center gap-3">
+          <div
+            className="flex items-center gap-3"
+            onClick={() => handleClick(task.id)}
+          >
             <Checkbox
               checked={task.completed}
-              onCheckedChange={async () => {
-                await handleToggle(task.id);
-              }}
+              onCheckedChange={() => handleToggle(task.id)}
             />
-            <div className="w-full" onClick={() => handleClick(task.id)}>
+            <div>
               <p
-                className={`${
+                className={
                   task.completed
                     ? "line-through dark:text-gray-200 light:text-gray-500"
                     : ""
-                }`}
+                }
               >
                 {task.task}
               </p>
               <p className="text-sm text-gray-400">
-                {task?.deadline?.toString() && (
+                {task?.deadline && (
                   <span>
                     Deadline: {format(new Date(task.deadline), "dd/MM/yyyy")}
                   </span>
@@ -95,25 +93,15 @@ export default function TaskList({
           </div>
 
           {/* Actions */}
-          <div className="">
-            {clicked == task.id && (
-              <div className="flex items-center gap-5 mt-4 mb-5">
-                <DialogForEditing
-                  setTasks={setTasks}
-                  task={task}
-                  tasks={tasks}
-                />
-                <Button
-                  variant="outline"
-                  onClick={() => handleDeleteTask(task.id)}
-                  className="hover:bg-primary hover:text-background"
-                >
-                  <Trash />
-                  Delete
-                </Button>
-              </div>
-            )}
-          </div>
+          {clicked === task.id && (
+            <div className="flex justify-center md:justify-start md:ml-6 items-center gap-5 mt-4 mb-5">
+              <DialogForEditing setTasks={setTasks} task={task} tasks={tasks} />
+              <Button onClick={() => handleDeleteTask(task.id)}>
+                <Trash />
+                Delete
+              </Button>
+            </div>
+          )}
         </div>
       ))}
     </div>

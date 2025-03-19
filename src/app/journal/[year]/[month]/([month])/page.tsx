@@ -1,6 +1,7 @@
 import { getJournalByMonth } from "@/app/actions/journal";
 import { JSDOM } from "jsdom";
 import JournalPage from "./journal-page";
+import { wait } from "@/lib/utils";
 
 interface JournalEntry {
   date: Date;
@@ -61,8 +62,6 @@ const getEntries = async (
   });
 
   return entries;
-
-  // return entries.sort((a, b) => b.date.getTime() - a.date.getTime());
 };
 
 export default async function JournalPageServer({
@@ -72,7 +71,6 @@ export default async function JournalPageServer({
 }) {
   const year = Number.parseInt((await params).year);
   const month = Number.parseInt((await params).month);
-
   const entries = await getEntries(year, month);
 
   return <JournalPage year={year} month={month} initialEntries={entries} />;

@@ -1,12 +1,11 @@
 import { redirect } from "next/navigation";
-import { getAvailableJournalYears } from "../actions/journal";
+import { getAvailableJournalYears } from "../../actions/journal";
 import JournalBrowser from "./journal-browser";
 
 export const dynamic = "force-dynamic";
 
 export default async function JournalHomePage() {
   const availableYears = await getAvailableJournalYears();
-  console.log("availableYears", availableYears);
 
   if (availableYears.length === 0) {
     const currentDate = new Date();
@@ -21,7 +20,7 @@ export default async function JournalHomePage() {
   return (
     <JournalBrowser
       initialYear={mostRecentYear}
-      availableYears={availableYears}
+      availableYears={[...availableYears]}
     />
   );
 }

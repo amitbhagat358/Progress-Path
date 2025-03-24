@@ -1,6 +1,5 @@
 import { UploadApiErrorResponse, UploadApiResponse } from "cloudinary";
 import { cloudinary } from "../../cloudinary.config";
-import { NextRequest } from "next/server";
 
 type UploadResponse =
   | { success: true; result?: UploadApiResponse }
@@ -18,6 +17,7 @@ export const uploadToCloudinary = (
         filename_override: fileName,
         folder: "journal-images",
         use_filename: true,
+        transformation: [{ quality: "auto", fetch_format: "auto" }],
       })
       .then((result) => {
         resolve({ success: true, result });
@@ -26,4 +26,21 @@ export const uploadToCloudinary = (
         reject({ success: false, error });
       });
   });
+};
+
+export const deleteFromCloudinary = async (imageUrl: string) => {
+  try {
+    const match = imageUrl.match(/\/upload\/(?:v\d+\/)?(.+?)\.[a-z]+$/);
+
+    if (!match) {
+      throw new Error("Invalid Cloudinary URL");
+    }
+
+    const publicId = match[1];
+    const result = await cloudinary.uploader.destroy(publicId);
+    return { success: result.result === "ok", result };
+  } catch (error) {
+    console.error("Cloudinary Deletion Error:", error);
+    return { success: false, error };
+  }
 };

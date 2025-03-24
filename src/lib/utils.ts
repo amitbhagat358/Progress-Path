@@ -76,4 +76,5 @@ export const getPrevAndNextDate = (date: string) => {
   };
 };
 
-export const wait = (ms: number) => new Promise((res) => setTimeout(res, ms));
+export const wait = (second: number) =>
+  new Promise((res) => setTimeout(res, second * 1000));

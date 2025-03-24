@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { imageUpload } from "@/app/actions/image-upload-actions";
 import { toast } from "sonner";
+import { Loader2, CheckCircle, XCircle } from "lucide-react";
 
 interface ImageEditBlockProps {
   editor: Editor;
@@ -31,27 +32,36 @@ export const ImageEditBlock: React.FC<ImageEditBlockProps> = ({
       formData.append("file", file);
 
       close();
-      toast.info("Uploading image...");
 
-      const res = await imageUpload(formData);
-
-      if (res.message !== "success") {
-        toast.error("Error uploading image");
-      }
-
-      if (!res?.imgUrl) {
-        return "Image upload failed";
-      }
-
-      const insertImages = async () => {
-        editor.commands.setImage({ src: res.imgUrl });
-      };
-      await insertImages();
-      toast.success("Image uploaded successfully.");
+      await toast.promise(imageUpload(formData), {
+        loading: (
+          <div className="flex items-center gap-2 text-foreground">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            <span>Uploading image...</span>
+          </div>
+        ),
+        success: (res) => {
+          if (res.message !== "success" || !res?.imgUrl) {
+            throw new Error("Image upload failed");
+          }
+          editor.commands.setImage({ src: res.imgUrl });
+          return (
+            <div className="flex items-center gap-2 text-foreground">
+              <CheckCircle className="h-4 w-4 text-green-500" />
+              <span>Image uploaded successfully.</span>
+            </div>
+          );
+        },
+        error: (
+          <div className="flex items-center gap-2 text-foreground">
+            <XCircle className="h-4 w-4 text-red-500" />
+            <span>Error uploading image</span>
+          </div>
+        ),
+      });
     },
     [editor, close]
   );
-
   const handleSubmit = React.useCallback(
     (e: React.FormEvent<HTMLButtonElement>) => {
       e.preventDefault();

@@ -1,7 +1,6 @@
 import { fetchTasks } from "@/app/actions/taskActions";
 import Tasks from "@/app/tasks/Tasks";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { wait } from "@/lib/utils";
 import { Suspense } from "react";
 
 const TaskSkeleton = () => {
@@ -33,7 +32,6 @@ const TaskSkeleton = () => {
 
 const TaskPageWrapper = async () => {
   const tasks = await fetchTasks();
-  await wait(1000);
   //@ts-expect-error handled
   return <Tasks initialTasks={tasks} />;
 };

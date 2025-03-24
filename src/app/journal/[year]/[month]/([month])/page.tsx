@@ -1,7 +1,6 @@
 import { getJournalByMonth } from "@/app/actions/journal";
 import { JSDOM } from "jsdom";
 import JournalPage from "./journal-page";
-import { wait } from "@/lib/utils";
 
 interface JournalEntry {
   date: Date;

@@ -13,7 +13,6 @@ import {
 import { getJournalByDate } from "@/app/actions/journal";
 import FullscreenWrapper from "./components/full-screen-wrapper";
 import { Suspense } from "react";
-import { wait } from "@/lib/utils";
 
 interface JournalEntryPageProps {
   params: Promise<{

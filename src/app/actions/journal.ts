@@ -1,7 +1,8 @@
 "use server";
 
+import { deleteFromCloudinary } from "@/lib/cloudinary";
 import { connectToDatabase } from "@/lib/mongodb";
-import { getUserIdFromToken } from "@/lib/serverUtils";
+import { getAllImagesFromContent, getUserIdFromToken } from "@/lib/serverUtils";
 import Journal from "@/schemas/Journal";
 import Users from "@/schemas/UserSchema";
 import { revalidatePath } from "next/cache";
@@ -14,7 +15,23 @@ export const addJournal = async (
     await connectToDatabase();
     const userId = await getUserIdFromToken();
 
-    const journal = await Journal.findOneAndUpdate(
+    const journal = await Journal.findOne({ userId, date });
+    if (!journal) {
+      const newJournal = new Journal({ userId, date, content });
+      await newJournal.save();
+      return;
+    }
+
+    const previousImages = await getAllImagesFromContent(journal.content);
+    const currentImages = await getAllImagesFromContent(content);
+
+    for (const image of previousImages) {
+      if (!currentImages.includes(image)) {
+        await deleteFromCloudinary(image);
+      }
+    }
+
+    const updatedJournal = await Journal.findOneAndUpdate(
       { userId, date },
       { content },
       { upsert: true, new: true }

@@ -109,7 +109,7 @@ export function AppSidebar() {
                           asChild
                           className="text-base text-ellipsis"
                         >
-                          <Link href={item.url} prefetch>
+                          <Link href={item.url} prefetch={true}>
                             <item.icon />
                             <span>{item.title}</span>
                           </Link>

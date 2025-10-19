@@ -71,11 +71,11 @@ export function AppSidebar() {
   const path = usePathname();
   return (
     <Sidebar collapsible="icon" className="border-dashed">
-      <SidebarHeader className="border-b border-dashed">
+      <SidebarHeader>
         <div className="flex justify-between items-center my-2 text-nowrap">
           {open && (
             <Link href={"/"}>
-              <div className="text-xl font-semibold text-nowrap text-primary text-ellipsis">
+              <div className="text-xl font-semibold text-nowrap text-ellipsis">
                 Progress Path
               </div>
             </Link>

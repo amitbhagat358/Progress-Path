@@ -1,38 +1,23 @@
 "use server";
 
 import Summary from "@/schemas/SummarySchema";
-import { ChecklistItemType } from "@/interfaces/summary";
 import { connectToDatabase } from "@/lib/mongodb";
-import { formatDateToYYYYMMDD } from "@/lib/utils";
 import { getUserIdFromToken } from "@/lib/serverUtils";
-import Users from "@/schemas/UserSchema";
 import { hardcodedChecklistData } from "@/lib/hardcodedData";
-import { revalidatePath } from "next/cache";
+import { unstable_cache, revalidateTag } from "next/cache";
+import { formatDateToYYYYMMDD } from "@/lib/utils";
+import { ChecklistItemType } from "@/interfaces/summary";
+import Users from "@/schemas/UserSchema";
 
 export const fetchChecklistData = async (dateFromParent: string) => {
   try {
     const userId = await getUserIdFromToken();
     const date = new Date(dateFromParent).toISOString();
 
-    await connectToDatabase();
-    const dailyChecklist = await Summary.find(
-      { userId, date },
-      "checklistData -_id"
-    )
-      .lean()
-      .exec();
-
-    // if exists, return checklist data for the requested day
-    if (dailyChecklist.length !== 0) return dailyChecklist[0].checklistData;
-
-    // if no data is there for that day then send the default checklist data for that particular user
-    const defaultData = await getDefaultChecklistDataForTheUser();
-    if (defaultData.length !== 0) return defaultData;
-
-    // if the default checklist is not there for the user, send the hardcoded data.
-    return hardcodedChecklistData;
+    const data = await cachedQuery(String(userId), String(date));
+    return data;
   } catch (error) {
-    console.error("Error fetching data:", error);
+    console.error("Error fetching checklist:", error);
     return null;
   }
 };
@@ -51,31 +36,12 @@ export const postChecklistData = async (data: ChecklistItemType[]) => {
       },
       { upsert: true }
     ).exec();
+    revalidateTag("checklist-data");
+
     return { message: "Data saved successfully" };
   } catch (error) {
     console.error("Error saving data:", error);
     return { message: "An unexpected error occurred. Please try again." };
-  }
-};
-
-export const getDefaultChecklistDataForTheUser = async () => {
-  try {
-    const userId = await getUserIdFromToken();
-
-    await connectToDatabase();
-    const data = await Users.findOne(
-      { _id: userId },
-      "defaultChecklistData -_id"
-    )
-      .lean()
-      .exec();
-
-    //@ts-expect-error if data exists, it will always have defaultChecklistData
-    if (data.length !== 0) return data.defaultChecklistData;
-
-    return null;
-  } catch (error) {
-    console.log("error submitting the data");
   }
 };
 
@@ -96,16 +62,60 @@ export const postDefaultChecklistData = async (data: ChecklistItemType[]) => {
       .lean()
       .exec();
 
-    // update the checklist for that day.
     await Summary.updateOne(
       { userId, date },
       { $set: { checklistData: data } }
     );
 
-    revalidatePath("/checklist");
+    revalidateTag("checklist-data");
     return defaultChecklistData;
   } catch (error) {
     console.log(error);
     console.log("error submitting the data");
   }
 };
+
+export const getDefaultChecklistDataForTheUser = async (userId: string) => {
+  try {
+    const data = await Users.findOne(
+      { _id: userId },
+      "defaultChecklistData -_id"
+    )
+      .lean()
+      .exec();
+
+    //@ts-expect-error if data exists, it will always have defaultChecklistData
+    if (data.length !== 0) return data.defaultChecklistData;
+
+    return null;
+  } catch (error) {
+    console.log("error submitting the data");
+  }
+};
+
+const cachedQuery = unstable_cache(
+  async (userId: string, date: string) => {
+    await connectToDatabase();
+
+    const result = await Summary.find(
+      { userId, date },
+      "checklistData -_id"
+    )
+      .lean()
+      .exec()
+      .catch((err) => {
+        console.error("Error in Summary.find:", err);
+        return [];
+      });
+
+    const dailyChecklist = Array.isArray(result) ? result : [];
+    if (dailyChecklist.length > 0) return dailyChecklist[0].checklistData;
+
+    const defaultData = await getDefaultChecklistDataForTheUser(userId);
+    if (defaultData && defaultData.length > 0) return defaultData;
+
+    return hardcodedChecklistData;
+  },
+  ["checklist-data"],
+  { revalidate: 86400, tags: ["checklist-data"] }
+);
